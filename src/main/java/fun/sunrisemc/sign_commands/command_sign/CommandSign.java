@@ -24,7 +24,7 @@ public class CommandSign {
     private ArrayList<SignCommand> commands = new ArrayList<>();
 
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
-        this.id = CommandSignManager.genearteId();
+        this.id = CommandSignManager.generateId();
         this.signLocation = Optional.of(location);
         this.commands.add(firstSignCommand);
     }
@@ -73,7 +73,7 @@ public class CommandSign {
         if (config.contains(id + ".commands")) {
             for (String commandEntry : config.getStringList(id + ".commands")) {
                 String[] entryParts = commandEntry.split(":", 2);
-                if (entryParts.length != 2) {
+                if (entryParts.length != 3) {
                     SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + id + ": " + commandEntry);
                     continue;
                 }

@@ -22,6 +22,7 @@ public class CommandSignManager {
 
     private static boolean saving = false;
 
+    private static HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
     private static HashMap<String, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
     private static ArrayList<CommandSign> signConfigurationsList = new ArrayList<>();
 
@@ -86,10 +87,15 @@ public class CommandSignManager {
         YamlConfiguration config = ConfigFile.get("signs", false);
         for (String id : config.getKeys(false)) {
             CommandSign signConfiguration = new CommandSign(config, id);
-            signConfigurationsLocationsMap.put(id, signConfiguration);
+            signConfigurationsIdsMap.put(id, signConfiguration);
+            
+            Optional<Location> signLocation = signConfiguration.getSignLocation();
+            if (!signLocation.isEmpty()) {
+                signConfigurationsLocationsMap.put(toKey(signLocation.get()), signConfiguration);
+            }
         }
 
-        signConfigurationsList = new ArrayList<>(signConfigurationsLocationsMap.values());
+        signConfigurationsList = new ArrayList<>(signConfigurationsIdsMap.values());
 
         changes = false;
 
@@ -120,7 +126,7 @@ public class CommandSignManager {
 
     // Utils
 
-    static String genearteId() {
+    static String generateId() {
         int idx = 1;
         while (true) {
             String id = "sign-" + idx;

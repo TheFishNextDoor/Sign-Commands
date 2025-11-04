@@ -48,6 +48,7 @@ public class SignCommandsPlugin extends JavaPlugin {
     }
 
     public static void loadConfigs() {
+        CommandSignManager.saveSigns();
         CommandSignManager.loadSigns();
     }
 

@@ -48,6 +48,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (player.hasPermission(Permissions.LIST_PERMISSION)) {
                 completions.add("list");
             }
+            if (player.hasPermission(Permissions.GOTO_PERMISSION)) {
+                completions.add("goto");
+            }
             return completions;
         }
         else if (args.length == 2) {
@@ -195,6 +198,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             return true;
+        }
+        // Goto Command
+        else if (player.hasPermission(Permissions.GOTO_PERMISSION) && subcommand.equals("goto")) {
+
         }
 
         helpMessage(player);
