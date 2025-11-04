@@ -273,10 +273,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands remove <index> " + ChatColor.WHITE + "Remove a sign command.");
         }
         if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands list " + ChatColor.WHITE + "List sign commands.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <list|lc> " + ChatColor.WHITE + "List sign commands.");
         }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands listsigns " + ChatColor.WHITE + "List all command signs.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");
         }
     }
 
