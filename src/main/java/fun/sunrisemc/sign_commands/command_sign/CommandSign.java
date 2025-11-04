@@ -19,6 +19,7 @@ public class CommandSign {
     private String id;
 
     private Optional<Location> signLocation = Optional.empty();
+    private Optional<String> lastValidSignLocationString = Optional.empty();
 
     private ArrayList<SignCommand> commands = new ArrayList<>();
 
@@ -33,6 +34,8 @@ public class CommandSign {
         // Load Location
         if (config.contains(id + ".location")) {
             String locationString = config.getString(id + ".location");
+
+            this.lastValidSignLocationString = Optional.of(locationString);
             
             String[] parts = locationString.split(",");
             if (parts.length != 4) {
@@ -40,7 +43,12 @@ public class CommandSign {
                 return;
             }
 
-            World world = SignCommandsPlugin.getInstance().getServer().getWorld(parts[0]);
+            String worldName = parts[0].trim();
+            String xString = parts[1].trim();
+            String yString = parts[2].trim();
+            String zString = parts[3].trim();
+
+            World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
             if (world == null) {
                 SignCommandsPlugin.logWarning("World not found for sign configuration: " + id);
                 return;
@@ -48,9 +56,9 @@ public class CommandSign {
 
             int x, y, z;
             try {
-                x = Integer.parseInt(parts[1]);
-                y = Integer.parseInt(parts[2]);
-                z = Integer.parseInt(parts[3]);
+                x = Integer.parseInt(xString);
+                y = Integer.parseInt(yString);
+                z = Integer.parseInt(zString);
             }
             catch (NumberFormatException e) {
                 SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + id);
@@ -127,5 +135,29 @@ public class CommandSign {
         }
         commands.remove(index);
         return true;
+    }
+
+    void save(@NonNull YamlConfiguration config) {
+        // Save Location
+        String locationString;
+        if (signLocation.isPresent()) {
+            Location loc = signLocation.get();
+            locationString = loc.getWorld().getName() + ", " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
+        }
+        else if (lastValidSignLocationString.isPresent()) {
+            locationString = lastValidSignLocationString.get();
+        }
+        else {
+            locationString = "unknown,0,0,0";
+        }
+        config.set(id + ".location", locationString);
+
+        // Save Commands
+        ArrayList<String> commandEntries = new ArrayList<>();
+        for (SignCommand command : commands) {
+            String entry = command.getClickType().getName() + " : " + command.getCommandType().getName() + " : " + command.getCommand();
+            commandEntries.add(entry);
+        }
+        config.set(id + ".commands", commandEntries);
     }
 }

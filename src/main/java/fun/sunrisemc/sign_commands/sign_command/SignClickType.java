@@ -11,6 +11,10 @@ public enum SignClickType {
     BOTH,
     LEFT,
     RIGHT;
+
+    public String getName() {
+        return normalizeName(name());
+    }
     
     public static Optional<SignClickType> fromAction(@NonNull Action action) {
         switch (action) {
@@ -23,14 +27,11 @@ public enum SignClickType {
         }
     }
 
-    public static Optional<@NonNull SignClickType> fromName(@NonNull String clickTypeBName) {
+    public static Optional<@NonNull SignClickType> fromName(@NonNull String name) {
+        String clickTypeBName = normalizeName(name);
         for (SignClickType clickTypeA : values()) {
-            String clickTypeAName = clickTypeA.name();
-            if (clickTypeAName == null) {
-                return Optional.empty();
-            }
-            if (normalizeName(clickTypeAName).equals(normalizeName(clickTypeBName))) {
-                return Optional.ofNullable(clickTypeA);
+            if (clickTypeA.getName().equals(clickTypeBName)) {
+                return Optional.of(clickTypeA);
             }
         }
         return Optional.empty();
@@ -39,11 +40,7 @@ public enum SignClickType {
     public static ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (SignClickType clickType : values()) {
-            String clickTypeName = clickType.name();
-            if (clickTypeName == null) {
-                continue;
-            }
-            names.add(normalizeName(clickTypeName));
+            names.add(clickType.getName());
         }
         return names;
     }
@@ -51,5 +48,4 @@ public enum SignClickType {
     private static String normalizeName(@NonNull String name) {
         return name.trim().toLowerCase().replace(" ", "-").replace("_", "-");
     }
-    
 }

@@ -11,14 +11,15 @@ public enum SignCommandType {
     CONSOLE,
     MESSAGE,
     BROADCAST;
+
+    public String getName() {
+        return normalizeName(name());
+    }
     
-    public static Optional<SignCommandType> fromName(@NonNull String commandTypeBName) {
+    public static Optional<SignCommandType> fromName(@NonNull String name) {
+        String commandTypeBName = normalizeName(name);
         for (SignCommandType commandTypeA : values()) {
-            String commandTypeAName = commandTypeA.name();
-            if (commandTypeAName == null) {
-                return Optional.empty();
-            }
-            if (normalizeName(commandTypeAName).equals(normalizeName(commandTypeBName))) {
+            if (commandTypeA.getName().equals(commandTypeBName)) {
                 return Optional.of(commandTypeA);
             }
         }
@@ -28,11 +29,7 @@ public enum SignCommandType {
     public static ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (SignCommandType commandType : values()) {
-            String commandTypeName = commandType.name();
-            if (commandTypeName == null) {
-                continue;
-            }
-            names.add(normalizeName(commandTypeName));
+            names.add(commandType.getName());
         }
         return names;
     }

@@ -80,10 +80,19 @@ public class CommandSignManager {
     }
 
     public static void saveSigns() {
-        // Todo
+        SignCommandsPlugin.logInfo("Saving " + signConfigurationsList.size() + " sign configurations...");
+
+        YamlConfiguration config = new YamlConfiguration();
+        for (CommandSign signConfiguration : signConfigurationsList) {
+            signConfiguration.save(config);
+        }
+
+        ConfigFile.save("signs", config);
+
+        SignCommandsPlugin.logInfo("Saved " + signConfigurationsList.size() + " sign configurations.");
     }
 
     private static String toKey(Location location) {
-        return location.getWorld().getName() + ":" + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
+        return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
     }
 }
