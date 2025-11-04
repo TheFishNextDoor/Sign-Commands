@@ -11,6 +11,9 @@ public class Permissions {
     public static final String ADD_REQUIRED_PERMISSIONS_PERMISSION = "signcommands.addrequiredpermission";
     public static final String REMOVE_REQUIRED_PERMISSION_PERMISSION = "signcommands.removerequiredpermission";
     public static final String LIST_REQUIRED_PERMISSION_PERMISSION = "signcommands.listrequiredpermission";
+    public static final String ADD_BLOCKED_PERMISSION_PERMISSION = "signcommands.addblockedpermission";
+    public static final String REMOVE_BLOCKED_PERMISSION_PERMISSION = "signcommands.removeblockedpermission";
+    public static final String LIST_BLOCKED_PERMISSION_PERMISSION = "signcommands.listblockedpermission";
     public static final String LIST_SIGNS_PERMISSION = "signcommands.listsigns";
     public static final String GOTO_PERMISSION = "signcommands.goto";
     public static final String RENAME_PERMISSION = "signcommands.rename";

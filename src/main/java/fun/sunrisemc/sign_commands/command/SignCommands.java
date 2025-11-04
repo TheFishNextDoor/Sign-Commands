@@ -61,6 +61,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
                 completions.add("listrequiredpermission");
             }
+            if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION)) {
+                completions.add("addblockedpermission");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION)) {
+                completions.add("removeblockedpermission");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION)) {
+                completions.add("listblockedpermission");
+            }
             if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
                 completions.add("listsigns");
             }
@@ -102,6 +111,14 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
 
                 return commandSign.get().getRequiredPermissions().stream().toList();
+            }
+            else if (isPlayer && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
+                Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
+                if (commandSign.isEmpty()) {
+                    return null;
+                }
+
+                return commandSign.get().getBlockedPermissions().stream().toList();
             }
             else if (subcommand.equals("goto")) {
                 return CommandSignManager.getAllIds();
@@ -462,6 +479,111 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             return true;
         }
+        // Add Blocked Permission
+        else if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <addblockedpermission|abp> <permission>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Add the blocked permission
+            String permission = args[1];
+            if (commandSign.get().addBlockedPermission(permission)) {
+                player.sendMessage(ChatColor.GOLD + "Blocked permission added: " + permission);
+            } 
+            else {
+                player.sendMessage(ChatColor.RED + "That permission is already blocked.");
+            }
+
+            return true;
+        }
+        // Remove Blocked Permission
+        else if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <removeblockedpermission|rbp> <permission>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Remove the blocked permission
+            String permission = args[1];
+            if (commandSign.get().removeBlockedPermission(permission)) {
+                player.sendMessage(ChatColor.GOLD + "Blocked permission removed: " + permission);
+            } 
+            else {
+                player.sendMessage(ChatColor.RED + "That permission is not blocked.");
+            }
+
+            return true;
+        }
+        // List Blocked Permissions
+        else if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
+            Player player = (Player) sender;
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // List the blocked permissions
+            HashSet<String> blockedPermissions = commandSign.get().getBlockedPermissions();
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Blocked Permissions");
+            if (blockedPermissions.isEmpty()) {
+                player.sendMessage(ChatColor.GOLD + "None");
+            } 
+            else {
+                for (String permission : blockedPermissions) {
+                    player.sendMessage(ChatColor.GOLD + "- " + permission);
+                }
+            }
+
+            return true;
+        }
         // List Signs
         else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
             // Check if there are any command signs
@@ -592,6 +714,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission|lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission|abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission|rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission|lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
         }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");

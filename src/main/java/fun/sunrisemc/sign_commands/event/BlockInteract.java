@@ -14,6 +14,7 @@ import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
+import net.md_5.bungee.api.ChatColor;
 
 public class BlockInteract implements Listener {
 
@@ -53,6 +54,16 @@ public class BlockInteract implements Listener {
             return;
         }
         setLastInteractionTick(player, currentTick);
+
+        if (!commandSign.get().hasRequiredPermissions(player)) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to click this sign.");
+            return;
+        }
+
+        if (commandSign.get().hasBlockedPermissions(player)) {
+            player.sendMessage(ChatColor.RED + "You are blocked from clicking this sign.");
+            return;
+        }
         
         // Execute command sign
         commandSign.get().execute(player, signClickType.get());

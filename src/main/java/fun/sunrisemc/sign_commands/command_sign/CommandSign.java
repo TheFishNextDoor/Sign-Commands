@@ -25,6 +25,7 @@ public class CommandSign {
     private ArrayList<SignCommand> commands = new ArrayList<>();
 
     private HashSet<String> requiredPermissions = new HashSet<>();
+    private HashSet<String> blockedPermissions = new HashSet<>();
 
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
         this.id = CommandSignManager.generateId();
@@ -166,6 +167,27 @@ public class CommandSign {
 
     public boolean removeRequiredPermission(@NonNull String permission) {
         return requiredPermissions.remove(permission);
+    }
+
+    public HashSet<String> getBlockedPermissions() {
+        return blockedPermissions;
+    }
+
+    public boolean hasBlockedPermissions(@NonNull Player player) {
+        for (String permission : blockedPermissions) {
+            if (player.hasPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addBlockedPermission(@NonNull String permission) {
+        return blockedPermissions.add(permission);
+    }
+
+    public boolean removeBlockedPermission(@NonNull String permission) {
+        return blockedPermissions.remove(permission);
     }
 
     void setId(@NonNull String newId) {
