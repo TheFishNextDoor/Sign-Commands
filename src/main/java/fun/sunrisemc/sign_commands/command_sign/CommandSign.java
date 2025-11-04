@@ -78,9 +78,9 @@ public class CommandSign {
                     continue;
                 }
 
-                String clickTypeString = entryParts[0];
-                String commandTypeString = entryParts[1];
-                String commandString = entryParts[2];
+                String clickTypeString = entryParts[0].trim();
+                String commandTypeString = entryParts[1].trim();
+                String commandString = entryParts[2].trim();
 
                 Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
                 if (signClickType.isEmpty()) {
