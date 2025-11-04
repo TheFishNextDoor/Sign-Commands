@@ -32,7 +32,7 @@ public class BlockInteract implements Listener {
         Player player = event.getPlayer();
 
         long currentTick = TickCounterTask.getTicksFromServerStart();
-        if (isOnCooldown(player, currentTick, 20)) {
+        if (isOnCooldown(player, currentTick, 5)) {
             return;
         }
         setLastInteractionTick(player, currentTick);
@@ -41,7 +41,7 @@ public class BlockInteract implements Listener {
     }
 
     private boolean isOnCooldown(Player player, long currentTicks, long cooldownTicks) {
-        String key = player.getUniqueId().toString();
+        String key = toKey(player);
         Long lastInteractionTick = lastInteractionTickMap.get(key);
         if (lastInteractionTick == null) {
             return false;
@@ -50,7 +50,11 @@ public class BlockInteract implements Listener {
     }
 
     private void setLastInteractionTick(Player player, long currentTicks) {
-        String key = player.getUniqueId().toString();
+        String key = toKey(player);
         lastInteractionTickMap.put(key, currentTicks);
+    }
+
+    private String toKey(Player player) {
+        return player.getUniqueId().toString();
     }
 }
