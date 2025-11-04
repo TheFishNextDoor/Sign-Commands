@@ -29,7 +29,7 @@ public class CommandSign {
         this.commands.add(firstSignCommand);
     }
 
-    CommandSign(YamlConfiguration config, String id) {
+    CommandSign(@NonNull YamlConfiguration config, @NonNull String id) {
         this.id = id;
 
         // Load Location

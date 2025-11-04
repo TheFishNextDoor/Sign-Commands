@@ -8,7 +8,7 @@ import fun.sunrisemc.sign_commands.permission.Permissions;
 
 public class SignChange implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
         if (!event.getPlayer().hasPermission(Permissions.COLOR_PERMISSION)) {
             return;

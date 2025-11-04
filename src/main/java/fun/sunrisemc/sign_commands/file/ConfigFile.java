@@ -106,12 +106,12 @@ public class ConfigFile {
 
     // File Reading Helpers
 
-    public static int getIntClamped(YamlConfiguration config, String path, int min, int max) {
+    public static int getIntClamped(@NonNull YamlConfiguration config, @NonNull String path, int min, int max) {
         int value = config.getInt(path);
         return Math.clamp(value, min, max);
     }
 
-    public static double getDoubleClamped(YamlConfiguration config, String path, double min, double max) {
+    public static double getDoubleClamped(@NonNull YamlConfiguration config, @NonNull String path, double min, double max) {
         double value = config.getDouble(path);
         return Math.clamp(value, min, max);
     }

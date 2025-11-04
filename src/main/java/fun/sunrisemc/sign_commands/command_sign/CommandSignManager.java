@@ -30,11 +30,11 @@ public class CommandSignManager {
 
     // Getting
 
-    public static Optional<CommandSign> getById(String id) {
+    public static Optional<CommandSign> getById(@NonNull String id) {
         return Optional.ofNullable(signConfigurationsIdsMap.get(id));
     }
 
-    public static Optional<CommandSign> getAtLocation(Location location) {
+    public static Optional<CommandSign> getAtLocation(@NonNull Location location) {
         String key = toKey(location);
         return Optional.ofNullable(signConfigurationsLocationsMap.get(key));
     }
@@ -176,7 +176,7 @@ public class CommandSignManager {
         }
     }
 
-    private static void register(String id, CommandSign signCommand) {
+    private static void register(@NonNull String id, @NonNull CommandSign signCommand) {
         signConfigurationsIdsMap.put(id, signCommand);
         Optional<Location> signLocation = signCommand.getSignLocation();
             if (!signLocation.isEmpty()) {
@@ -186,7 +186,7 @@ public class CommandSignManager {
         signConfigurationsList.add(signCommand);
     }
 
-    private static String toKey(Location location) {
+    private static String toKey(@NonNull Location location) {
         return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
     }
 }

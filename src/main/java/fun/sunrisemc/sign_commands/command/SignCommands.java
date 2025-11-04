@@ -477,7 +477,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         return rangeStrings;
     }
 
-    private static boolean checkIfValidBlock(Block block) {
+    private static boolean checkIfValidBlock(@NonNull Block block) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
             return checkIfSign(block);
@@ -487,7 +487,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
     }
 
-    private static boolean checkIfSign(Block block) {
+    private static boolean checkIfSign(@NonNull Block block) {
         BlockState state = block.getState();
         if (state == null) {
             return false;
