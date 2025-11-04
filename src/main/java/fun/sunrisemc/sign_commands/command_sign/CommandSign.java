@@ -153,7 +153,7 @@ public class CommandSign {
             locationString = lastValidSignLocationString.get();
         }
         else {
-            locationString = "unknown,0,0,0";
+            locationString = "unknown, 0, 0, 0";
         }
         config.set(id + ".location", locationString);
 
