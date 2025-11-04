@@ -1,0 +1,16 @@
+name: SignCommands
+main: fun.sunrisemc.sign_commands.SignCommandsPlugin
+version: 1.0.0
+api-version: 1.18
+author: TheFishNextDoor
+description: Allows assigning commands to signs.
+commands:
+  example:
+    description: TODO Write Description
+    usage: /example
+    permission: signcommands.example
+    aliases: [ex]
+permissions:
+  signcommands.example:
+    description: Allows use of the /example command
+    default: true
