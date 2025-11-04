@@ -85,6 +85,10 @@ public class CommandSign {
         return signLocation;
     }
 
+    public ArrayList<SignCommand> getCommands() {
+        return commands;
+    }
+
     public void execute(@NonNull Player player) {
         if (!isValid()) {
             return;
@@ -97,5 +101,13 @@ public class CommandSign {
 
     void addCommand(@NonNull SignCommand command) {
         commands.add(command);
+    }
+
+    boolean removeCommand(int index) {
+        if (index < 0 || index >= commands.size()) {
+            return false;
+        }
+        commands.remove(index);
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package fun.sunrisemc.sign_commands.sign_command;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public enum SignCommandType {
@@ -16,5 +17,13 @@ public enum SignCommandType {
             }
         }
         return Optional.empty();
+    }
+
+    public static ArrayList<String> getNames() {
+        ArrayList<String> names = new ArrayList<String>();
+        for (SignCommandType type : SignCommandType.values()) {
+            names.add(type.name().toLowerCase());
+        }
+        return names;
     }
 }

@@ -5,12 +5,17 @@ api-version: 1.18
 author: TheFishNextDoor
 description: Allows assigning commands to signs.
 commands:
-  example:
-    description: TODO Write Description
-    usage: /example
-    permission: signcommands.example
+  signcommands:
+    description: Main plugin command
+    usage: /signcommands <subcommand>
+    permission: signcommands
     aliases: [ex]
 permissions:
-  signcommands.example:
-    description: Allows use of the /example command
-    default: true
+  signcommands.reload:
+    description: Allows use of the reload command
+  signcommands.add:
+    description: Allows adding sign commands
+  signcommands.remove:
+    description: Allows removing sign commands
+  signcommands.list:
+    description: Allows listing sign commands

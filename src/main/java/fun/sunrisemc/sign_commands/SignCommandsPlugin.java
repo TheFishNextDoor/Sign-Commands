@@ -3,11 +3,13 @@ package fun.sunrisemc.sign_commands;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.command.SignCommands;
+import fun.sunrisemc.sign_commands.event.BlockInteract;
 
 public class SignCommandsPlugin extends JavaPlugin {
 
@@ -20,6 +22,9 @@ public class SignCommandsPlugin extends JavaPlugin {
         loadConfigs();
 
         registerCommand("signcommands", new SignCommands());
+
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new BlockInteract(), this);
 
         logInfo("Plugin enabled.");
     }
