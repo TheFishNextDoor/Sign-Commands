@@ -67,9 +67,8 @@ public class CommandSignManager {
         }
         else {
             CommandSign newSign = new CommandSign(location, newCommand);
-            String key = toKey(location);
-            signConfigurationsLocationsMap.put(key, newSign);
-            signConfigurationsList.add(newSign);
+            String signId = newSign.getId();
+            register (signId, newSign);
         }
 
         changes = true;
@@ -101,15 +100,8 @@ public class CommandSignManager {
         YamlConfiguration config = ConfigFile.get("signs", false);
         for (String id : config.getKeys(false)) {
             CommandSign signConfiguration = new CommandSign(config, id);
-            signConfigurationsIdsMap.put(id, signConfiguration);
-            
-            Optional<Location> signLocation = signConfiguration.getSignLocation();
-            if (!signLocation.isEmpty()) {
-                signConfigurationsLocationsMap.put(toKey(signLocation.get()), signConfiguration);
-            }
+            register(id, signConfiguration);
         }
-
-        signConfigurationsList = new ArrayList<>(signConfigurationsIdsMap.values());
 
         changes = false;
 
@@ -152,6 +144,16 @@ public class CommandSignManager {
             }
             return id;
         }
+    }
+
+    private static void register(String id, CommandSign signCommand) {
+        signConfigurationsIdsMap.put(id, signCommand);
+        Optional<Location> signLocation = signCommand.getSignLocation();
+            if (!signLocation.isEmpty()) {
+                String locationKey = toKey(signLocation.get());
+                signConfigurationsLocationsMap.put(locationKey, signCommand);
+            }
+        signConfigurationsList.add(signCommand);
     }
 
     private static String toKey(Location location) {
