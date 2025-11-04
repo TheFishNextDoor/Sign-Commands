@@ -19,30 +19,42 @@ public class BlockInteract implements Listener {
 
     private HashMap<String, Long> lastInteractionTickMap = new HashMap<>();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockInteract(PlayerInteractEvent event) {
+        // Check correct action
         Optional<SignClickType> signClickType = SignClickType.fromAction(event.getAction());
         if (signClickType.isEmpty()) {
             return;
         }
 
+        // Check if clicked block is a command sign
         Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(event.getClickedBlock().getLocation());
         if (!commandSign.isPresent()) {
             return;
         }
 
+         // Don't run sign commands while sneaking
         Player player = event.getPlayer();
-        if (!player.hasPermission("signcommands.use")) {
+        if (player.isSneaking()) {
             return;
         }
 
-        long currentTick = TickCounterTask.getTicksFromServerStart();
+        // Check permission
+        if (!player.hasPermission("signcommands.use")) {
+            return;
+        }
         
+        // Prevent editing the sign
+        event.setCancelled(true);
+
+        // Check cooldown
+        long currentTick = TickCounterTask.getTicksFromServerStart();  
         if (isOnCooldown(player, currentTick)) {
             return;
         }
         setLastInteractionTick(player, currentTick);
         
+        // Execute command sign
         commandSign.get().execute(player, signClickType.get());
     }
 
