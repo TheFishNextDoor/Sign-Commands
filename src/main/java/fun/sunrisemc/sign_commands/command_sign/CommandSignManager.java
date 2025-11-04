@@ -140,13 +140,10 @@ public class CommandSignManager {
         int idx = 1;
         while (true) {
             String id = "sign-" + idx;
-            for (CommandSign sign : signConfigurationsList) {
-                if (sign.getId().equals(id)) {
-                    idx++;
-                    continue;
-                }
+            if (!signConfigurationsIdsMap.containsKey(id)) {
+                return id;
             }
-            return id;
+            idx++;
         }
     }
 
