@@ -95,7 +95,11 @@ public class CommandSignManager {
     // Loading and Saving
 
     public static void loadSigns() {
+        SignCommandsPlugin.logInfo("Loading sign configurations...");
+        
+        signConfigurationsIdsMap.clear();
         signConfigurationsLocationsMap.clear();
+        signConfigurationsList.clear();
 
         YamlConfiguration config = ConfigFile.get("signs", false);
         for (String id : config.getKeys(false)) {
