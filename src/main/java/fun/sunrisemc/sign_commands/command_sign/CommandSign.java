@@ -72,7 +72,7 @@ public class CommandSign {
         // Load Commands
         if (config.contains(id + ".commands")) {
             for (String commandEntry : config.getStringList(id + ".commands")) {
-                String[] entryParts = commandEntry.split(":", 2);
+                String[] entryParts = commandEntry.split(":", 3);
                 if (entryParts.length != 3) {
                     SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + id + ": " + commandEntry);
                     continue;
