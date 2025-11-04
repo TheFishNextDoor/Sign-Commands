@@ -76,7 +76,6 @@ public class ConfigFile {
         return pluginFolder;
     }
 
-    @NonNull
     private static YamlConfiguration getDefault(@NonNull String name) {
         YamlConfiguration defaultConfig = new YamlConfiguration();
         try {

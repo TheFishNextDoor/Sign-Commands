@@ -1,42 +1,56 @@
 package fun.sunrisemc.sign_commands.event;
 
+import java.util.HashMap;
 import java.util.Optional;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
+import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 
 public class BlockInteract implements Listener {
 
+    private HashMap<String, Long> lastInteractionTickMap = new HashMap<>();
+
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
-        if (action == null) {
-            return;
-        }
-
-        Optional<SignClickType> signClickType = SignClickType.fromAction(action);
+        Optional<SignClickType> signClickType = SignClickType.fromAction(event.getAction());
         if (signClickType.isEmpty()) {
             return;
         }
 
-        Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
-        Location location = block.getLocation();
-
-        Optional<CommandSign> commandSign = CommandSignManager.get(location);
+        Optional<CommandSign> commandSign = CommandSignManager.get(event.getClickedBlock().getLocation());
         if (!commandSign.isPresent()) {
             return;
         }
+
+        Player player = event.getPlayer();
+
+        long currentTick = TickCounterTask.getTicksFromServerStart();
+        if (isOnCooldown(player, currentTick, 20)) {
+            return;
+        }
+        setLastInteractionTick(player, currentTick);
         
         commandSign.get().execute(player, signClickType.get());
+    }
+
+    private boolean isOnCooldown(Player player, long currentTicks, long cooldownTicks) {
+        String key = player.getUniqueId().toString();
+        Long lastInteractionTick = lastInteractionTickMap.get(key);
+        if (lastInteractionTick == null) {
+            return false;
+        }
+        return (currentTicks - lastInteractionTick) < cooldownTicks;
+    }
+
+    private void setLastInteractionTick(Player player, long currentTicks) {
+        String key = player.getUniqueId().toString();
+        lastInteractionTickMap.put(key, currentTicks);
     }
 }

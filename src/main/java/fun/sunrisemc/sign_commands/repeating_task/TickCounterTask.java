@@ -10,14 +10,14 @@ public class TickCounterTask {
 
     private static int id = -1;
 
-    private static int tickCount = 0;
+    private static long tickCount = 0;
 
     public static void start() {
         if (id != -1) {
             return;
         }
         id = Bukkit.getScheduler().runTaskTimer(SignCommandsPlugin.getInstance(), () -> {
-            if (tickCount == Integer.MAX_VALUE) {
+            if (tickCount == Long.MAX_VALUE) {
                 tickCount = 0;
             }
             tickCount++;
@@ -32,7 +32,7 @@ public class TickCounterTask {
         id = -1;
     }
 
-    public static int getTicksFromServerStart() {
+    public static long getTicksFromServerStart() {
         return tickCount;
     }
 }
