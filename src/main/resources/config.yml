@@ -1,0 +1,2 @@
+only-allow-signs: true # If true, only allow signs to have commands assigned to them. If false, any block can have commands assigned.
+sign-click-cooldown-ticks: 5 # The number of ticks a player must wait between running sign commands.
