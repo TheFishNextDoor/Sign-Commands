@@ -121,15 +121,16 @@ public class CommandSignManager {
     // Utils
 
     static String genearteId() {
-        int idx = 0;
+        int idx = 1;
         while (true) {
             String id = "sign-" + idx;
             for (CommandSign sign : signConfigurationsList) {
-                if (!sign.getId().equals(id)) {
-                    return id;
+                if (sign.getId().equals(id)) {
+                    idx++;
+                    continue;
                 }
             }
-            idx++;
+            return id;
         }
     }
 

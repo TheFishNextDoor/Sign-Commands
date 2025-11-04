@@ -35,7 +35,7 @@ public class SignCommand {
     }
 
     public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
-        if (this.clickType != SignClickType.BOTH && this.clickType != clickType) {
+        if (this.clickType != SignClickType.ANY_CLICK && this.clickType != clickType) {
             return;
         }
 

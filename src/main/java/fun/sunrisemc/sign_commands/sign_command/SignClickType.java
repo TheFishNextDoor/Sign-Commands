@@ -8,9 +8,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public enum SignClickType {
 
-    BOTH,
-    LEFT,
-    RIGHT;
+    ANY_CLICK,
+    LEFT_CLICK,
+    RIGHT_CLICK;
 
     public String getName() {
         return normalizeName(name());
@@ -19,9 +19,9 @@ public enum SignClickType {
     public static Optional<SignClickType> fromAction(@NonNull Action action) {
         switch (action) {
             case LEFT_CLICK_BLOCK:
-                return Optional.of(LEFT);
+                return Optional.of(LEFT_CLICK);
             case RIGHT_CLICK_BLOCK:
-                return Optional.of(RIGHT);
+                return Optional.of(RIGHT_CLICK);
             default:
                 return Optional.empty();
         }
