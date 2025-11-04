@@ -68,7 +68,7 @@ public class CommandSignManager {
         else {
             CommandSign newSign = new CommandSign(location, newCommand);
             String signId = newSign.getId();
-            register (signId, newSign);
+            register(signId, newSign);
         }
 
         changes = true;

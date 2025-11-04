@@ -2,6 +2,7 @@ package fun.sunrisemc.sign_commands.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION)) {
                 completions.add("listcommands");
             }
+            if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION)) {
+                completions.add("addrequiredpermission");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION)) {
+                completions.add("removerequiredpermission");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
+                completions.add("listrequiredpermission");
+            }
             if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
                 completions.add("listsigns");
             }
@@ -84,6 +94,14 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 return getRangeStrings(0, commands.size() - 1);
+            }
+            else if (isPlayer && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
+                Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
+                if (commandSign.isEmpty()) {
+                    return null;
+                }
+
+                return commandSign.get().getRequiredPermissions().stream().toList();
             }
             else if (subcommand.equals("goto")) {
                 return CommandSignManager.getAllIds();
@@ -339,6 +357,111 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             return true;
         }
+        // Add Required Permission
+        else if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION) && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <addrequiredpermission|arp> <permission>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Add the required permission
+            String permission = args[1];
+            if (commandSign.get().addRequiredPermission(permission)) {
+                player.sendMessage(ChatColor.GOLD + "Required permission added: " + permission);
+            } 
+            else {
+                player.sendMessage(ChatColor.RED + "That permission is already required.");
+            }
+
+            return true;
+        }
+        // Remove Required Permission
+        else if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION) && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <removerequiredpermission|rrp> <permission>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Remove the required permission
+            String permission = args[1];
+            if (commandSign.get().removeRequiredPermission(permission)) {
+                player.sendMessage(ChatColor.GOLD + "Required permission removed: " + permission);
+            } 
+            else {
+                player.sendMessage(ChatColor.RED + "That permission is not required.");
+            }
+
+            return true;
+        }
+        // List Required Permissions
+        else if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION) && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp"))) {
+            Player player = (Player) sender;
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // List the required permissions
+            HashSet<String> requiredPermissions = commandSign.get().getRequiredPermissions();
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Required Permissions");
+            if (requiredPermissions.isEmpty()) {
+                player.sendMessage(ChatColor.GOLD + "None");
+            } 
+            else {
+                for (String permission : requiredPermissions) {
+                    player.sendMessage(ChatColor.GOLD + "- " + permission);
+                }
+            }
+
+            return true;
+        }
         // List Signs
         else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
             // Check if there are any command signs
@@ -457,6 +580,18 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <list|lc> " + ChatColor.WHITE + "List sign commands.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.EDIT_COMMAND_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <editcommand|ec> <index> <type> <command> " + ChatColor.WHITE + "Edit a sign command.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission|arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission|rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission|lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
         }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");

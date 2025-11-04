@@ -1,6 +1,7 @@
 package fun.sunrisemc.sign_commands.command_sign;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.bukkit.Location;
@@ -22,6 +23,8 @@ public class CommandSign {
     private Optional<String> lastValidSignLocationString = Optional.empty();
 
     private ArrayList<SignCommand> commands = new ArrayList<>();
+
+    private HashSet<String> requiredPermissions = new HashSet<>();
 
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
         this.id = CommandSignManager.generateId();
@@ -108,10 +111,6 @@ public class CommandSign {
         return signLocation;
     }
 
-    public ArrayList<SignCommand> getCommands() {
-        return commands;
-    }
-
     public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
         if (!signLocation.isPresent()) {
             return;
@@ -122,15 +121,15 @@ public class CommandSign {
         }
     }
 
-    void setId(@NonNull String newId) {
-        this.id = newId;
+    public ArrayList<SignCommand> getCommands() {
+        return commands;
     }
 
-    void addCommand(@NonNull SignCommand command) {
+    public void addCommand(@NonNull SignCommand command) {
         commands.add(command);
     }
 
-    boolean removeCommand(int index) {
+    public boolean removeCommand(int index) {
         if (index < 0 || index >= commands.size()) {
             return false;
         }
@@ -138,7 +137,7 @@ public class CommandSign {
         return true;
     }
 
-    boolean editCommand(int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
+    public boolean editCommand(int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
         if (index < 0 || index >= commands.size()) {
             return false;
         }
@@ -146,6 +145,31 @@ public class CommandSign {
         SignCommand newCommand = new SignCommand(clickType, commandType, command);
         commands.set(index, newCommand);
         return true;
+    }
+
+    public HashSet<String> getRequiredPermissions() {
+        return requiredPermissions;
+    }
+
+    public boolean hasRequiredPermissions(@NonNull Player player) {
+        for (String permission : requiredPermissions) {
+            if (!player.hasPermission(permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean addRequiredPermission(@NonNull String permission) {
+        return requiredPermissions.add(permission);
+    }
+
+    public boolean removeRequiredPermission(@NonNull String permission) {
+        return requiredPermissions.remove(permission);
+    }
+
+    void setId(@NonNull String newId) {
+        this.id = newId;
     }
 
     void save(@NonNull YamlConfiguration config) {
