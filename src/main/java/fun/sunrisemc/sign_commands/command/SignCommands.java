@@ -206,10 +206,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             ArrayList<SignCommand> commands = commandSign.get().getCommands();
-            player.sendMessage(ChatColor.GOLD + "Sign Commands:");
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands");
             for (int i = 0; i < commands.size(); i++) {
-                SignCommand cmd = commands.get(i);
-                player.sendMessage(ChatColor.GOLD + "" + i + ": " + ChatColor.WHITE + cmd.getCommandType().name() + " : " + cmd.getCommand());
+                SignCommand signCommand = commands.get(i);
+                player.sendMessage(ChatColor.GOLD + "" + i + ". " + ChatColor.WHITE + signCommand.getCommandType().getName() + ": /" + signCommand.getCommand());
             }
 
             return true;
@@ -222,7 +222,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
             else {
-                sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs:");
+                sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs");
                 for (CommandSign sign : commandSigns) {
                     Optional<Location> signLocation = sign.getSignLocation();
                     if (signLocation.isEmpty()) {
@@ -234,10 +234,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                     int commandCount = sign.getCommands().size();
                     if (commandCount == 1) {
-                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + "  (" + commandCount + " command)");
+                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
                     } 
                     else {
-                        sender.sendMessage(ChatColor.GOLD + sign.getId() + locationString + "  (" + commandCount + " commands)");
+                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
                     }
                 }
                 return true;
