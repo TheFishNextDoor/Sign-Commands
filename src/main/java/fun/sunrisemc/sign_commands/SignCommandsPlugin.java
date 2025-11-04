@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.command.SignCommands;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
+import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
 import fun.sunrisemc.sign_commands.repeating_task.AutoSaveTask;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
@@ -17,6 +18,8 @@ import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 public class SignCommandsPlugin extends JavaPlugin {
 
     private static SignCommandsPlugin instance;
+
+    private static MainConfig mainConfig;
 
     @Override
     public void onEnable() {
@@ -47,8 +50,13 @@ public class SignCommandsPlugin extends JavaPlugin {
         return instance;
     }
 
+    public static MainConfig getMainConfig() {
+        return mainConfig;
+    }
+
     public static void loadConfigs() {
         CommandSignManager.saveSigns();
+        mainConfig = new MainConfig();
         CommandSignManager.loadSigns();
     }
 

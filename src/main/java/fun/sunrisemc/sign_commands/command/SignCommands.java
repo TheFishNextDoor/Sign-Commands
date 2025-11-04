@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
+import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
@@ -107,6 +110,17 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            if (!checkIfValidBlock(targetBlock.get())) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a sign.");
+                return true;
+            }
+
             String clickTypeString = args[1];
             String commandTypeString = args[2];
             String commandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
@@ -123,11 +137,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
-                return true;
-            }
+
 
             Location location = targetBlock.get().getLocation();
             if (location == null || commandString.isEmpty()) {
@@ -254,5 +264,23 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             rangeStrings.add(String.valueOf(i));
         }
         return rangeStrings;
+    }
+
+    private static boolean checkIfValidBlock(Block block) {
+        MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
+        if (mainConfig.ONLY_ALLOW_SIGNS) {
+            return checkIfSign(block);
+        }
+        else {
+            return true;
+        }
+    }
+
+    private static boolean checkIfSign(Block block) {
+        BlockState state = block.getState();
+        if (state == null) {
+            return false;
+        }
+        return (state instanceof Sign);
     }
 }

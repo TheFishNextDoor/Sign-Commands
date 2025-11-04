@@ -13,6 +13,8 @@ import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class ConfigFile {
 
+    // File Modification Helpers
+
     public static YamlConfiguration get(@NonNull String name, boolean copyMissingDefaults) {
         File configFile = new File(getFolder(), name + ".yml");
         if (!configFile.exists()) {
@@ -68,7 +70,7 @@ public class ConfigFile {
         return false;
     }
 
-    private static File getFolder() {
+    public static File getFolder() {
         File pluginFolder = SignCommandsPlugin.getInstance().getDataFolder();
         if (!pluginFolder.exists()) {
             pluginFolder.mkdirs();
@@ -76,7 +78,7 @@ public class ConfigFile {
         return pluginFolder;
     }
 
-    private static YamlConfiguration getDefault(@NonNull String name) {
+    public static YamlConfiguration getDefault(@NonNull String name) {
         YamlConfiguration defaultConfig = new YamlConfiguration();
         try {
             InputStream resourceStream = SignCommandsPlugin.getInstance().getResource(name + ".yml");
@@ -100,5 +102,17 @@ public class ConfigFile {
             }
         }
         return changed;
+    }
+
+    // File Reading Helpers
+
+    public static int getIntClamped(YamlConfiguration config, String path, int min, int max) {
+        int value = config.getInt(path);
+        return Math.clamp(value, min, max);
+    }
+
+    public static double getDoubleClamped(YamlConfiguration config, String path, double min, double max) {
+        double value = config.getDouble(path);
+        return Math.clamp(value, min, max);
     }
 }
