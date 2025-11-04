@@ -40,44 +40,30 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
                 completions.add("reload");
             }
-            if (isPlayer && sender.hasPermission(Permissions.ADD_COMMAND_PERMISSION)) {
-                completions.add("addcommand");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.REMOVE_COMMAND_PERMISSION)) {
-                completions.add("removecommand");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.EDIT_COMMAND_PERMISSION)) {
-                completions.add("editcommand");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION)) {
-                completions.add("listcommands");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION)) {
-                completions.add("addrequiredpermission");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION)) {
-                completions.add("removerequiredpermission");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
-                completions.add("listrequiredpermission");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION)) {
-                completions.add("addblockedpermission");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION)) {
-                completions.add("removeblockedpermission");
-            }
-            if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION)) {
-                completions.add("listblockedpermission");
-            }
             if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
                 completions.add("listsigns");
             }
-            if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION)) {
+            if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
                 completions.add("goto");
             }
-            if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION)) {
+            if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
                 completions.add("rename");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
+                completions.add("addcommand");
+                completions.add("removecommand");
+                completions.add("editcommand");
+                completions.add("listcommands");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_REQUIRED_PERMISSIONS_PERMISSION)) {
+                completions.add("addrequiredpermission");
+                completions.add("removerequiredpermission");
+                completions.add("listrequiredpermission");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION)) {
+                completions.add("addblockedpermission");
+                completions.add("removeblockedpermission");
+                completions.add("listblockedpermission");
             }
             return completions;
         }
@@ -185,7 +171,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Add Command
-        else if (isPlayer && sender.hasPermission(Permissions.ADD_COMMAND_PERMISSION) && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -231,7 +217,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Command
-        else if (isPlayer && sender.hasPermission(Permissions.REMOVE_COMMAND_PERMISSION) && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -280,7 +266,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Edit Command
-        else if (isPlayer && sender.hasPermission(Permissions.EDIT_COMMAND_PERMISSION) && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -346,7 +332,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Commands
-        else if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION) && (subcommand.equals("listcommands" ) || subcommand.equals("lc"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("listcommands" ) || subcommand.equals("lc"))) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -375,7 +361,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Add Required Permission
-        else if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION) && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_REQUIRED_PERMISSIONS_PERMISSION) && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -411,7 +397,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Required Permission
-        else if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION) && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_REQUIRED_PERMISSIONS_PERMISSION) && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -447,7 +433,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Required Permissions
-        else if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION) && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_REQUIRED_PERMISSIONS_PERMISSION) && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp"))) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -480,7 +466,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Add Blocked Permission
-        else if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION) && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -516,7 +502,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Blocked Permission
-        else if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION) && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -552,7 +538,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Blocked Permissions
-        else if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -615,7 +601,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Goto
-        else if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -645,7 +631,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Rename
-        else if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+        else if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -694,44 +680,30 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         if (sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands reload " + ChatColor.WHITE + "Reload the plugin.");
         }
-        if (isPlayer && sender.hasPermission(Permissions.ADD_COMMAND_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand|ac> <type> <command> " + ChatColor.WHITE + "Add a sign command.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.REMOVE_COMMAND_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <removecommand|rc> <index> " + ChatColor.WHITE + "Remove a sign command.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <list|lc> " + ChatColor.WHITE + "List sign commands.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.EDIT_COMMAND_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <editcommand|ec> <index> <type> <command> " + ChatColor.WHITE + "Edit a sign command.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.ADD_REQUIRED_PERMISSIONS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission|arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.REMOVE_REQUIRED_PERMISSION_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission|rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.LIST_REQUIRED_PERMISSION_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission|lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.ADD_BLOCKED_PERMISSION_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission|abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.REMOVE_BLOCKED_PERMISSION_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission|rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
-        }
-        if (isPlayer && sender.hasPermission(Permissions.LIST_BLOCKED_PERMISSION_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission|lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
-        }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");
         }
-        if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION)) {
+        if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <goto|gt> <id> " + ChatColor.WHITE + "Teleport to a command sign.");
         }
-        if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION)) {
+        if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <rename|rn> <newId> " + ChatColor.WHITE + "Rename a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand|ac> <type> <command> " + ChatColor.WHITE + "Add a sign command.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <removecommand|rc> <index> " + ChatColor.WHITE + "Remove a sign command.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <editcommand|ec> <index> <type> <command> " + ChatColor.WHITE + "Edit a sign command.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <list|lc> " + ChatColor.WHITE + "List sign commands.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.MANAGE_REQUIRED_PERMISSIONS_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission|arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission|rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission|lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission|abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission|rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission|lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
         }
     }
 

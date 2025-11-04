@@ -4,19 +4,12 @@ public class Permissions {
 
     public static final String USE_PERMISSION = "signcommands.use";
     public static final String RELOAD_PERMISSION = "signcommands.reload";
-    public static final String ADD_COMMAND_PERMISSION = "signcommands.addcommand";
-    public static final String REMOVE_COMMAND_PERMISSION = "signcommands.removecommand";
-    public static final String EDIT_COMMAND_PERMISSION = "signcommands.editcommand";
-    public static final String LIST_COMMANDS_PERMISSION = "signcommands.listcommands";
-    public static final String ADD_REQUIRED_PERMISSIONS_PERMISSION = "signcommands.addrequiredpermission";
-    public static final String REMOVE_REQUIRED_PERMISSION_PERMISSION = "signcommands.removerequiredpermission";
-    public static final String LIST_REQUIRED_PERMISSION_PERMISSION = "signcommands.listrequiredpermission";
-    public static final String ADD_BLOCKED_PERMISSION_PERMISSION = "signcommands.addblockedpermission";
-    public static final String REMOVE_BLOCKED_PERMISSION_PERMISSION = "signcommands.removeblockedpermission";
-    public static final String LIST_BLOCKED_PERMISSION_PERMISSION = "signcommands.listblockedpermission";
-    public static final String LIST_SIGNS_PERMISSION = "signcommands.listsigns";
-    public static final String GOTO_PERMISSION = "signcommands.goto";
-    public static final String RENAME_PERMISSION = "signcommands.rename";
+    public static final String RENAME_SIGN_PERMISSION = "signcommands.rename";
+    public static final String LIST_SIGNS_PERMISSION = "signcommands.list";
+    public static final String GOTO_SIGN_PERMISSION = "signcommands.goto";
+    public static final String MANAGE_COMMANDS_PERMISSION = "signcommands.managecommands";
+    public static final String MANAGE_REQUIRED_PERMISSIONS_PERMISSION = "signcommands.managerequiredpermission";
+    public static final String MANAGE_BLOCKED_PERMISSIONS_PERMISSION = "signcommands.manageblockedpermission";
     public static final String COLOR_PERMISSION = "signcommands.color";
     
 }

@@ -15,13 +15,17 @@ permissions:
     description: Allows the player to use command signs.
   signcommands.reload:
     description: Allows use of the reload command.
-  signcommands.add:
-    description: Allows adding sign commands.
-  signcommands.remove:
-    description: Allows removing sign commands.
-  signcommands.listcommands:
-    description: Allows listing sign commands.
-  signcommands.listsigns:
-    description: Allows listing command signs.
+  signcommands.rename:
+    description: Allows renaming of command signs.
+  signcommands.list:
+    description: Allows listing of command signs.
   signcommands.goto:
-    description: Allows teleporting to a command sign.
+    description: Allows teleporting to command signs.
+  signcommands.managecommands:
+    description: Allows managing commands on command signs.
+  signcommands.managerequiredpermission:
+    description: Allows managing required permissions for command signs.
+  signcommands.manageblockedpermission:
+    description: Allows managing blocked permissions for command signs.
+  signcommands.color:
+    description: Allows use of color codes on signs.
