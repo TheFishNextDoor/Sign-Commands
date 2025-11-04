@@ -33,7 +33,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         boolean isPlayer = sender instanceof Player;
-        
         if (args.length == 1) {
             ArrayList<String> completions = new ArrayList<String>();
             completions.add("help");
@@ -130,12 +129,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return Arrays.asList(currentCommand);
             }
         }
-        else if (args.length == 5) {
-            String subcommand = args[0].toLowerCase();
-            if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
-                return Arrays.asList("<new command>");
-            }
-        }
         return null;
     }
 
@@ -159,45 +152,45 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         // Add Command
         else if (isPlayer && sender.hasPermission(Permissions.ADD_COMMAND_PERMISSION) && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
             Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
             if (args.length < 4) {
                 player.sendMessage(ChatColor.RED + "Usage: /signcommands <addcommand|ac> <clickType> <commandType> <command>");
                 return true;
             }
 
+            // Get the block the player is looking at
             Optional<Block> targetBlock = RayTrace.block(player);
             if (targetBlock.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a block.");
                 return true;
             }
 
+            // Check if the block is valid
             if (!checkIfValidBlock(targetBlock.get())) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign.");
                 return true;
             }
 
+            // Parse the click type
             String clickTypeString = args[1];
-            String commandTypeString = args[2];
-            String commandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
-
             Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
             if (signClickType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
                 return true;
             }
 
+            // Parse the command type
+            String commandTypeString = args[2];
             Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
             if (signCommandType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", SignCommandType.getNames()));
                 return true;
             }
 
-
-
+            // Add the command to the command sign
             Location location = targetBlock.get().getLocation();
-            if (location == null || commandString.isEmpty()) {
-                return true;
-            }
-
+            String commandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
             CommandSignManager.addCommand(location, signClickType.get(), signCommandType.get(), commandString);
             player.sendMessage(ChatColor.GOLD + "Command added.");
             return true;
@@ -205,17 +198,21 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         // Remove Command
         else if (isPlayer && sender.hasPermission(Permissions.REMOVE_COMMAND_PERMISSION) && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
             Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
             if (args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /signcommands <removecommand|rc> <index>");
                 return true;
             }
 
+            // Get the block the player is looking at
             Optional<Block> targetBlock = RayTrace.block(player);
             if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
                 return true;
             }
 
+            // Get the command sign
             Location location = targetBlock.get().getLocation();
             Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
@@ -223,21 +220,25 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Parse the command index
             Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
             }
 
+            // Check if the index is valid
             ArrayList<SignCommand> commands = commandSign.get().getCommands();
             if (index.get() < 0 || index.get() >= commands.size()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
             }
 
+            // Remove the command
             if (CommandSignManager.removeCommand(location, index.get())) {
                 player.sendMessage(ChatColor.GOLD + "Command removed.");
-            } else {
+            } 
+            else {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
             }
 
@@ -246,17 +247,21 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         // Edit Command
         else if (isPlayer && sender.hasPermission(Permissions.EDIT_COMMAND_PERMISSION) && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
             Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
             if (args.length < 5) {
                 player.sendMessage(ChatColor.RED + "Usage: /signcommands <editcommand|ec> <index> <clickType> <commandType> <command>");
                 return true;
             }
 
+            // Get the block the player is looking at
             Optional<Block> targetBlock = RayTrace.block(player);
             if (targetBlock.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a block.");
                 return true;
             }
 
+            // Get the command sign at that location
             Location location = targetBlock.get().getLocation();
             Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
@@ -264,34 +269,38 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Parse the command index
             Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
             }
 
+            // Check if the index is valid
             ArrayList<SignCommand> commands = commandSign.get().getCommands();
             if (index.get() < 0 || index.get() >= commands.size()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
             }
 
+            // Parse the click type
             String clickTypeString = args[2];
-            String commandTypeString = args[3];
-            String commandString = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
-
             Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
             if (signClickType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
                 return true;
             }
 
+            // Parse the command type
+            String commandTypeString = args[3];
             Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
             if (signCommandType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", SignCommandType.getNames()));
                 return true;
             }
 
+            // Edit the command
+            String commandString = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
             if (CommandSignManager.editCommand(location, index.get(), signClickType.get(), signCommandType.get(), commandString)) {
                 player.sendMessage(ChatColor.GOLD + "Command edited.");
             } 
@@ -304,12 +313,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         // List Commands
         else if (isPlayer && sender.hasPermission(Permissions.LIST_COMMANDS_PERMISSION) && (subcommand.equals("listcommands" ) || subcommand.equals("lc"))) {
             Player player = (Player) sender;
+
+            // Get the block the player is looking at
             Optional<Block> targetBlock = RayTrace.block(player);
             if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
                 return true;
             }
 
+            // Get the command sign at that location
             Location location = targetBlock.get().getLocation();
             Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
@@ -317,6 +329,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // List the commands
             ArrayList<SignCommand> commands = commandSign.get().getCommands();
             player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands");
             for (int i = 0; i < commands.size(); i++) {
@@ -328,41 +341,45 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         // List Signs
         else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
+            // Check if there are any command signs
             List<CommandSign> commandSigns = CommandSignManager.getAll();
             if (commandSigns.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "No command signs found.");
                 return true;
             }
-            else {
-                sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs");
-                for (CommandSign sign : commandSigns) {
-                    Optional<Location> signLocation = sign.getSignLocation();
-                    if (signLocation.isEmpty()) {
-                        continue;
-                    }
-                    Location location = signLocation.get();
 
-                    String locationString = "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
-
-                    int commandCount = sign.getCommands().size();
-                    if (commandCount == 1) {
-                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
-                    } 
-                    else {
-                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
-                    }
+            // List the command signs
+            sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs");
+            for (CommandSign sign : commandSigns) {
+                Optional<Location> signLocation = sign.getSignLocation();
+                if (signLocation.isEmpty()) {
+                    continue;
                 }
-                return true;
+
+                Location location = signLocation.get();
+                String locationString = "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+                int commandCount = sign.getCommands().size();
+                if (commandCount == 1) {
+                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
+                } 
+                else {
+                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
+                }
             }
+
+            return true;
         }
         // Goto
         else if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
             Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
             if (args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <id>");
                 return true;
             }
 
+            // Get the command sign
             String id = args[1];
             Optional<CommandSign> commandSign = CommandSignManager.getById(id);
             if (commandSign.isEmpty()) {
@@ -370,12 +387,14 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Get the sign location
             Optional<Location> location = commandSign.get().getSignLocation();
             if (location.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Sign has no location.");
                 return true;
             }
 
+            // Teleport the player to the sign location
             player.teleport(location.get());
             player.sendMessage(ChatColor.GOLD + "Teleported to sign with ID: " + id);
             return true;
@@ -383,17 +402,21 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         // Rename
         else if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
             Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
             if (args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newId>");
                 return true;
             }
 
+            // Get the block the player is looking at
             Optional<Block> targetBlock = RayTrace.block(player);
             if (targetBlock.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a block.");
                 return true;
             }
 
+            // Get the command sign
             Location location = targetBlock.get().getLocation();
             Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
@@ -401,12 +424,14 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Check if the new ID is already taken
             String newId = args[1];
             if (CommandSignManager.getById(newId).isPresent()) {
                 player.sendMessage(ChatColor.RED + "A sign with that ID already exists.");
                 return true;
             }
 
+            // Rename the sign
             CommandSignManager.renameSign(commandSign.get(), newId);
             player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newId);
             return true;
