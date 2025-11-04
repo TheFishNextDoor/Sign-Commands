@@ -9,7 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.command.SignCommands;
+import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
+import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 
 public class SignCommandsPlugin extends JavaPlugin {
 
@@ -26,11 +28,15 @@ public class SignCommandsPlugin extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BlockInteract(), this);
 
+        TickCounterTask.start();
+
         logInfo("Plugin enabled.");
     }
 
     @Override
     public void onDisable() {
+        TickCounterTask.stop();
+        CommandSignManager.saveSigns();
         logInfo("Plugin disabled.");
     }
 
@@ -39,7 +45,7 @@ public class SignCommandsPlugin extends JavaPlugin {
     }
 
     public static void loadConfigs() {
-        // Load configuration files here
+        CommandSignManager.loadSigns();
     }
 
     public static void logInfo(@NonNull String message) {

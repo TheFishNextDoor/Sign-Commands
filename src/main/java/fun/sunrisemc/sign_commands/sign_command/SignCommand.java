@@ -10,39 +10,50 @@ import net.md_5.bungee.api.ChatColor;
 
 public class SignCommand {
 
-    private final SignCommandType type;
+    private final SignClickType clickType;
+
+    private final SignCommandType commandType;
 
     private final String command;
 
-    public SignCommand(SignCommandType type, String command) {
-        this.type = type;
+    public SignCommand(@NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
+        this.clickType = clickType;
+        this.commandType = commandType;
         this.command = command;
     }
 
-    public SignCommandType getType() {
-        return type;
+    public SignClickType getClickType() {
+        return clickType;
+    }
+
+    public SignCommandType getCommandType() {
+        return commandType;
     }
 
     public String getCommand() {
         return command;
     }
 
-    public void execute(@NonNull Player player) {
+    public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
+        if (this.clickType != SignClickType.BOTH && this.clickType != clickType) {
+            return;
+        }
+
         String playerName = player.getName();
         String parsedCommand = command.replace("{player}", playerName);
-        if (type == SignCommandType.PLAYER) {
+        if (commandType == SignCommandType.PLAYER) {
             player.performCommand(parsedCommand);
         }
-        else if (type == SignCommandType.CONSOLE) {
+        else if (commandType == SignCommandType.CONSOLE) {
             Server server = Bukkit.getServer();
             ConsoleCommandSender consoleSender = server.getConsoleSender();
             server.dispatchCommand(consoleSender, parsedCommand);
         }
-        else if (type == SignCommandType.MESSAGE) {
+        else if (commandType == SignCommandType.MESSAGE) {
             String message = ChatColor.translateAlternateColorCodes('&', parsedCommand);
             player.sendMessage(message);
         }
-        else if (type == SignCommandType.BROADCAST) {
+        else if (commandType == SignCommandType.BROADCAST) {
             String message = ChatColor.translateAlternateColorCodes('&', parsedCommand);
             Bukkit.broadcastMessage(message);
         }

@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.file.ConfigFile;
+import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.utils.RayTrace;
@@ -35,8 +36,8 @@ public class CommandSignManager {
         return get(blockLocation);
     }
 
-    public static void addCommand(@NonNull Location location, @NonNull SignCommandType type, @NonNull String command) {
-        SignCommand newCommand = new SignCommand(type, command);
+    public static void addCommand(@NonNull Location location, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
+        SignCommand newCommand = new SignCommand(clickType, commandType, command);
         Optional<CommandSign> existingSign = get(location);
         if (existingSign.isPresent()) {
             existingSign.get().addCommand(newCommand);
@@ -50,18 +51,18 @@ public class CommandSignManager {
     }
 
     public static boolean removeCommand(@NonNull Location location, int index) {
-        Optional<CommandSign> existingSign = get(location);
-        if (existingSign.isEmpty()) {
+        Optional<CommandSign> existingCommandSign = get(location);
+        if (existingCommandSign.isEmpty()) {
             return false;
         }
-        CommandSign sign = existingSign.get();
-        boolean removed = sign.removeCommand(index);
-        if (removed && sign.getCommands().isEmpty()) {
+
+        CommandSign commandSign = existingCommandSign.get();
+        if (commandSign.removeCommand(index) && commandSign.getCommands().isEmpty()) {
             String key = toKey(location);
             signConfigurationsMap.remove(key);
-            signConfigurationsList.remove(sign);
+            signConfigurationsList.remove(commandSign);
         }
-        return removed;
+        return true;
     }
 
     public static void loadSigns() {

@@ -10,10 +10,13 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
+import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 
 public class CommandSign {
+
+    private String id;
 
     private Optional<Location> signLocation = Optional.empty();
 
@@ -25,6 +28,9 @@ public class CommandSign {
     }
 
     CommandSign(YamlConfiguration config, String id) {
+        this.id = id;
+
+        // Load Location
         if (config.contains(id + ".location")) {
             String locationString = config.getString(id + ".location");
             
@@ -54,6 +60,7 @@ public class CommandSign {
             this.signLocation = Optional.of(new Location(world, x, y, z));
         }
 
+        // Load Commands
         if (config.contains(id + ".commands")) {
             for (String commandEntry : config.getStringList(id + ".commands")) {
                 String[] entryParts = commandEntry.split(":", 2);
@@ -62,19 +69,30 @@ public class CommandSign {
                     continue;
                 }
 
-                String commandTypeString = entryParts[0];
-                String commaString = entryParts[1];
+                String clickTypeString = entryParts[0];
+                String commandTypeString = entryParts[1];
+                String commandString = entryParts[2];
 
-                Optional<SignCommandType> signCommandType = SignCommandType.fromString(commandTypeString);
+                Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
+                if (signClickType.isEmpty()) {
+                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + id + ": " + clickTypeString);
+                    continue;
+                }
+
+                Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
                 if (signCommandType.isEmpty()) {
                     SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + id + ": " + commandTypeString);
                     continue;
                 }
 
-                SignCommand signCommand = new SignCommand(signCommandType.get(), commaString);
+                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), commandString);
                 commands.add(signCommand);
             }
         }
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean isValid() {
@@ -89,13 +107,13 @@ public class CommandSign {
         return commands;
     }
 
-    public void execute(@NonNull Player player) {
+    public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
         if (!isValid()) {
             return;
         }
 
         for (SignCommand command : commands) {
-            command.execute(player);
+            command.execute(player, clickType);
         }
     }
 
