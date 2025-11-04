@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.command.SignCommands;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
+import fun.sunrisemc.sign_commands.repeating_task.AutoSaveTask;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 
 public class SignCommandsPlugin extends JavaPlugin {
@@ -29,6 +30,7 @@ public class SignCommandsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new BlockInteract(), this);
 
         TickCounterTask.start();
+        AutoSaveTask.start();
 
         logInfo("Plugin enabled.");
     }
@@ -36,6 +38,7 @@ public class SignCommandsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         TickCounterTask.stop();
+        AutoSaveTask.stop();
         CommandSignManager.saveSigns();
         logInfo("Plugin disabled.");
     }

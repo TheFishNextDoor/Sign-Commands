@@ -24,6 +24,7 @@ public class CommandSign {
     private ArrayList<SignCommand> commands = new ArrayList<>();
 
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
+        this.id = CommandSignManager.genearteId();
         this.signLocation = Optional.of(location);
         this.commands.add(firstSignCommand);
     }
