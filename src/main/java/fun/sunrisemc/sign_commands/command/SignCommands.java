@@ -222,8 +222,20 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs:");
                 for (CommandSign sign : commandSigns) {
                     Optional<Location> signLocation = sign.getSignLocation();
-                    String locationString = signLocation.map(loc -> " (" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")").orElse("");
-                    sender.sendMessage(ChatColor.GOLD + sign.getId() + locationString + " - " + sign.getCommands().size() + " command(s)");
+                    if (signLocation.isEmpty()) {
+                        continue;
+                    }
+                    Location location = signLocation.get();
+
+                    String locationString = "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+
+                    int commandCount = sign.getCommands().size();
+                    if (commandCount == 1) {
+                        sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + "  (" + commandCount + " command)");
+                    } 
+                    else {
+                        sender.sendMessage(ChatColor.GOLD + sign.getId() + locationString + "  (" + commandCount + " commands)");
+                    }
                 }
                 return true;
             }
