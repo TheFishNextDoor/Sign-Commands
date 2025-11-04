@@ -6,9 +6,9 @@ import fun.sunrisemc.sign_commands.file.ConfigFile;
 
 public class MainConfig {
 
-    public final boolean ONLY_ALLOW_SIGNS;
+    public final boolean ONLY_ALLOW_SIGNS; // If true, only allow signs to have commands assigned to them. If false, any block can have commands assigned.
 
-    public final int SIGN_CLICK_COOLDOWN_TICKS;
+    public final int SIGN_CLICK_COOLDOWN_TICKS; // The number of ticks a player must wait between running sign commands.
 
     public MainConfig() {
         YamlConfiguration config = ConfigFile.get("config", true);
