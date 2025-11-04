@@ -9,5 +9,6 @@ public class Permissions {
     public static final String LIST_COMMANDS_PERMISSION = "signcommands.listcommands";
     public static final String LIST_SIGNS_PERMISSION = "signcommands.listsigns";
     public static final String GOTO_PERMISSION = "signcommands.goto";
+    public static final String RENAME_PERMISSION = "signcommands.rename";
     
 }

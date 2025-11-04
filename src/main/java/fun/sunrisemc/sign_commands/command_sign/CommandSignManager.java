@@ -91,6 +91,21 @@ public class CommandSignManager {
 
         return true;
     }
+
+    public static boolean renameSign(@NonNull CommandSign commandSign, @NonNull String newId) {
+        if (signConfigurationsIdsMap.containsKey(newId)) {
+            return false;
+        }
+
+        String oldId = commandSign.getId();
+        signConfigurationsIdsMap.remove(oldId);
+        commandSign.setId(newId);
+        signConfigurationsIdsMap.put(newId, commandSign);
+
+        changes = true;
+
+        return true;
+    }
     
     // Loading and Saving
 

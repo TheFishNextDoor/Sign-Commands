@@ -54,6 +54,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION)) {
                 completions.add("goto");
             }
+            if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION)) {
+                completions.add("rename");
+            }
             return completions;
         }
         else if (args.length == 2) {
@@ -263,6 +266,37 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             player.teleport(location.get());
             player.sendMessage(ChatColor.GOLD + "Teleported to sign with ID: " + id);
+            return true;
+        }
+        // Rename Command
+        else if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+            Player player = (Player) sender;
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newId>");
+                return true;
+            }
+
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            String newId = args[1];
+            if (CommandSignManager.getById(newId).isPresent()) {
+                player.sendMessage(ChatColor.RED + "A sign with that ID already exists.");
+                return true;
+            }
+
+            CommandSignManager.renameSign(commandSign.get(), newId);
+            player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newId);
             return true;
         }
 

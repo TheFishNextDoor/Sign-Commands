@@ -126,6 +126,10 @@ public class CommandSign {
         }
     }
 
+    void setId(@NonNull String newId) {
+        this.id = newId;
+    }
+
     void addCommand(@NonNull SignCommand command) {
         commands.add(command);
     }
