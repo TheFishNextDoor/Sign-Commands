@@ -142,6 +142,16 @@ public class CommandSign {
         return true;
     }
 
+    boolean editCommand(int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
+        if (index < 0 || index >= commands.size()) {
+            return false;
+        }
+
+        SignCommand newCommand = new SignCommand(clickType, commandType, command);
+        commands.set(index, newCommand);
+        return true;
+    }
+
     void save(@NonNull YamlConfiguration config) {
         // Save Location
         String locationString;

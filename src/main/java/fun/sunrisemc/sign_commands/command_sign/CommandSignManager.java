@@ -92,6 +92,20 @@ public class CommandSignManager {
         return true;
     }
 
+    public static boolean editCommand(@NonNull Location location, int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
+        Optional<CommandSign> existingCommandSign = getAtLocation(location);
+        if (existingCommandSign.isEmpty()) {
+            return false;
+        }
+
+        CommandSign commandSign = existingCommandSign.get();
+        commandSign.editCommand(index, clickType, commandType, command);
+
+        changes = true;
+        
+        return true;
+    }
+
     public static boolean renameSign(@NonNull CommandSign commandSign, @NonNull String newId) {
         if (signConfigurationsIdsMap.containsKey(newId)) {
             return false;
