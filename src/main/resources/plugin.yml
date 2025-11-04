@@ -9,7 +9,7 @@ commands:
     description: Main plugin command
     usage: /signcommands <subcommand>
     permission: signcommands
-    aliases: [ex]
+    aliases: [sc]
 permissions:
   signcommands.reload:
     description: Allows use of the reload command
