@@ -104,10 +104,6 @@ public class CommandSign {
         return id;
     }
 
-    public boolean isValid() {
-        return signLocation.isPresent();
-    }
-
     public Optional<Location> getSignLocation() {
         return signLocation;
     }
@@ -117,7 +113,7 @@ public class CommandSign {
     }
 
     public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
-        if (!isValid()) {
+        if (!signLocation.isPresent()) {
             return;
         }
 
