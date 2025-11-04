@@ -1,7 +1,9 @@
 package fun.sunrisemc.sign_commands.command_sign;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Location;
@@ -48,6 +50,10 @@ public class CommandSignManager {
 
     public static ArrayList<String> getAllIds() {
         return new ArrayList<>(signConfigurationsIdsMap.keySet());
+    }
+
+    public static List<CommandSign> getAll() {
+        return Collections.unmodifiableList(signConfigurationsList);
     }
 
     // Editing

@@ -8,14 +8,20 @@ commands:
   signcommands:
     description: Main plugin command
     usage: /signcommands <subcommand>
-    permission: signcommands
+    permission: signcommands.use
     aliases: [sc]
 permissions:
+  signcommands.use:
+    description: Allows the player to use command signs.
   signcommands.reload:
-    description: Allows use of the reload command
+    description: Allows use of the reload command.
   signcommands.add:
-    description: Allows adding sign commands
+    description: Allows adding sign commands.
   signcommands.remove:
-    description: Allows removing sign commands
-  signcommands.list:
-    description: Allows listing sign commands
+    description: Allows removing sign commands.
+  signcommands.listcommands:
+    description: Allows listing sign commands.
+  signcommands.listsigns:
+    description: Allows listing command signs.
+  signcommands.goto:
+    description: Allows teleporting to a command sign.

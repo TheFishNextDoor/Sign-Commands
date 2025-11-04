@@ -32,6 +32,9 @@ public class BlockInteract implements Listener {
         }
 
         Player player = event.getPlayer();
+        if (!player.hasPermission("signcommands.use")) {
+            return;
+        }
 
         long currentTick = TickCounterTask.getTicksFromServerStart();
         

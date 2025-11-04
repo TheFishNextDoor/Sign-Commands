@@ -6,7 +6,8 @@ public class Permissions {
     public static final String RELOAD_PERMISSION = "signcommands.reload";
     public static final String ADD_PERMISSION = "signcommands.add";
     public static final String REMOVE_PERMISSION = "signcommands.remove";
-    public static final String LIST_PERMISSION = "signcommands.list";
+    public static final String LIST_COMMANDS_PERMISSION = "signcommands.listcommands";
+    public static final String LIST_SIGNS_PERMISSION = "signcommands.listsigns";
     public static final String GOTO_PERMISSION = "signcommands.goto";
     
 }
