@@ -28,7 +28,11 @@ public class CommandSignManager {
 
     // Getting
 
-    public static Optional<CommandSign> get(Location location) {
+    public static Optional<CommandSign> getById(String id) {
+        return Optional.ofNullable(signConfigurationsIdsMap.get(id));
+    }
+
+    public static Optional<CommandSign> getAtLocation(Location location) {
         String key = toKey(location);
         return Optional.ofNullable(signConfigurationsLocationsMap.get(key));
     }
@@ -39,13 +43,19 @@ public class CommandSignManager {
             return Optional.empty();
         }
         Location blockLocation = block.get().getLocation();
-        return get(blockLocation);
+        return getAtLocation(blockLocation);
     }
+
+    public static ArrayList<String> getAllIds() {
+        return new ArrayList<>(signConfigurationsIdsMap.keySet());
+    }
+
+    // Editing
 
     public static void addCommand(@NonNull Location location, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
         SignCommand newCommand = new SignCommand(clickType, commandType, command);
 
-        Optional<CommandSign> existingSign = get(location);
+        Optional<CommandSign> existingSign = getAtLocation(location);
         if (existingSign.isPresent()) {
             existingSign.get().addCommand(newCommand);
         }
@@ -59,10 +69,8 @@ public class CommandSignManager {
         changes = true;
     }
 
-    // Editing
-
     public static boolean removeCommand(@NonNull Location location, int index) {
-        Optional<CommandSign> existingCommandSign = get(location);
+        Optional<CommandSign> existingCommandSign = getAtLocation(location);
         if (existingCommandSign.isEmpty()) {
             return false;
         }

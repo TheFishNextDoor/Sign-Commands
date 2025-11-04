@@ -66,6 +66,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 return getRangeStrings(0, commands.size() - 1);
             }
+            else if (subcommand.equals("goto")) {
+                return CommandSignManager.getAllIds();
+            }
         }
         else if (args.length == 3) {
             String subcommand = args[0].toLowerCase();
@@ -149,7 +152,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             Location location = targetBlock.get().getLocation();
-            Optional<CommandSign> commandSign = CommandSignManager.get(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
                 return true;
@@ -184,7 +187,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             Location location = targetBlock.get().getLocation();
-            Optional<CommandSign> commandSign = CommandSignManager.get(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
                 return true;
@@ -201,7 +204,27 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         // Goto Command
         else if (player.hasPermission(Permissions.GOTO_PERMISSION) && subcommand.equals("goto")) {
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands goto <id>");
+                return true;
+            }
 
+            String id = args[1];
+            Optional<CommandSign> commandSign = CommandSignManager.getById(id);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "No sign found with ID: " + id);
+                return true;
+            }
+
+            Optional<Location> location = commandSign.get().getSignLocation();
+            if (location.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Sign has no location.");
+                return true;
+            }
+
+            player.teleport(location.get());
+            player.sendMessage(ChatColor.GOLD + "Teleported to sign with ID: " + id);
+            return true;
         }
 
         helpMessage(player);

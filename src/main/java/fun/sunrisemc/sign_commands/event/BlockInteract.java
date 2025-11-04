@@ -24,7 +24,7 @@ public class BlockInteract implements Listener {
             return;
         }
 
-        Optional<CommandSign> commandSign = CommandSignManager.get(event.getClickedBlock().getLocation());
+        Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(event.getClickedBlock().getLocation());
         if (!commandSign.isPresent()) {
             return;
         }
