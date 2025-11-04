@@ -324,6 +324,12 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");
         }
+        if (isPlayer && sender.hasPermission(Permissions.GOTO_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <goto|gt> <id> " + ChatColor.WHITE + "Teleport to a command sign.");
+        }
+        if (isPlayer && sender.hasPermission(Permissions.RENAME_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename|rn> <newId> " + ChatColor.WHITE + "Rename a command sign.");
+        }
     }
 
     private static ArrayList<String> getRangeStrings(int start, int end) {
