@@ -15,6 +15,7 @@ import fun.sunrisemc.sign_commands.event.BlockInteract;
 import fun.sunrisemc.sign_commands.event.SignChange;
 import fun.sunrisemc.sign_commands.repeating_task.AutoSaveTask;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
+import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
 public class SignCommandsPlugin extends JavaPlugin {
 
@@ -44,7 +45,10 @@ public class SignCommandsPlugin extends JavaPlugin {
     public void onDisable() {
         TickCounterTask.stop();
         AutoSaveTask.stop();
+
         CommandSignManager.saveSigns();
+        CommandSignUserManager.saveAll();
+
         logInfo("Plugin disabled.");
     }
 
@@ -58,8 +62,12 @@ public class SignCommandsPlugin extends JavaPlugin {
 
     public static void loadConfigs() {
         CommandSignManager.saveSigns();
+        CommandSignUserManager.saveAll();
+
         mainConfig = new MainConfig();
+        
         CommandSignManager.loadSigns();
+        CommandSignUserManager.loadOnline();
     }
 
     public static void logInfo(@NonNull String message) {

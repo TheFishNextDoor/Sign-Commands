@@ -14,6 +14,8 @@ import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
+import fun.sunrisemc.sign_commands.user.CommandSignUser;
+import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class BlockInteract implements Listener {
@@ -29,10 +31,11 @@ public class BlockInteract implements Listener {
         }
 
         // Check if clicked block is a command sign
-        Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(event.getClickedBlock().getLocation());
-        if (!commandSign.isPresent()) {
+        Optional<CommandSign> commandSignOptional = CommandSignManager.getAtLocation(event.getClickedBlock().getLocation());
+        if (!commandSignOptional.isPresent()) {
             return;
         }
+        CommandSign commandSign = commandSignOptional.get();
 
          // Don't run sign commands while sneaking
         Player player = event.getPlayer();
@@ -55,18 +58,21 @@ public class BlockInteract implements Listener {
         }
         setLastInteractionTick(player, currentTick);
 
-        if (!commandSign.get().hasRequiredPermissions(player)) {
+        if (!commandSign.hasRequiredPermissions(player)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to click this sign.");
             return;
         }
 
-        if (commandSign.get().hasBlockedPermissions(player)) {
+        if (commandSign.hasBlockedPermissions(player)) {
             player.sendMessage(ChatColor.RED + "You are blocked from clicking this sign.");
             return;
         }
-        
+
         // Execute command sign
-        commandSign.get().execute(player, signClickType.get());
+        CommandSignUser commandSignUser = CommandSignUserManager.get(player);
+        String commandSignId = commandSign.getId();
+        commandSign.execute(player, signClickType.get());
+        commandSignUser.onSignClick(commandSignId);
     }
 
     private boolean isOnCooldown(Player player, long currentTicks) {

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
+import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
 public class AutoSaveTask {
     private static final int INTERVAL_TICKS = 20 * 30; // 30 Seconds
@@ -16,6 +17,7 @@ public class AutoSaveTask {
         }
         id = Bukkit.getScheduler().runTaskTimerAsynchronously(SignCommandsPlugin.getInstance(), () -> {
             CommandSignManager.saveSigns();
+            CommandSignUserManager.saveAll();
         }, INTERVAL_TICKS, INTERVAL_TICKS).getTaskId();
     }
 

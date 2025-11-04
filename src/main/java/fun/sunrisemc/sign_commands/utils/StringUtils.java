@@ -15,6 +15,15 @@ public class StringUtils {
         }
     }
 
+    public static Optional<Long> parseLong(@NonNull String str) {
+        try {
+            long value = Long.parseLong(str);
+            return Optional.of(value);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
     public static Optional<Double> parseDouble(@NonNull String str) {
         try {
             double value = Double.parseDouble(str);
