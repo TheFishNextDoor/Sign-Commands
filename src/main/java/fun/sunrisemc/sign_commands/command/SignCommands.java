@@ -77,11 +77,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         else if (args.length == 2) {
             String subcommand = args[0].toLowerCase();
-            // /signcommands goto <signId>
+            // /signcommands goto <signName>
             if (subcommand.equals("goto")) {
                 return CommandSignManager.getAllIds();
             }
-            // /signcommands delete <signId>
+            // /signcommands rename <newName>
+            else if (isPlayer && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+                return Arrays.asList("<newName>");
+            }
+            // /signcommands delete <signName>
             else if (isPlayer && (subcommand.equals("delete") || subcommand.equals("dt"))) {
                 return CommandSignManager.getAllIds();
             }
@@ -101,7 +105,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
             // /signcommands editcommand <commandIndex>
             else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
-                SignCommandsPlugin.logInfo("0");
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -252,7 +255,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // Check if the player provided enough arguments
             if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <signId>");
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <signName>");
                 return true;
             }
 
@@ -282,7 +285,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // Check if the player provided enough arguments
             if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newId>");
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newName>");
                 return true;
             }
 
@@ -302,28 +305,27 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Check if the new ID is already taken
-            String newId = args[1];
-            if (CommandSignManager.getById(newId).isPresent()) {
+            String newName = args[1];
+            if (CommandSignManager.getById(newName).isPresent()) {
                 player.sendMessage(ChatColor.RED + "A sign with that name already exists.");
                 return true;
             }
 
             // Rename the sign
-            CommandSignManager.renameSign(commandSign.get(), newId);
-            player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newId);
+            CommandSignManager.renameSign(commandSign.get(), newName);
+            player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newName);
             return true;
         }
         // Delete
         else if ((subcommand.equals("delete") || subcommand.equals("dt")) && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
             // Check if the sender provided enough arguments
             if (args.length < 2) {
-                sender.sendMessage(ChatColor.RED + "Usage: /signcommands <delete|dt> <signId>");
+                sender.sendMessage(ChatColor.RED + "Usage: /signcommands <delete|dt> <signName>");
                 return true;
             }
 
             // Get the command sign
-            String id = args[1];
-            Optional<CommandSign> commandSign = CommandSignManager.getById(id);
+            Optional<CommandSign> commandSign = CommandSignManager.getById(args[1]);
             if (commandSign.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "Sign does not exist.");
                 return true;
@@ -820,13 +822,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns | ls> " + ChatColor.WHITE + "List all command signs.");
         }
         if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <goto | gt> <signId> " + ChatColor.WHITE + "Teleport to a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <goto | gt> <signName> " + ChatColor.WHITE + "Teleport to a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename | rn> <newSignId> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename | rn> <newSignName> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
         }
         if (isPlayer && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <delete | dt> <signId>" + ChatColor.WHITE + "Delete all commands from a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <delete | dt> <signName>" + ChatColor.WHITE + "Delete all commands from a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand | ac> <clickType> <commandType> <command> " + ChatColor.WHITE + "Add a command to a command sign.");
