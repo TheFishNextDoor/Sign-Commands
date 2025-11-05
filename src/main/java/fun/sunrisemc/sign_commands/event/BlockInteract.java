@@ -16,6 +16,7 @@ import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
+import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
 public class BlockInteract implements Listener {
@@ -73,7 +74,8 @@ public class BlockInteract implements Listener {
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         String commandSignId = commandSign.getId();
         if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getCooldownMillis())) {
-            player.sendMessage(ChatColor.RED + "You must wait before clicking this sign again.");
+            Long remainingCooldown = commandSignUser.getRemainingCooldown(commandSignId, commandSign.getCooldownMillis());
+            player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
             return;
         }
 

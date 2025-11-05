@@ -73,6 +73,14 @@ public class CommandSignUser {
         long currentTime = System.currentTimeMillis();
         return (currentTime - lastClickTime) >= cooldownMillis;
     }
+
+    public Long getRemainingCooldown(String signId, long cooldownMillis) {
+        long lastClickTime = getLastSignClick(signId);
+        long currentTime = System.currentTimeMillis();
+        long timeSinceLastClick = currentTime - lastClickTime;
+        long remainingCooldown = cooldownMillis - timeSinceLastClick;
+        return Math.max(remainingCooldown, 0);
+    }
     
     public int getSignClicks(String signId) {
         return signClicksMap.getOrDefault(signId, 0);
