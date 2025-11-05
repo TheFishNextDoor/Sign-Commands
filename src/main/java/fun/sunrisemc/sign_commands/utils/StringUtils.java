@@ -2,6 +2,7 @@ package fun.sunrisemc.sign_commands.utils;
 
 import java.util.Optional;
 
+import org.bukkit.Location;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class StringUtils {
@@ -35,5 +36,9 @@ public class StringUtils {
 
     public static String normalizeString(@NonNull String str) {
         return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
+    }
+
+    public static String getName(Location location) {
+        return "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
     }
 }
