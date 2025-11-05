@@ -49,7 +49,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
                 completions.add("rename");
             }
-            if (isPlayer && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
+            if (sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
                 completions.add("delete");
             }
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
