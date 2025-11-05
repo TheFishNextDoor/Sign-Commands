@@ -218,8 +218,16 @@ public class CommandSign {
         return cooldownMillis;
     }
 
+    public void setCooldownMillis(long cooldownMillis) {
+        this.cooldownMillis = cooldownMillis;
+    }
+
     public int getMaxClicksPerUser() {
         return maxClicksPerUser;
+    }
+
+    public void setMaxClicksPerUser(int maxClicksPerUser) {
+        this.maxClicksPerUser = maxClicksPerUser;
     }
 
     void setId(@NonNull String newId) {

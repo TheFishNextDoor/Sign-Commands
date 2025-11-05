@@ -65,11 +65,20 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 completions.add("removeblockedpermission");
                 completions.add("listblockedpermission");
             }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_COOLDOWN_PERMISSION)) {
+                completions.add("setcooldown");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_MAX_CLICKS_PERMISSION)) {
+                completions.add("setmaxclicksperuser");
+            }
             return completions;
         }
         else if (args.length == 2) {
             String subcommand = args[0].toLowerCase();
-            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+            if (subcommand.equals("goto")) {
+                return CommandSignManager.getAllIds();
+            }
+            else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
                 return SignClickType.getNames();
             }
             else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
@@ -106,8 +115,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                 return commandSign.get().getBlockedPermissions().stream().toList();
             }
-            else if (subcommand.equals("goto")) {
-                return CommandSignManager.getAllIds();
+            else if (isPlayer && (subcommand.equals("setcooldown"))) {
+                return Arrays.asList("<cooldownMilliseconds>");
+            }
+            else if (isPlayer && (subcommand.equals("setmaxclicksperuser"))) {
+                return Arrays.asList("<maxClicksPerUser>");
             }
         }
         else if (args.length == 3) {
@@ -168,6 +180,136 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         if (sender.hasPermission(Permissions.RELOAD_PERMISSION) && subcommand.equals("reload")) {
             SignCommandsPlugin.loadConfigs();
             sender.sendMessage(ChatColor.GOLD + "Configuration reloaded.");
+            return true;
+        }
+        // List Blocked Permissions
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
+            Player player = (Player) sender;
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // List the blocked permissions
+            HashSet<String> blockedPermissions = commandSign.get().getBlockedPermissions();
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Blocked Permissions");
+            if (blockedPermissions.isEmpty()) {
+                player.sendMessage(ChatColor.GOLD + "None");
+            } 
+            else {
+                for (String permission : blockedPermissions) {
+                    player.sendMessage(ChatColor.GOLD + "- " + permission);
+                }
+            }
+
+            return true;
+        }
+        // List Signs
+        else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
+            // Check if there are any command signs
+            List<CommandSign> commandSigns = CommandSignManager.getAll();
+            if (commandSigns.isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "No command signs found.");
+                return true;
+            }
+
+            // List the command signs
+            sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs");
+            for (CommandSign sign : commandSigns) {
+                Optional<Location> signLocation = sign.getSignLocation();
+                if (signLocation.isEmpty()) {
+                    continue;
+                }
+
+                Location location = signLocation.get();
+                String locationString = "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+                int commandCount = sign.getCommands().size();
+                if (commandCount == 1) {
+                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
+                } 
+                else {
+                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
+                }
+            }
+
+            return true;
+        }
+        // Goto
+        else if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <id>");
+                return true;
+            }
+
+            // Get the command sign
+            String id = args[1];
+            Optional<CommandSign> commandSign = CommandSignManager.getById(id);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "No sign found with ID: " + id);
+                return true;
+            }
+
+            // Get the sign location
+            Optional<Location> location = commandSign.get().getSignLocation();
+            if (location.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Sign has no location.");
+                return true;
+            }
+
+            // Teleport the player to the sign location
+            player.teleport(location.get());
+            player.sendMessage(ChatColor.GOLD + "Teleported to sign with ID: " + id);
+            return true;
+        }
+        // Rename
+        else if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newId>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Check if the new ID is already taken
+            String newId = args[1];
+            if (CommandSignManager.getById(newId).isPresent()) {
+                player.sendMessage(ChatColor.RED + "A sign with that ID already exists.");
+                return true;
+            }
+
+            // Rename the sign
+            CommandSignManager.renameSign(commandSign.get(), newId);
+            player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newId);
             return true;
         }
         // Add Command
@@ -537,106 +679,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             return true;
         }
-        // List Blocked Permissions
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_BLOCKED_PERMISSIONS_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
-            Player player = (Player) sender;
-
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-
-            // Get the command sign
-            Location location = targetBlock.get().getLocation();
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
-            if (commandSign.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
-                return true;
-            }
-
-            // List the blocked permissions
-            HashSet<String> blockedPermissions = commandSign.get().getBlockedPermissions();
-            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Blocked Permissions");
-            if (blockedPermissions.isEmpty()) {
-                player.sendMessage(ChatColor.GOLD + "None");
-            } 
-            else {
-                for (String permission : blockedPermissions) {
-                    player.sendMessage(ChatColor.GOLD + "- " + permission);
-                }
-            }
-
-            return true;
-        }
-        // List Signs
-        else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
-            // Check if there are any command signs
-            List<CommandSign> commandSigns = CommandSignManager.getAll();
-            if (commandSigns.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "No command signs found.");
-                return true;
-            }
-
-            // List the command signs
-            sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Command Signs");
-            for (CommandSign sign : commandSigns) {
-                Optional<Location> signLocation = sign.getSignLocation();
-                if (signLocation.isEmpty()) {
-                    continue;
-                }
-
-                Location location = signLocation.get();
-                String locationString = "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
-                int commandCount = sign.getCommands().size();
-                if (commandCount == 1) {
-                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
-                } 
-                else {
-                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
-                }
-            }
-
-            return true;
-        }
-        // Goto
-        else if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
+        // Set Cooldown
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COOLDOWN_PERMISSION) && subcommand.equals("setcooldown")) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
             if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <id>");
-                return true;
-            }
-
-            // Get the command sign
-            String id = args[1];
-            Optional<CommandSign> commandSign = CommandSignManager.getById(id);
-            if (commandSign.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "No sign found with ID: " + id);
-                return true;
-            }
-
-            // Get the sign location
-            Optional<Location> location = commandSign.get().getSignLocation();
-            if (location.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Sign has no location.");
-                return true;
-            }
-
-            // Teleport the player to the sign location
-            player.teleport(location.get());
-            player.sendMessage(ChatColor.GOLD + "Teleported to sign with ID: " + id);
-            return true;
-        }
-        // Rename
-        else if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
-            Player player = (Player) sender;
-
-            // Check if the player provided enough arguments
-            if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <rename|rn> <newId>");
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setcooldown> <cooldownMilliseconds>");
                 return true;
             }
 
@@ -655,19 +704,57 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Check if the new ID is already taken
-            String newId = args[1];
-            if (CommandSignManager.getById(newId).isPresent()) {
-                player.sendMessage(ChatColor.RED + "A sign with that ID already exists.");
+            // Parse the cooldown
+            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
+            if (cooldown.isEmpty() || cooldown.get() < 0) {
+                player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
             }
 
-            // Rename the sign
-            CommandSignManager.renameSign(commandSign.get(), newId);
-            player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newId);
+            // Set the cooldown
+            commandSign.get().setCooldownMillis(cooldown.get());
+            player.sendMessage(ChatColor.GOLD + "Cooldown set to: " + cooldown.get() + " milliseconds.");
+            return true;
+        }
+        // Set Max Clicks
+        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_MAX_CLICKS_PERMISSION) && subcommand.equals("setmaxclicksperuser")) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setmaxclicksperuser> <maxClicks>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+
+            // Get the command sign
+            Location location = targetBlock.get().getLocation();
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Parse the max clicks
+            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
+            if (maxClicks.isEmpty() || maxClicks.get() < 0) {
+                player.sendMessage(ChatColor.RED + "Invalid max clicks value.");
+                return true;
+            }
+
+            // Set the max clicks
+            commandSign.get().setMaxClicksPerUser(maxClicks.get());
+            player.sendMessage(ChatColor.GOLD + "Max clicks set to: " + maxClicks.get() + ".");
             return true;
         }
 
+        // Help Message
         helpMessage(sender);
         return true;
     }
