@@ -13,6 +13,9 @@ public class RayTrace {
 
     public static Optional<Block> block(@NonNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(MAX_DISTANCE);
+        if (result == null) {
+            return Optional.empty();
+        }
         return Optional.ofNullable(result.getHitBlock());
     }
 }
