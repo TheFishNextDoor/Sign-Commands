@@ -79,6 +79,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (subcommand.equals("goto")) {
                 return CommandSignManager.getAllIds();
             }
+            else if (isPlayer && (subcommand.equals("delete") || subcommand.equals("dt"))) {
+                return CommandSignManager.getAllIds();
+            }
             else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
                 return SignClickType.getNames();
             }
