@@ -235,6 +235,10 @@ public class CommandSign {
     }
 
     void save(@NonNull YamlConfiguration config) {
+        if (commands.isEmpty()) {
+            return;
+        }
+
         // Save Location
         String locationString;
         if (signLocation.isPresent()) {
@@ -245,7 +249,7 @@ public class CommandSign {
             locationString = lastValidSignLocationString.get();
         }
         else {
-            locationString = "unknown, 0, 0, 0";
+            return;
         }
         config.set(id + ".location", locationString);
 
@@ -258,25 +262,24 @@ public class CommandSign {
         config.set(id + ".commands", commandEntries);
 
         // Save Required Permissions
-        config.set(id + ".required-permissions", new ArrayList<>(requiredPermissions));
+        if (!requiredPermissions.isEmpty()) {
+            config.set(id + ".required-permissions", new ArrayList<>(requiredPermissions));
+        }
+        
 
         // Save Blocked Permissions
-        config.set(id + ".blocked-permissions", new ArrayList<>(blockedPermissions));
+        if (!blockedPermissions.isEmpty()) {
+            config.set(id + ".blocked-permissions", new ArrayList<>(blockedPermissions));
+        }
 
         // Save Cooldown
         if (cooldownMillis > 0) {
             config.set(id + ".cooldown-millis", cooldownMillis);
         }
-        else {
-            config.set(id + ".cooldown-millis", null);
-        }
 
         // Save Max Clicks Per User
         if (maxClicksPerUser > 0) {
             config.set(id + ".max-clicks-per-user", maxClicksPerUser);
-        }
-        else {
-            config.set(id + ".max-clicks-per-user", null);
         }
     }
 }
