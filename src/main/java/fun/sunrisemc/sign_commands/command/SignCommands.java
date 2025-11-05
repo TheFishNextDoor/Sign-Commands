@@ -62,10 +62,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
                 completions.add("addrequiredpermission");
                 completions.add("removerequiredpermission");
-                completions.add("listrequiredpermission");
+                completions.add("listrequiredpermissions");
                 completions.add("addblockedpermission");
                 completions.add("removeblockedpermission");
-                completions.add("listblockedpermission");
+                completions.add("listblockedpermissions");
             }
             if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
                 completions.add("setcooldown");
@@ -595,7 +595,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Required Permissions
-        else if (isPlayer && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
+        else if (isPlayer && (subcommand.equals("listrequiredpermissions") || subcommand.equals("lrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -698,7 +698,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Blocked Permissions
-        else if (isPlayer && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
+        else if (isPlayer && (subcommand.equals("listblockedpermissions") || subcommand.equals("lbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -839,10 +839,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission | arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign. A player must have all required permissions to use the sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission | rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission | lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermissions | lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission | abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign. If a player has any of these permissions they will not be able to use the sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission | rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission | lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermissions | lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setcooldown | sc> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the cooldown for a command sign.");
