@@ -27,6 +27,8 @@ public class CommandSign {
     private HashSet<String> requiredPermissions = new HashSet<>();
     private HashSet<String> blockedPermissions = new HashSet<>();
 
+    private long cooldownMillis = 0;
+
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
         this.id = CommandSignManager.generateId();
         this.signLocation = Optional.of(location);
@@ -188,6 +190,10 @@ public class CommandSign {
 
     public boolean removeBlockedPermission(@NonNull String permission) {
         return blockedPermissions.remove(permission);
+    }
+
+    public long getCooldownMillis() {
+        return cooldownMillis;
     }
 
     void setId(@NonNull String newId) {

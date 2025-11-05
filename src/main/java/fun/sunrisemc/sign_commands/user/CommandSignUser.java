@@ -99,6 +99,12 @@ public class CommandSignUser {
         return lastSignClick.getOrDefault(signId, 0L);
     }
 
+    public boolean checkSignCooldown(String signId, long cooldownMillis) {
+        long lastClickTime = getLastSignClick(signId);
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - lastClickTime) >= cooldownMillis;
+    }
+
     public void onSignClick(String signId) {
         int currentClicks = signClicks.getOrDefault(signId, 0);
         signClicks.put(signId, currentClicks + 1);

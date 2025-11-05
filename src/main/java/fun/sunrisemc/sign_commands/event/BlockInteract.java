@@ -71,6 +71,11 @@ public class BlockInteract implements Listener {
         // Execute command sign
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         String commandSignId = commandSign.getId();
+        if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getCooldownMillis())) {
+            player.sendMessage(ChatColor.RED + "You must wait before clicking this sign again.");
+            return;
+        }
+
         commandSign.execute(player, signClickType.get());
         commandSignUser.onSignClick(commandSignId);
     }
