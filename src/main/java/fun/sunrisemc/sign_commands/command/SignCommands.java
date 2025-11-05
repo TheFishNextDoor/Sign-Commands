@@ -34,6 +34,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         boolean isPlayer = sender instanceof Player;
+        // /signcommands <subcommand>
         if (args.length == 1) {
             ArrayList<String> completions = new ArrayList<String>();
             completions.add("help");
@@ -76,15 +77,19 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         else if (args.length == 2) {
             String subcommand = args[0].toLowerCase();
+            // /signcommands goto <signId>
             if (subcommand.equals("goto")) {
                 return CommandSignManager.getAllIds();
             }
+            // /signcommands delete <signId>
             else if (isPlayer && (subcommand.equals("delete") || subcommand.equals("dt"))) {
                 return CommandSignManager.getAllIds();
             }
+            // /signcommands addcommand <clickType>
             else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
                 return SignClickType.getNames();
             }
+            // /signcommands removecommand <commandIndex>
             else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
@@ -94,7 +99,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 return getRangeStrings(0, commands.size() - 1);
             }
+            // /signcommands editcommand <commandIndex>
             else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+                SignCommandsPlugin.logInfo("0");
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -103,6 +110,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 return getRangeStrings(0, commands.size() - 1);
             }
+            // /signcommands addrequiredpermission <permission>
+            else if (isPlayer && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
+                return Arrays.asList("<permission>");
+            }
+            // /signcommands removerequiredpermission <permission>
             else if (isPlayer && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
@@ -111,6 +123,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                 return commandSign.get().getRequiredPermissions().stream().toList();
             }
+            // /signcommands addblockedpermission <permission>
+            else if (isPlayer && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
+                return Arrays.asList("<permission>");
+            }
+            // /signcommands removeblockedpermission <permission>
             else if (isPlayer && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
@@ -119,30 +136,43 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                 return commandSign.get().getBlockedPermissions().stream().toList();
             }
+            // /signcommands setcooldown <cooldownMilliseconds>
             else if (isPlayer && (subcommand.equals("setcooldown"))) {
                 return Arrays.asList("<cooldownMilliseconds>");
             }
+            // /signcommands setmaxclicksperuser <maxClicksPerUser>
             else if (isPlayer && (subcommand.equals("setmaxclicksperuser"))) {
                 return Arrays.asList("<maxClicksPerUser>");
             }
         }
         else if (args.length == 3) {
             String subcommand = args[0].toLowerCase();
+
+            // /signcommands addcommand <clickType> <commandType>
             if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
                 return SignCommandType.getNames();
             }
+            // /signcommands editcommand <commandIndex> <clickType>
             else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
                 return SignClickType.getNames();
             }
         }
         else if (args.length == 4) {
             String subcommand = args[0].toLowerCase();
+
+            // /signcommands addcommand <clickType> <commandType> <command>
+            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+                return Arrays.asList("<command>");
+            }
+            // /signcommands editcommand <commandIndex> <clickType> <commandType>
             if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
                 return SignCommandType.getNames();
             }
         }
         else if (args.length == 5) {
             String subcommand = args[0].toLowerCase();
+
+            // /signcommands editcommand <commandIndex> <clickType> <commandType> <command>
             if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {

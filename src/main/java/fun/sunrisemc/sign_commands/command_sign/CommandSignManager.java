@@ -44,6 +44,7 @@ public class CommandSignManager {
         if (block.isEmpty()) {
             return Optional.empty();
         }
+
         Location blockLocation = block.get().getLocation();
         return getAtLocation(blockLocation);
     }
