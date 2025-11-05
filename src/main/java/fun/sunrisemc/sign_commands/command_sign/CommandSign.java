@@ -29,6 +29,8 @@ public class CommandSign {
 
     private long cooldownMillis = 0;
 
+    private int maxClicksPerUser = 0;
+
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
         this.id = CommandSignManager.generateId();
         this.signLocation = Optional.of(location);
@@ -103,6 +105,26 @@ public class CommandSign {
                 SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), commandString);
                 commands.add(signCommand);
             }
+        }
+
+        // Load Required Permissions
+        for (String permission : config.getStringList(id + ".required-permissions")) {
+            requiredPermissions.add(permission);
+        }
+
+        // Load Blocked Permissions
+        for (String permission : config.getStringList(id + ".blocked-permissions")) {
+            blockedPermissions.add(permission);
+        }
+
+        // Load Cooldown
+        if (config.contains(id + ".cooldown-millis")) {
+            this.cooldownMillis = config.getLong(id + ".cooldown-millis");
+        }
+
+        // Load Max Clicks Per User
+        if (config.contains(id + ".max-clicks-per-user")) {
+            this.maxClicksPerUser = config.getInt(id + ".max-clicks-per-user");
         }
     }
 
@@ -196,6 +218,10 @@ public class CommandSign {
         return cooldownMillis;
     }
 
+    public int getMaxClicksPerUser() {
+        return maxClicksPerUser;
+    }
+
     void setId(@NonNull String newId) {
         this.id = newId;
     }
@@ -222,5 +248,27 @@ public class CommandSign {
             commandEntries.add(entry);
         }
         config.set(id + ".commands", commandEntries);
+
+        // Save Required Permissions
+        config.set(id + ".required-permissions", new ArrayList<>(requiredPermissions));
+
+        // Save Blocked Permissions
+        config.set(id + ".blocked-permissions", new ArrayList<>(blockedPermissions));
+
+        // Save Cooldown
+        if (cooldownMillis > 0) {
+            config.set(id + ".cooldown-millis", cooldownMillis);
+        }
+        else {
+            config.set(id + ".cooldown-millis", null);
+        }
+
+        // Save Max Clicks Per User
+        if (maxClicksPerUser > 0) {
+            config.set(id + ".max-clicks-per-user", maxClicksPerUser);
+        }
+        else {
+            config.set(id + ".max-clicks-per-user", null);
+        }
     }
 }

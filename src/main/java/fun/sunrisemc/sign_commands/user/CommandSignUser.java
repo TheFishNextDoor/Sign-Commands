@@ -17,9 +17,9 @@ public class CommandSignUser {
 
     private final UUID uuid;
 
-    private HashMap<String, Integer> signClicks = new HashMap<>();
+    private HashMap<String, Long> lastSignClickMap = new HashMap<>();
 
-    private HashMap<String, Long> lastSignClick = new HashMap<>();
+    private HashMap<String, Integer> signClicksMap = new HashMap<>();
 
     public CommandSignUser(UUID uuid) {
         this.uuid = uuid;
@@ -35,7 +35,7 @@ public class CommandSignUser {
             
             Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
             if (clicks.isPresent()) {
-                signClicks.put(signId, clicks.get());
+                signClicksMap.put(signId, clicks.get());
             }
         }
 
@@ -47,7 +47,7 @@ public class CommandSignUser {
             
             Optional<Long> timestamp = StringUtils.parseLong(timestampString);
             if (timestamp.isPresent()) {
-                lastSignClick.put(signId, timestamp.get());
+                lastSignClickMap.put(signId, timestamp.get());
             }
         }
     }
@@ -64,12 +64,40 @@ public class CommandSignUser {
         return getPlayer().isPresent();
     }
 
+    public long getLastSignClick(String signId) {
+        return lastSignClickMap.getOrDefault(signId, 0L);
+    }
+
+    public boolean checkSignCooldown(String signId, long cooldownMillis) {
+        long lastClickTime = getLastSignClick(signId);
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - lastClickTime) >= cooldownMillis;
+    }
+    
+    public int getSignClicks(String signId) {
+        return signClicksMap.getOrDefault(signId, 0);
+    }
+
+    public boolean checkMaxSignClicks(String signId, int maxClicks) {
+        if (maxClicks <= 0) {
+            return true;
+        }
+        int currentClicks = getSignClicks(signId);
+        return currentClicks < maxClicks;
+    }
+
+    public void onSignClick(String signId) {
+        int currentClicks = signClicksMap.getOrDefault(signId, 0);
+        signClicksMap.put(signId, currentClicks + 1);
+        lastSignClickMap.put(signId, System.currentTimeMillis());
+    }
+
     public void save() {
         String id = uuid.toString();
         YamlConfiguration playerData = DataFile.get(id);
 
         ArrayList<String> signClicksList = new ArrayList<>();
-        for (Entry<String, Integer> entry : signClicks.entrySet()) {
+        for (Entry<String, Integer> entry : signClicksMap.entrySet()) {
             String signId = entry.getKey();
             Integer clicks = entry.getValue();
             signClicksList.add(signId + ":" + clicks);
@@ -77,7 +105,7 @@ public class CommandSignUser {
         playerData.set(".sign-clicks", signClicksList);
 
         ArrayList<String> lastSignClickList = new ArrayList<>();
-        for (Entry<String, Long> entry : lastSignClick.entrySet()) {
+        for (Entry<String, Long> entry : lastSignClickMap.entrySet()) {
             String signId = entry.getKey();
             Long timestamp = entry.getValue();
             lastSignClickList.add(signId + ":" + timestamp);
@@ -89,25 +117,5 @@ public class CommandSignUser {
         if (!isOnline()) {
             CommandSignUserManager.unload(uuid);
         }
-    }
-    
-    public int getSignClicks(String signId) {
-        return signClicks.getOrDefault(signId, 0);
-    }
-
-    public long getLastSignClick(String signId) {
-        return lastSignClick.getOrDefault(signId, 0L);
-    }
-
-    public boolean checkSignCooldown(String signId, long cooldownMillis) {
-        long lastClickTime = getLastSignClick(signId);
-        long currentTime = System.currentTimeMillis();
-        return (currentTime - lastClickTime) >= cooldownMillis;
-    }
-
-    public void onSignClick(String signId) {
-        int currentClicks = signClicks.getOrDefault(signId, 0);
-        signClicks.put(signId, currentClicks + 1);
-        lastSignClick.put(signId, System.currentTimeMillis());
     }
 }

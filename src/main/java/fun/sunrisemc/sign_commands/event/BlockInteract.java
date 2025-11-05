@@ -68,7 +68,8 @@ public class BlockInteract implements Listener {
             return;
         }
 
-        // Execute command sign
+        
+        // Check user cooldown
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         String commandSignId = commandSign.getId();
         if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getCooldownMillis())) {
@@ -76,6 +77,13 @@ public class BlockInteract implements Listener {
             return;
         }
 
+        // Check max clicks per user
+        if (!commandSignUser.checkMaxSignClicks(commandSignId, commandSign.getMaxClicksPerUser())) {
+            player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
+            return;
+        }
+
+        // Execute command sign
         commandSign.execute(player, signClickType.get());
         commandSignUser.onSignClick(commandSignId);
     }
