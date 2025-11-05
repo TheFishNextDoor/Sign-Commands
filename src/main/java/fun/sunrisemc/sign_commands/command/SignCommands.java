@@ -178,13 +178,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         String subcommand = args[0].toLowerCase();
 
         // Reload
-        if (sender.hasPermission(Permissions.RELOAD_PERMISSION) && (subcommand.equals("reload") || subcommand.equals("rd"))) {
+        if ((subcommand.equals("reload") || subcommand.equals("rd")) && sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
             SignCommandsPlugin.loadConfigs();
             sender.sendMessage(ChatColor.GOLD + "Configuration reloaded.");
             return true;
         }
         // List Signs
-        else if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION) && (subcommand.equals("listsigns") || subcommand.equals("ls"))) {
+        else if ((subcommand.equals("listsigns") || subcommand.equals("ls")) && sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             // Check if there are any command signs
             List<CommandSign> commandSigns = CommandSignManager.getAll();
             if (commandSigns.isEmpty()) {
@@ -214,7 +214,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Goto
-        else if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION) && (subcommand.equals("goto") || subcommand.equals("gt"))) {
+        else if (isPlayer && (subcommand.equals("goto") || subcommand.equals("gt")) && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -244,7 +244,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Rename
-        else if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION) && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+        else if (isPlayer && (subcommand.equals("rename") || subcommand.equals("rn")) && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -281,7 +281,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Delete
-        else if (sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION) && (subcommand.equals("deletesign") || subcommand.equals("ds"))) {
+        else if ((subcommand.equals("deletesign") || subcommand.equals("ds")) && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
             // Check if the sender provided enough arguments
             if (args.length < 2) {
                 sender.sendMessage(ChatColor.RED + "Usage: /signcommands <deletesign|ds> <signId>");
@@ -303,7 +303,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
         }
         // Add Command
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+        else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -348,7 +348,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Command
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
+        else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -397,7 +397,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Edit Command
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+        else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -461,7 +461,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Commands
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION) && (subcommand.equals("listcommands" ) || subcommand.equals("lc"))) {
+        else if (isPlayer && (subcommand.equals("listcommands" ) || subcommand.equals("lc")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -490,7 +490,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Add Required Permission
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
+        else if (isPlayer && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -525,7 +525,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Required Permission
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
+        else if (isPlayer && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -560,7 +560,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Required Permissions
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp"))) {
+        else if (isPlayer && (subcommand.equals("listrequiredpermission") || subcommand.equals("lrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -593,7 +593,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Add Blocked Permission
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
+        else if (isPlayer && (subcommand.equals("addblockedpermission") || subcommand.equals("abp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -628,7 +628,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Remove Blocked Permission
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
+        else if (isPlayer && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -663,7 +663,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // List Blocked Permissions
-        else if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION) && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp"))) {
+        else if (isPlayer && (subcommand.equals("listblockedpermission") || subcommand.equals("lbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Get the block the player is looking at
@@ -696,7 +696,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Set Cooldown
-        else if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION) && (subcommand.equals("setcooldown") || subcommand.equals("sc"))) {
+        else if (isPlayer && (subcommand.equals("setcooldown") || subcommand.equals("sc")) && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -733,7 +733,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Set Max Clicks
-        else if (isPlayer && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION) && (subcommand.equals("setmaxclicksperuser") || subcommand.equals("smcpu"))) {
+        else if (isPlayer && (subcommand.equals("setmaxclicksperuser") || subcommand.equals("smcpu")) && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
