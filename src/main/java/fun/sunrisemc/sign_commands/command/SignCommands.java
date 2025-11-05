@@ -781,39 +781,39 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands Help");
         sender.sendMessage(ChatColor.GOLD + "/signcommands help " + ChatColor.WHITE + "Show this help message.");
         if (sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <reload|rd> " + ChatColor.WHITE + "Reload the plugin.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <reload | rd> " + ChatColor.WHITE + "Reload the plugin.");
         }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns|ls> " + ChatColor.WHITE + "List all command signs.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns | ls> " + ChatColor.WHITE + "List all command signs.");
         }
         if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <goto|gt> <signId> " + ChatColor.WHITE + "Teleport to a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <goto | gt> <signId> " + ChatColor.WHITE + "Teleport to a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename|rn> <newSignId> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename | rn> <newSignId> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
         }
         if (isPlayer && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <delete|dt> <signId>" + ChatColor.WHITE + "Delete a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <delete | dt> <signId>" + ChatColor.WHITE + "Delete all commands from a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand|ac> <clickType> <commandType> <command> " + ChatColor.WHITE + "Add a sign command.");
-             sender.sendMessage(ChatColor.GOLD + "/signcommands <removecommand|rc> <commandIndex> " + ChatColor.WHITE + "Remove a sign command.");
-             sender.sendMessage(ChatColor.GOLD + "/signcommands <editcommand|ec> <commandIndex> <clickType> <commandType> <command> " + ChatColor.WHITE + "Edit a sign command.");
-             sender.sendMessage(ChatColor.GOLD + "/signcommands <list|lc> " + ChatColor.WHITE + "List sign commands.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand | ac> <clickType> <commandType> <command> " + ChatColor.WHITE + "Add a command to a command sign.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <removecommand | rc> <commandIndex> " + ChatColor.WHITE + "Remove a command from a command sign.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <editcommand | ec> <commandIndex> <clickType> <commandType> <command> " + ChatColor.WHITE + "Edit a command on a command sign.");
+             sender.sendMessage(ChatColor.GOLD + "/signcommands <list | lc> " + ChatColor.WHITE + "List a command sign's commands.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission|arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission|rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission|lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission|abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission|rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission|lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addrequiredpermission | arp> <permission> " + ChatColor.WHITE + "Add a required permission to a command sign. A player must have all required permissions to use the sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removerequiredpermission | rrp> <permission> " + ChatColor.WHITE + "Remove a required permission from a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listrequiredpermission | lrp> " + ChatColor.WHITE + "List required permissions of a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <addblockedpermission | abp> <permission> " + ChatColor.WHITE + "Add a blocked permission to a command sign. If a player has any of these permissions they will not be able to use the sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission | rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermission | lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <setcooldown|sc> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the cooldown for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <setcooldown | sc> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the cooldown for a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <setmaxclicksperuser|smcpu> <maxClicks> " + ChatColor.WHITE + "Set the max clicks per user for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <setmaxclicksperuser | smcpu> <maxClicks> " + ChatColor.WHITE + "Set the max clicks per user for a command sign.");
         }
     }
 
