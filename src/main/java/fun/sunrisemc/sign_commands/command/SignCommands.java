@@ -281,10 +281,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Delete
-        else if ((subcommand.equals("deletesign") || subcommand.equals("ds")) && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
+        else if ((subcommand.equals("delete") || subcommand.equals("dt")) && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
             // Check if the sender provided enough arguments
             if (args.length < 2) {
-                sender.sendMessage(ChatColor.RED + "Usage: /signcommands <deletesign|ds> <signId>");
+                sender.sendMessage(ChatColor.RED + "Usage: /signcommands <delete|dt> <signId>");
                 return true;
             }
 
@@ -793,7 +793,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <rename|rn> <newSignId> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
         }
         if (isPlayer && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <deletesign|ds> <signId>" + ChatColor.WHITE + "Delete a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <delete|dt> <signId>" + ChatColor.WHITE + "Delete a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <addcommand|ac> <clickType> <commandType> <command> " + ChatColor.WHITE + "Add a sign command.");
