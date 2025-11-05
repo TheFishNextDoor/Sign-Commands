@@ -120,6 +120,23 @@ public class CommandSignManager {
 
         return true;
     }
+
+    public static boolean deleteSign(@NonNull CommandSign commandSign) {
+        String id = commandSign.getId();
+
+        Optional<Location> signLocation = commandSign.getSignLocation();
+        if (signLocation.isPresent()) {
+            String locationKey = toKey(signLocation.get());
+            signConfigurationsLocationsMap.remove(locationKey);
+        }
+
+        signConfigurationsIdsMap.remove(id);
+        signConfigurationsList.remove(commandSign);
+
+        changes = true;
+
+        return true;
+    }
     
     // Loading and Saving
 
