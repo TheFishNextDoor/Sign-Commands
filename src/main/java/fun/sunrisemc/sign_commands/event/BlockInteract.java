@@ -14,10 +14,6 @@ import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
-import fun.sunrisemc.sign_commands.user.CommandSignUser;
-import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
-import fun.sunrisemc.sign_commands.utils.StringUtils;
-import net.md_5.bungee.api.ChatColor;
 
 public class BlockInteract implements Listener {
 
@@ -25,6 +21,12 @@ public class BlockInteract implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockInteract(PlayerInteractEvent event) {
+        // Don't execute command signs while sneaking
+        Player player = event.getPlayer();
+        if (player.isSneaking()) {
+            return;
+        }
+
         // Check correct action
         Optional<SignClickType> signClickType = SignClickType.fromAction(event.getAction());
         if (signClickType.isEmpty()) {
@@ -38,74 +40,24 @@ public class BlockInteract implements Listener {
         }
         CommandSign commandSign = commandSignOptional.get();
 
-         // Don't run sign commands while sneaking
-        Player player = event.getPlayer();
-        if (player.isSneaking()) {
-            return;
-        }
-
-        // Check permission
-        if (!player.hasPermission("signcommands.use")) {
-            return;
-        }
-        
-        // Prevent editing the sign
+        // Prevent editing command signs
         event.setCancelled(true);
 
-        // Check cooldown
-        long currentTick = TickCounterTask.getTicksFromServerStart();  
-        if (isOnCooldown(player, currentTick)) {
-            return;
+        // Check sign click delay tick
+        if (tickDelayBetwenClicksCheck(player)) {
+            commandSign.attemptExecute(player, signClickType.get());
         }
-        setLastInteractionTick(player, currentTick);
-
-        if (!commandSign.hasRequiredPermissions(player)) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to click this sign.");
-            return;
-        }
-
-        if (commandSign.hasBlockedPermissions(player)) {
-            player.sendMessage(ChatColor.RED + "You are blocked from clicking this sign.");
-            return;
-        }
-
-        
-        // Check user cooldown
-        CommandSignUser commandSignUser = CommandSignUserManager.get(player);
-        String commandSignId = commandSign.getName();
-        if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getUserClickCooldownMillis())) {
-            Long remainingCooldown = commandSignUser.getRemainingCooldown(commandSignId, commandSign.getUserClickCooldownMillis());
-            player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
-            return;
-        }
-
-        // Check max clicks per user
-        if (!commandSignUser.checkMaxSignClicks(commandSignId, commandSign.getUserMaxClicks())) {
-            player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
-            return;
-        }
-
-        // Execute command sign
-        commandSign.execute(player, signClickType.get());
-        commandSignUser.onSignClick(commandSignId);
     }
 
-    private boolean isOnCooldown(Player player, long currentTicks) {
-        String key = toKey(player);
-        Long lastInteractionTick = lastInteractionTickMap.get(key);
-        if (lastInteractionTick == null) {
-            return false;
-        }
+    private boolean tickDelayBetwenClicksCheck (Player player) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
-        return (currentTicks - lastInteractionTick) < mainConfig.SIGN_CLICK_COOLDOWN_TICKS;
-    }
-
-    private void setLastInteractionTick(Player player, long currentTicks) {
-        String key = toKey(player);
-        lastInteractionTickMap.put(key, currentTicks);
-    }
-
-    private String toKey(Player player) {
-        return player.getUniqueId().toString();
+        long currentTicks = TickCounterTask.getTicksFromServerStart();
+        String key = player.getUniqueId().toString();
+        long lastInteractionTick = lastInteractionTickMap.getOrDefault(key, 0L);
+        if ((currentTicks - lastInteractionTick) < mainConfig.SIGN_CLICK_COOLDOWN_TICKS) {
+            lastInteractionTickMap.put(key, currentTicks);
+            return true;
+        }
+        return false;
     }
 }

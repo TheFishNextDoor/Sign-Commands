@@ -14,6 +14,10 @@ import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
+import fun.sunrisemc.sign_commands.user.CommandSignUser;
+import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
+import fun.sunrisemc.sign_commands.utils.StringUtils;
+import net.md_5.bungee.api.ChatColor;
 
 public class CommandSign {
 
@@ -27,9 +31,17 @@ public class CommandSign {
     private HashSet<String> requiredPermissions = new HashSet<>();
     private HashSet<String> blockedPermissions = new HashSet<>();
 
+    private long lastClickTimeMillis = 0;
+
     private long userClickCooldownMillis = 0;
 
+    private long globalClickCooldownMillis = 0;
+
+    private int totalClicks = 0;
+
     private int userMaxClicks = 0;
+
+    private int globalMaxClicks = 0;
 
     public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
@@ -46,10 +58,67 @@ public class CommandSign {
         CommandSignManager.register(this);
     }
 
+    // Executing
+
+    public boolean attemptExecute(@NonNull Player player, @NonNull SignClickType clickType) {
+        if (!player.hasPermission("signcommands.use")) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to use command signs.");
+            return false;
+        }
+
+        // Check command sign permissions
+        if (!hasRequiredPermissions(player)) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to click this sign.");
+            return false;
+        }
+
+        // Check blocked permissions
+        if (hasBlockedPermissions(player)) {
+            player.sendMessage(ChatColor.RED + "You are blocked from clicking this sign.");
+            return false;
+        }
+
+        // Check global max clicks
+        if (!checkGlobalMaxClicks()) {
+            player.sendMessage(ChatColor.RED + "This sign has reached its global maximum number of clicks.");
+            return false;
+        }
+
+        // Check user max clicks
+        String name = getName();
+        CommandSignUser commandSignUser = CommandSignUserManager.get(player);
+        if (!commandSignUser.checkMaxSignClicks(name, getUserMaxClicks())) {
+            player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
+            return false;
+        }
+
+        // Check global cooldown
+        long remainingGlobalCooldown = getRemainingCooldown();
+        if (remainingGlobalCooldown > 0) {
+            player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + StringUtils.formatMillis(remainingGlobalCooldown) + " before clicking again.");
+            return false;
+        }
+        
+        // Check user cooldown
+        if (!commandSignUser.checkSignCooldown(name, getUserClickCooldownMillis())) {
+            Long remainingCooldown = commandSignUser.getRemainingCooldown(name, getUserClickCooldownMillis());
+            player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
+            return false;
+        }
+
+        // Execute command sign
+        execute(player, clickType);
+        commandSignUser.onSignClick(name);
+        return true;
+    }
+
     public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
         if (!signLocation.isPresent()) {
             return;
         }
+
+        lastClickTimeMillis = System.currentTimeMillis();
+        totalClicks++;
 
         for (SignCommand command : commands) {
             command.execute(player, clickType);
@@ -113,21 +182,21 @@ public class CommandSign {
         return requiredPermissions;
     }
 
-    public boolean hasRequiredPermissions(@NonNull Player player) {
-        for (String permission : requiredPermissions) {
-            if (!player.hasPermission(permission)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean addRequiredPermission(@NonNull String permission) {
         return requiredPermissions.add(permission);
     }
 
     public boolean removeRequiredPermission(@NonNull String permission) {
         return requiredPermissions.remove(permission);
+    }
+
+    private boolean hasRequiredPermissions(@NonNull Player player) {
+        for (String permission : requiredPermissions) {
+            if (!player.hasPermission(permission)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     // Blocked Permissions
@@ -136,21 +205,21 @@ public class CommandSign {
         return blockedPermissions;
     }
 
-    public boolean hasBlockedPermissions(@NonNull Player player) {
-        for (String permission : blockedPermissions) {
-            if (player.hasPermission(permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean addBlockedPermission(@NonNull String permission) {
         return blockedPermissions.add(permission);
     }
 
     public boolean removeBlockedPermission(@NonNull String permission) {
         return blockedPermissions.remove(permission);
+    }
+
+    private boolean hasBlockedPermissions(@NonNull Player player) {
+        for (String permission : blockedPermissions) {
+            if (player.hasPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Cooldown Millis
@@ -163,7 +232,22 @@ public class CommandSign {
         this.userClickCooldownMillis = cooldownMillis;
     }
 
-    // Max Clicks Per User
+    // Global Cooldown Millis
+
+    public void setGlobalClickCooldownMillis(long cooldownMillis) {
+        this.globalClickCooldownMillis = cooldownMillis;
+    }
+
+    private long getRemainingCooldown() {
+        if (globalClickCooldownMillis <= 0) {
+            return 0;
+        }
+        long elapsedMillis = System.currentTimeMillis() - lastClickTimeMillis;
+        long remainingMillis = globalClickCooldownMillis - elapsedMillis;
+        return Math.max(0, remainingMillis);
+    }
+
+    // User Max Clicks
 
     public int getUserMaxClicks() {
         return userMaxClicks;
@@ -171,6 +255,19 @@ public class CommandSign {
 
     public void setUserMaxClicks(int maxClicksPerUser) {
         this.userMaxClicks = maxClicksPerUser;
+    }
+
+    // Global Max Clicks
+
+    public void setGlobalMaxClicks(int maxClicks) {
+        this.globalMaxClicks = maxClicks;
+    }
+
+    private boolean checkGlobalMaxClicks() {
+        if (globalMaxClicks <= 0) {
+            return true;
+        }
+        return totalClicks < globalMaxClicks;
     }
 
     // Loading and Saving
