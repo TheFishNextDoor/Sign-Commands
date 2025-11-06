@@ -51,10 +51,11 @@ public class BlockInteract implements Listener {
 
     private boolean tickDelayBetwenClicksCheck (Player player) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
-        long currentTicks = TickCounterTask.getTicksFromServerStart();
         String key = player.getUniqueId().toString();
+        long currentTicks = TickCounterTask.getTicksFromServerStart();
         long lastInteractionTick = lastInteractionTickMap.getOrDefault(key, 0L);
-        if ((currentTicks - lastInteractionTick) < mainConfig.SIGN_CLICK_COOLDOWN_TICKS) {
+        long ticksSinceLastInteraction = currentTicks - lastInteractionTick;
+        if (ticksSinceLastInteraction >= mainConfig.SIGN_CLICK_COOLDOWN_TICKS) {
             lastInteractionTickMap.put(key, currentTicks);
             return true;
         }
