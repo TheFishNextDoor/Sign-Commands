@@ -72,7 +72,7 @@ public class BlockInteract implements Listener {
         
         // Check user cooldown
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
-        String commandSignId = commandSign.getId();
+        String commandSignId = commandSign.getName();
         if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getCooldownMillis())) {
             Long remainingCooldown = commandSignUser.getRemainingCooldown(commandSignId, commandSign.getCooldownMillis());
             player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");

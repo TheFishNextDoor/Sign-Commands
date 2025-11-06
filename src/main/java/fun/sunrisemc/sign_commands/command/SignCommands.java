@@ -240,10 +240,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 String locationString = StringUtils.getName(location);
                 int commandCount = sign.getCommands().size();
                 if (commandCount == 1) {
-                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " command)");
+                    sender.sendMessage(ChatColor.GOLD + sign.getName() + " " + locationString + " (" + commandCount + " command)");
                 } 
                 else {
-                    sender.sendMessage(ChatColor.GOLD + sign.getId() + " " + locationString + " (" + commandCount + " commands)");
+                    sender.sendMessage(ChatColor.GOLD + sign.getName() + " " + locationString + " (" + commandCount + " commands)");
                 }
             }
 
@@ -260,8 +260,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Get the command sign
-            String id = args[1];
-            Optional<CommandSign> commandSign = CommandSignManager.getById(id);
+            Optional<CommandSign> commandSign = CommandSignManager.getByName(args[1]);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Sign does not exist.");
                 return true;
@@ -304,9 +303,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Check if the new ID is already taken
+            // Check if the new name is already taken
             String newName = args[1];
-            if (CommandSignManager.getById(newName).isPresent()) {
+            if (CommandSignManager.getByName(newName).isPresent()) {
                 player.sendMessage(ChatColor.RED + "A sign with that name already exists.");
                 return true;
             }
@@ -325,7 +324,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getById(args[1]);
+            Optional<CommandSign> commandSign = CommandSignManager.getByName(args[1]);
             if (commandSign.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "Sign does not exist.");
                 return true;

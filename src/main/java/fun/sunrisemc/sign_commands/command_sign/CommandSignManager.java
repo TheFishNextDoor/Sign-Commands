@@ -30,7 +30,7 @@ public class CommandSignManager {
 
     // Getting
 
-    public static Optional<CommandSign> getById(@NonNull String id) {
+    public static Optional<CommandSign> getByName(@NonNull String id) {
         return Optional.ofNullable(signConfigurationsIdsMap.get(id));
     }
 
@@ -68,7 +68,7 @@ public class CommandSignManager {
         }
         else {
             CommandSign newSign = new CommandSign(location, newCommand);
-            String signId = newSign.getId();
+            String signId = newSign.getName();
             register(signId, newSign);
         }
 
@@ -112,9 +112,9 @@ public class CommandSignManager {
             return false;
         }
 
-        String oldId = commandSign.getId();
+        String oldId = commandSign.getName();
         signConfigurationsIdsMap.remove(oldId);
-        commandSign.setId(newId);
+        commandSign.setName(newId);
         signConfigurationsIdsMap.put(newId, commandSign);
 
         changes = true;
@@ -123,7 +123,7 @@ public class CommandSignManager {
     }
 
     public static boolean deleteSign(@NonNull CommandSign commandSign) {
-        String id = commandSign.getId();
+        String name = commandSign.getName();
 
         Optional<Location> signLocation = commandSign.getSignLocation();
         if (signLocation.isPresent()) {
@@ -131,7 +131,7 @@ public class CommandSignManager {
             signConfigurationsLocationsMap.remove(locationKey);
         }
 
-        signConfigurationsIdsMap.remove(id);
+        signConfigurationsIdsMap.remove(name);
         signConfigurationsList.remove(commandSign);
 
         changes = true;
@@ -149,9 +149,9 @@ public class CommandSignManager {
         signConfigurationsList.clear();
 
         YamlConfiguration config = ConfigFile.get("signs", false);
-        for (String id : config.getKeys(false)) {
-            CommandSign signConfiguration = new CommandSign(config, id);
-            register(id, signConfiguration);
+        for (String name : config.getKeys(false)) {
+            CommandSign signConfiguration = new CommandSign(config, name);
+            register(name, signConfiguration);
         }
 
         changes = false;
@@ -183,19 +183,19 @@ public class CommandSignManager {
 
     // Utils
 
-    static String generateId() {
+    static String generateName() {
         int idx = 1;
         while (true) {
-            String id = "sign-" + idx;
-            if (!signConfigurationsIdsMap.containsKey(id)) {
-                return id;
+            String name = "sign-" + idx;
+            if (!signConfigurationsIdsMap.containsKey(name)) {
+                return name;
             }
             idx++;
         }
     }
 
-    private static void register(@NonNull String id, @NonNull CommandSign signCommand) {
-        signConfigurationsIdsMap.put(id, signCommand);
+    private static void register(@NonNull String name, @NonNull CommandSign signCommand) {
+        signConfigurationsIdsMap.put(name, signCommand);
         Optional<Location> signLocation = signCommand.getSignLocation();
             if (!signLocation.isEmpty()) {
                 String locationKey = toKey(signLocation.get());

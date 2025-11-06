@@ -17,7 +17,7 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 
 public class CommandSign {
 
-    private String id;
+    private String name;
 
     private Optional<Location> signLocation = Optional.empty();
     private Optional<String> lastValidSignLocationString = Optional.empty();
@@ -32,23 +32,23 @@ public class CommandSign {
     private int maxClicksPerUser = 0;
 
     CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
-        this.id = CommandSignManager.generateId();
+        this.name = CommandSignManager.generateName();
         this.signLocation = Optional.of(location);
         this.commands.add(firstSignCommand);
     }
 
-    CommandSign(@NonNull YamlConfiguration config, @NonNull String id) {
-        this.id = id;
+    CommandSign(@NonNull YamlConfiguration config, @NonNull String name) {
+        this.name = name;
 
         // Load Location
-        if (config.contains(id + ".location")) {
-            String locationString = config.getString(id + ".location");
+        if (config.contains(name + ".location")) {
+            String locationString = config.getString(name + ".location");
 
             this.lastValidSignLocationString = Optional.of(locationString);
             
             String[] parts = locationString.split(",");
             if (parts.length != 4) {
-                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + id);
+                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
                 return;
             }
 
@@ -59,7 +59,7 @@ public class CommandSign {
 
             World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
             if (world == null) {
-                SignCommandsPlugin.logWarning("World not found for sign configuration: " + id);
+                SignCommandsPlugin.logWarning("World not found for sign configuration: " + name);
                 return;
             }
 
@@ -70,7 +70,7 @@ public class CommandSign {
                 z = Integer.parseInt(zString);
             }
             catch (NumberFormatException e) {
-                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + id);
+                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
                 return;
             }
 
@@ -78,11 +78,11 @@ public class CommandSign {
         }
 
         // Load Commands
-        if (config.contains(id + ".commands")) {
-            for (String commandEntry : config.getStringList(id + ".commands")) {
+        if (config.contains(name + ".commands")) {
+            for (String commandEntry : config.getStringList(name + ".commands")) {
                 String[] entryParts = commandEntry.split(":", 3);
                 if (entryParts.length != 3) {
-                    SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + id + ": " + commandEntry);
+                    SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + name + ": " + commandEntry);
                     continue;
                 }
 
@@ -92,13 +92,13 @@ public class CommandSign {
 
                 Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
                 if (signClickType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + id + ": " + clickTypeString);
+                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + name + ": " + clickTypeString);
                     continue;
                 }
 
                 Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
                 if (signCommandType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + id + ": " + commandTypeString);
+                    SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + name + ": " + commandTypeString);
                     continue;
                 }
 
@@ -108,28 +108,28 @@ public class CommandSign {
         }
 
         // Load Required Permissions
-        for (String permission : config.getStringList(id + ".required-permissions")) {
+        for (String permission : config.getStringList(name + ".required-permissions")) {
             requiredPermissions.add(permission);
         }
 
         // Load Blocked Permissions
-        for (String permission : config.getStringList(id + ".blocked-permissions")) {
+        for (String permission : config.getStringList(name + ".blocked-permissions")) {
             blockedPermissions.add(permission);
         }
 
         // Load Cooldown
-        if (config.contains(id + ".cooldown-millis")) {
-            this.cooldownMillis = config.getLong(id + ".cooldown-millis");
+        if (config.contains(name + ".cooldown-millis")) {
+            this.cooldownMillis = config.getLong(name + ".cooldown-millis");
         }
 
         // Load Max Clicks Per User
-        if (config.contains(id + ".max-clicks-per-user")) {
-            this.maxClicksPerUser = config.getInt(id + ".max-clicks-per-user");
+        if (config.contains(name + ".max-clicks-per-user")) {
+            this.maxClicksPerUser = config.getInt(name + ".max-clicks-per-user");
         }
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public Optional<Location> getSignLocation() {
@@ -230,8 +230,8 @@ public class CommandSign {
         this.maxClicksPerUser = maxClicksPerUser;
     }
 
-    void setId(@NonNull String newId) {
-        this.id = newId;
+    void setName(@NonNull String newId) {
+        this.name = newId;
     }
 
     void saveTo(@NonNull YamlConfiguration config) {
@@ -251,7 +251,7 @@ public class CommandSign {
         else {
             return;
         }
-        config.set(id + ".location", locationString);
+        config.set(name + ".location", locationString);
 
         // Save Commands
         ArrayList<String> commandEntries = new ArrayList<>();
@@ -259,27 +259,27 @@ public class CommandSign {
             String entry = command.getClickType().getName() + " : " + command.getCommandType().getName() + " : " + command.getCommand();
             commandEntries.add(entry);
         }
-        config.set(id + ".commands", commandEntries);
+        config.set(name + ".commands", commandEntries);
 
         // Save Required Permissions
         if (!requiredPermissions.isEmpty()) {
-            config.set(id + ".required-permissions", new ArrayList<>(requiredPermissions));
+            config.set(name + ".required-permissions", new ArrayList<>(requiredPermissions));
         }
         
 
         // Save Blocked Permissions
         if (!blockedPermissions.isEmpty()) {
-            config.set(id + ".blocked-permissions", new ArrayList<>(blockedPermissions));
+            config.set(name + ".blocked-permissions", new ArrayList<>(blockedPermissions));
         }
 
         // Save Cooldown
         if (cooldownMillis > 0) {
-            config.set(id + ".cooldown-millis", cooldownMillis);
+            config.set(name + ".cooldown-millis", cooldownMillis);
         }
 
         // Save Max Clicks Per User
         if (maxClicksPerUser > 0) {
-            config.set(id + ".max-clicks-per-user", maxClicksPerUser);
+            config.set(name + ".max-clicks-per-user", maxClicksPerUser);
         }
     }
 }
