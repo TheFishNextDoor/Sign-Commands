@@ -63,15 +63,25 @@ public class CommandSignUser {
         String name = commandSign.getName();
         return lastSignClickMap.getOrDefault(name, 0L);
     }
+
+    public void resetLastSignClickTimeMillis(CommandSign commandSign) {
+        String name = commandSign.getName();
+        lastSignClickMap.remove(name);
+    }
     
     public int getTotalSignClicks(CommandSign commandSign) {
         String name = commandSign.getName();
-        long lastReset = commandSign.getLastUserMaxClicksResetTimeMillis();
+        long lastReset = commandSign.getLastUserClickLimitResetTimeMillis();
         if (lastReset > getLastSignClickTimeMillis(commandSign)) {
             signClicksMap.remove(name);
             return 0;
         }
         return signClicksMap.getOrDefault(name, 0);
+    }
+
+    public void resetTotalSignClicks(CommandSign commandSign) {
+        String name = commandSign.getName();
+        signClicksMap.remove(name);
     }
 
     public void onSignExecute(CommandSign commandSign) {

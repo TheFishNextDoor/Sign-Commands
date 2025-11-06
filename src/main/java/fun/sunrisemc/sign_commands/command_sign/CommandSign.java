@@ -37,7 +37,7 @@ public class CommandSign {
     private long globalLastClickTimeMillis = 0;
 
     private int globalMaxClicks = 0;
-    private int globalTotalClicks = 0;
+    private int globalClickLimit = 0;
 
     // User Click Tracking
 
@@ -45,13 +45,13 @@ public class CommandSign {
     private long lastUserClickCooldownResetTimeMillis = 0;
 
     private int userMaxClicks = 0;
-    private long lastUserMaxClicksResetTimeMillis = 0;
+    private long lastUserClickLimitResetTimeMillis = 0;
 
     public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
         this.signLocation = Optional.of(location);
         this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
-        this.lastUserMaxClicksResetTimeMillis = System.currentTimeMillis();
+        this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
 
         CommandSignManager.register(this);
     }
@@ -127,7 +127,7 @@ public class CommandSign {
         }
 
         globalLastClickTimeMillis = System.currentTimeMillis();
-        globalTotalClicks++;
+        globalClickLimit++;
 
         CommandSignUserManager.get(player).onSignExecute(this);
 
@@ -233,24 +233,14 @@ public class CommandSign {
         return false;
     }
 
-    // Cooldown Millis
-
-    public long getUserClickCooldownMillis() {
-        return userClickCooldownMillis;
-    }
-
-    public void setUserClickCooldownMillis(long cooldownMillis) {
-        this.userClickCooldownMillis = cooldownMillis;
-    }
-
-    public long getLastUserClickCooldownResetTimeMillis() {
-        return lastUserClickCooldownResetTimeMillis;
-    }
-
     // Global Cooldown Millis
 
     public void setGlobalClickCooldownMillis(long cooldownMillis) {
         this.globalClickCooldownMillis = cooldownMillis;
+    }
+
+    public void resetGlobalClickCooldown() {
+        this.globalLastClickTimeMillis = 0;
     }
 
     private long getRemainingCooldown() {
@@ -260,6 +250,41 @@ public class CommandSign {
         long elapsedMillis = System.currentTimeMillis() - globalLastClickTimeMillis;
         long remainingMillis = globalClickCooldownMillis - elapsedMillis;
         return Math.max(0, remainingMillis);
+    }
+
+    // Global Max Clicks
+
+    public void setGlobalMaxClicks(int maxClicks) {
+        this.globalMaxClicks = maxClicks;
+    }
+
+    public void resetGlobalClickLimit() {
+        this.globalClickLimit = 0;
+    }
+
+    private boolean checkGlobalMaxClicks() {
+        if (globalMaxClicks <= 0) {
+            return true;
+        }
+        return globalClickLimit < globalMaxClicks;
+    }
+
+    // User Cooldown Millis
+
+    public long getUserClickCooldownMillis() {
+        return userClickCooldownMillis;
+    }
+
+    public void setUserClickCooldownMillis(long cooldownMillis) {
+        this.userClickCooldownMillis = cooldownMillis;
+    }
+
+    public void resetAllUserClickCooldowns() {
+        this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
+    }
+
+    public long getLastUserClickCooldownResetTimeMillis() {
+        return lastUserClickCooldownResetTimeMillis;
     }
 
     // User Max Clicks
@@ -272,21 +297,12 @@ public class CommandSign {
         this.userMaxClicks = maxClicksPerUser;
     }
 
-    public long getLastUserMaxClicksResetTimeMillis() {
-        return lastUserMaxClicksResetTimeMillis;
+    public void resetAllUserClickLimits() {
+        this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
     }
 
-    // Global Max Clicks
-
-    public void setGlobalMaxClicks(int maxClicks) {
-        this.globalMaxClicks = maxClicks;
-    }
-
-    private boolean checkGlobalMaxClicks() {
-        if (globalMaxClicks <= 0) {
-            return true;
-        }
-        return globalTotalClicks < globalMaxClicks;
+    public long getLastUserClickLimitResetTimeMillis() {
+        return lastUserClickLimitResetTimeMillis;
     }
 
     // Loading and Saving
@@ -386,7 +402,7 @@ public class CommandSign {
 
         // Load Global Total Clicks
         if (config.contains(name + ".global-total-clicks")) {
-            this.globalTotalClicks = config.getInt(name + ".global-total-clicks");
+            this.globalClickLimit = config.getInt(name + ".global-total-clicks");
         }
 
         // Load User Click Cooldown Millis
@@ -409,10 +425,10 @@ public class CommandSign {
 
         // Load Last User Max Clicks Reset Time Millis
         if (config.contains(name + ".last-user-max-clicks-reset-time-millis")) {
-            this.lastUserMaxClicksResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
+            this.lastUserClickLimitResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
         }
         else {
-            this.lastUserMaxClicksResetTimeMillis = System.currentTimeMillis();
+            this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
         }
     }
 
@@ -465,8 +481,8 @@ public class CommandSign {
         }
 
         // Save Global Total Clicks
-        if (globalTotalClicks > 0) {
-            config.set(name + ".global-total-clicks", globalTotalClicks);
+        if (globalClickLimit > 0) {
+            config.set(name + ".global-total-clicks", globalClickLimit);
         }
 
         // Save User Click Cooldown Millis
@@ -485,8 +501,8 @@ public class CommandSign {
         }
 
         // Save Last User Max Clicks Reset Time Millis
-        if (lastUserMaxClicksResetTimeMillis > 0) {
-            config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserMaxClicksResetTimeMillis);
+        if (lastUserClickLimitResetTimeMillis > 0) {
+            config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserClickLimitResetTimeMillis);
         }
     }
 }

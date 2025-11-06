@@ -25,6 +25,9 @@ import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
+import fun.sunrisemc.sign_commands.user.CommandSignUser;
+import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
+import fun.sunrisemc.sign_commands.utils.PlayerUtils;
 import fun.sunrisemc.sign_commands.utils.RayTrace;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -69,15 +72,19 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION)) {
                 completions.add("setglobalclickcooldown");
+                completions.add("resetglobalclickcooldown");
             }
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
                 completions.add("setglobalclicklimit");
+                completions.add("resetglobalclicklimit");
             }
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
                 completions.add("setuserclickcooldown");
+                completions.add("resetuserclickcooldown");
             }
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
                 completions.add("setuserclicklimit");
+                completions.add("resetuserclicklimit");
             }
             return completions;
         }
@@ -792,6 +799,31 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             player.sendMessage(ChatColor.GOLD + "Cooldown set to: " + cooldown.get() + " milliseconds.");
             return true;
         }
+
+        // Reset Global Click Cooldown Millis
+        else if (isPlayer && (subcommand.equals("resetglobalclickcooldown") || subcommand.equals("rgcc")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION)) {
+            Player player = (Player) sender;
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+            Location location = targetBlock.get().getLocation();
+
+            // Get the command sign
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Reset the cooldown
+            commandSign.get().resetGlobalClickCooldown();
+            player.sendMessage(ChatColor.GOLD + "Global click cooldown reset.");
+            return true;
+        }
         // Set Global Click Limit
         else if (isPlayer && (subcommand.equals("setglobalclicklimit") || subcommand.equals("sgcl")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
             Player player = (Player) sender;
@@ -827,6 +859,30 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             // Set the click limit
             commandSign.get().setGlobalMaxClicks(maxClicks.get());
             player.sendMessage(ChatColor.GOLD + "Click limit set to: " + maxClicks.get() + ".");
+            return true;
+        }
+        // Reset Global Click Limit
+        else if (isPlayer && (subcommand.equals("resetglobalclicklimit") || subcommand.equals("rgcl")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
+            Player player = (Player) sender;
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+            Location location = targetBlock.get().getLocation();
+
+            // Get the command sign
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Reset the click limit
+            commandSign.get().resetGlobalClickLimit();
+            player.sendMessage(ChatColor.GOLD + "Global click limit reset.");
             return true;
         }
         // Set User Click Cooldown Millis
@@ -866,6 +922,52 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             player.sendMessage(ChatColor.GOLD + "Cooldown set to: " + cooldown.get() + " milliseconds.");
             return true;
         }
+        // Reset User Click Cooldown Millis
+        else if (isPlayer && (subcommand.equals("resetuserclickcooldown") || subcommand.equals("rucc")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <resetuserclickcooldown|rucc> <player | all>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+            Location location = targetBlock.get().getLocation();
+
+            // Get the command sign
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Reset for all players if specified
+            String target = args[1];
+            if (target.equalsIgnoreCase("all")) {
+                commandSign.get().resetAllUserClickCooldowns();
+                player.sendMessage(ChatColor.GOLD + "All user click cooldowns reset.");
+                return true;
+            }
+
+            // Get the target player
+            Optional<Player> targetPlayer = PlayerUtils.getPlayerByName(target);
+            if (targetPlayer.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Player not found.");
+                return true;
+            }
+
+            // Reset for the specific player
+            CommandSignUser commandSignUser = CommandSignUserManager.get(targetPlayer.get());
+            commandSignUser.resetLastSignClickTimeMillis(commandSign.get());
+            sender.sendMessage(ChatColor.GOLD + "User click cooldown reset for " + targetPlayer.get().getName() + ".");
+            return true;
+        }
         // Set User Click Limit
         else if (isPlayer && (subcommand.equals("setuserclicklimit") || subcommand.equals("sucl")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
             Player player = (Player) sender;
@@ -901,6 +1003,52 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             // Set the max clicks
             commandSign.get().setUserMaxClicks(maxClicks.get());
             player.sendMessage(ChatColor.GOLD + "Click limit set to: " + maxClicks.get() + ".");
+            return true;
+        }
+        // Reset User Click Limit
+        else if (isPlayer && (subcommand.equals("resetuserclicklimit") || subcommand.equals("rucl")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <resetuserclicklimit|rucl> <player | all>");
+                return true;
+            }
+
+            // Get the block the player is looking at
+            Optional<Block> targetBlock = RayTrace.block(player);
+            if (targetBlock.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
+                return true;
+            }
+            Location location = targetBlock.get().getLocation();
+
+            // Get the command sign
+            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Reset for all players if specified
+            String target = args[1];
+            if (target.equalsIgnoreCase("all")) {
+                commandSign.get().resetAllUserClickLimits();
+                player.sendMessage(ChatColor.GOLD + "All user click limits reset.");
+                return true;
+            }
+
+            // Get the target player
+            Optional<Player> targetPlayer = PlayerUtils.getPlayerByName(target);
+            if (targetPlayer.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "Player not found.");
+                return true;
+            }
+
+            // Reset for the specific player
+            CommandSignUser commandSignUser = CommandSignUserManager.get(targetPlayer.get());
+            commandSignUser.resetTotalSignClicks(commandSign.get());
+            sender.sendMessage(ChatColor.GOLD + "User click limit reset for " + targetPlayer.get().getName() + ".");
             return true;
         }
 
@@ -945,15 +1093,19 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setglobalclickcooldown | sgcc> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the global click cooldown milliseconds for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <resetglobalclickcooldown | rgcc> " + ChatColor.WHITE + "Reset the global click cooldown for a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setglobalclicklimit | sgcl> <clickLimit> " + ChatColor.WHITE + "Set the global click limit for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <resetglobalclicklimit | rgcl> " + ChatColor.WHITE + "Reset the global click limit for a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setuserclickcooldown | succ> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the user click cooldown milliseconds for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <resetuserclickcooldown | rucc> <player | all> " + ChatColor.WHITE + "Reset the user click cooldown for all users for a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setuserclicklimit | sucl> <clickLimit> " + ChatColor.WHITE + "Set the user click limit for a command sign.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <resetuserclicklimit | rucl> <player | all> " + ChatColor.WHITE + "Reset the user click limit for all users for a command sign.");
         }
     }
 
