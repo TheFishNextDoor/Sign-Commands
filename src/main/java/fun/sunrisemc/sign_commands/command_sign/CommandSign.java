@@ -50,6 +50,8 @@ public class CommandSign {
     public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
         this.signLocation = Optional.of(location);
+        this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
+        this.lastUserMaxClicksResetTimeMillis = System.currentTimeMillis();
 
         CommandSignManager.register(this);
     }
