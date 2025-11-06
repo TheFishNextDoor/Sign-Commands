@@ -171,7 +171,7 @@ public class CommandSignManager {
 
         YamlConfiguration config = new YamlConfiguration();
         for (CommandSign signConfiguration : signConfigurationsList) {
-            signConfiguration.save(config);
+            signConfiguration.saveTo(config);
         }
 
         ConfigFile.save("signs", config);

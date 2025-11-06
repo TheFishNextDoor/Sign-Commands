@@ -234,7 +234,7 @@ public class CommandSign {
         this.id = newId;
     }
 
-    void save(@NonNull YamlConfiguration config) {
+    void saveTo(@NonNull YamlConfiguration config) {
         if (commands.isEmpty()) {
             return;
         }
