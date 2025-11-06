@@ -311,7 +311,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Rename the sign
-            CommandSignManager.renameSign(commandSign.get(), newName);
+            commandSign.get().setName(newName);
             player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newName);
             return true;
         }
@@ -331,7 +331,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Delete the sign
-            CommandSignManager.deleteSign(commandSign.get());
+            commandSign.get().delete();
             sender.sendMessage(ChatColor.GOLD + "Command sign deleted.");
             return true;
 
@@ -375,9 +375,20 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Get or create the command sign
+            Optional<CommandSign> existingCommandSign = CommandSignManager.getAtLocation(location);
+            CommandSign commandSign;
+            if (existingCommandSign.isEmpty()) {
+                commandSign = new CommandSign(location);
+            } 
+            else {
+                commandSign = existingCommandSign.get();
+            }
+
             // Add the command to the command sign
-            String signCommand = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
-            CommandSignManager.addCommand(location, signClickType.get(), signCommandType.get(), signCommand);
+            String signCommandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+            SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), signCommandString);
+            commandSign.addCommand(signCommand);
             player.sendMessage(ChatColor.GOLD + "Command added.");
             return true;
         }
@@ -421,7 +432,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Remove the command
-            if (CommandSignManager.removeCommand(location, index.get())) {
+            if (commandSign.get().removeCommand(index.get())) {
                 player.sendMessage(ChatColor.GOLD + "Command removed.");
             } 
             else {
@@ -484,9 +495,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Edit the command
-            String newSignCommand = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
-            if (CommandSignManager.editCommand(location, index.get(), signClickType.get(), signCommandType.get(), newSignCommand)) {
-                player.sendMessage(ChatColor.GOLD + "Command edited.");
+            String newSignCommandString = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+            SignCommand newSignCommand = new SignCommand(signClickType.get(), signCommandType.get(), newSignCommandString);
+            if (commandSign.get().editCommand(index.get(), newSignCommand)) {
+                player.sendMessage(ChatColor.GOLD + "Ccommand edited.");
             } 
             else {
                 player.sendMessage(ChatColor.RED + "Failed to edit command.");

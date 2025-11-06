@@ -7,7 +7,7 @@ import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
 public class AutoSaveTask {
-    private static final int INTERVAL_TICKS = 20 * 30; // 30 Seconds
+    private static final int INTERVAL_TICKS = 20 * 60; // 60 Seconds
 
     private static int id = -1;
 

@@ -31,15 +31,151 @@ public class CommandSign {
 
     private int maxClicksPerUser = 0;
 
-    CommandSign(@NonNull Location location, @NonNull SignCommand firstSignCommand) {
+    public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
         this.signLocation = Optional.of(location);
-        this.commands.add(firstSignCommand);
+
+        CommandSignManager.register(this);
     }
 
-    CommandSign(@NonNull YamlConfiguration config, @NonNull String name) {
+    protected CommandSign(@NonNull YamlConfiguration config, @NonNull String name) {
         this.name = name;
 
+        loadFrom(config);
+
+        CommandSignManager.register(this);
+    }
+
+    public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
+        if (!signLocation.isPresent()) {
+            return;
+        }
+
+        for (SignCommand command : commands) {
+            command.execute(player, clickType);
+        }
+    }
+
+    // Name
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@NonNull String newId) {
+        CommandSignManager.unregister(this);
+        this.name = newId;
+        CommandSignManager.register(this);
+    }
+
+    // Delete
+
+    public void delete() {
+        CommandSignManager.unregister(this);
+    }
+
+    // Location
+
+    public Optional<Location> getSignLocation() {
+        return signLocation;
+    }
+
+    // Commands
+
+    public ArrayList<SignCommand> getCommands() {
+        return commands;
+    }
+
+    public void addCommand(@NonNull SignCommand command) {
+        commands.add(command);
+    }
+
+    public boolean removeCommand(int index) {
+        if (index < 0 || index >= commands.size()) {
+            return false;
+        }
+        commands.remove(index);
+        return true;
+    }
+
+    public boolean editCommand(int index, @NonNull SignCommand newCommand) {
+        if (index < 0 || index >= commands.size()) {
+            return false;
+        }
+        
+        commands.set(index, newCommand);
+        return true;
+    }
+
+    // Required Permissions
+
+    public HashSet<String> getRequiredPermissions() {
+        return requiredPermissions;
+    }
+
+    public boolean hasRequiredPermissions(@NonNull Player player) {
+        for (String permission : requiredPermissions) {
+            if (!player.hasPermission(permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean addRequiredPermission(@NonNull String permission) {
+        return requiredPermissions.add(permission);
+    }
+
+    public boolean removeRequiredPermission(@NonNull String permission) {
+        return requiredPermissions.remove(permission);
+    }
+    
+    // Blocked Permissions
+
+    public HashSet<String> getBlockedPermissions() {
+        return blockedPermissions;
+    }
+
+    public boolean hasBlockedPermissions(@NonNull Player player) {
+        for (String permission : blockedPermissions) {
+            if (player.hasPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addBlockedPermission(@NonNull String permission) {
+        return blockedPermissions.add(permission);
+    }
+
+    public boolean removeBlockedPermission(@NonNull String permission) {
+        return blockedPermissions.remove(permission);
+    }
+
+    // Cooldown Millis
+
+    public long getCooldownMillis() {
+        return cooldownMillis;
+    }
+
+    public void setCooldownMillis(long cooldownMillis) {
+        this.cooldownMillis = cooldownMillis;
+    }
+
+    // Max Clicks Per User
+
+    public int getMaxClicksPerUser() {
+        return maxClicksPerUser;
+    }
+
+    public void setMaxClicksPerUser(int maxClicksPerUser) {
+        this.maxClicksPerUser = maxClicksPerUser;
+    }
+
+    // Loading and Saving
+
+    protected void loadFrom(@NonNull YamlConfiguration config) {
         // Load Location
         if (config.contains(name + ".location")) {
             String locationString = config.getString(name + ".location");
@@ -128,117 +264,7 @@ public class CommandSign {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Optional<Location> getSignLocation() {
-        return signLocation;
-    }
-
-    public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
-        if (!signLocation.isPresent()) {
-            return;
-        }
-
-        for (SignCommand command : commands) {
-            command.execute(player, clickType);
-        }
-    }
-
-    public ArrayList<SignCommand> getCommands() {
-        return commands;
-    }
-
-    public void addCommand(@NonNull SignCommand command) {
-        commands.add(command);
-    }
-
-    public boolean removeCommand(int index) {
-        if (index < 0 || index >= commands.size()) {
-            return false;
-        }
-        commands.remove(index);
-        return true;
-    }
-
-    public boolean editCommand(int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
-        if (index < 0 || index >= commands.size()) {
-            return false;
-        }
-
-        SignCommand newCommand = new SignCommand(clickType, commandType, command);
-        commands.set(index, newCommand);
-        return true;
-    }
-
-    public HashSet<String> getRequiredPermissions() {
-        return requiredPermissions;
-    }
-
-    public boolean hasRequiredPermissions(@NonNull Player player) {
-        for (String permission : requiredPermissions) {
-            if (!player.hasPermission(permission)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean addRequiredPermission(@NonNull String permission) {
-        return requiredPermissions.add(permission);
-    }
-
-    public boolean removeRequiredPermission(@NonNull String permission) {
-        return requiredPermissions.remove(permission);
-    }
-
-    public HashSet<String> getBlockedPermissions() {
-        return blockedPermissions;
-    }
-
-    public boolean hasBlockedPermissions(@NonNull Player player) {
-        for (String permission : blockedPermissions) {
-            if (player.hasPermission(permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean addBlockedPermission(@NonNull String permission) {
-        return blockedPermissions.add(permission);
-    }
-
-    public boolean removeBlockedPermission(@NonNull String permission) {
-        return blockedPermissions.remove(permission);
-    }
-
-    public long getCooldownMillis() {
-        return cooldownMillis;
-    }
-
-    public void setCooldownMillis(long cooldownMillis) {
-        this.cooldownMillis = cooldownMillis;
-    }
-
-    public int getMaxClicksPerUser() {
-        return maxClicksPerUser;
-    }
-
-    public void setMaxClicksPerUser(int maxClicksPerUser) {
-        this.maxClicksPerUser = maxClicksPerUser;
-    }
-
-    void setName(@NonNull String newId) {
-        this.name = newId;
-    }
-
-    void saveTo(@NonNull YamlConfiguration config) {
-        if (commands.isEmpty()) {
-            return;
-        }
-
+    protected void saveTo(@NonNull YamlConfiguration config) {
         // Save Location
         String locationString;
         if (signLocation.isPresent()) {

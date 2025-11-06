@@ -13,16 +13,11 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.file.ConfigFile;
-import fun.sunrisemc.sign_commands.sign_command.SignClickType;
-import fun.sunrisemc.sign_commands.sign_command.SignCommand;
-import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.utils.RayTrace;
 
 public class CommandSignManager {
 
-    private static boolean changes = false;
-
-    private static boolean saving = false;
+    private static boolean savingSigns = false;
 
     private static HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
     private static HashMap<String, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
@@ -57,86 +52,32 @@ public class CommandSignManager {
         return Collections.unmodifiableList(signConfigurationsList);
     }
 
-    // Editing
+    // Registering and Unregistering
 
-    public static void addCommand(@NonNull Location location, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
-        SignCommand newCommand = new SignCommand(clickType, commandType, command);
+    protected static void register(@NonNull CommandSign signCommand) {
+        String name = signCommand.getName();
+        signConfigurationsIdsMap.put(name, signCommand);
 
-        Optional<CommandSign> existingSign = getAtLocation(location);
-        if (existingSign.isPresent()) {
-            existingSign.get().addCommand(newCommand);
+        Optional<Location> signLocation = signCommand.getSignLocation();
+        if (!signLocation.isEmpty()) {
+            String locationKey = toKey(signLocation.get());
+            signConfigurationsLocationsMap.put(locationKey, signCommand);
         }
-        else {
-            CommandSign newSign = new CommandSign(location, newCommand);
-            String signId = newSign.getName();
-            register(signId, newSign);
-        }
-
-        changes = true;
-    }
-
-    public static boolean removeCommand(@NonNull Location location, int index) {
-        Optional<CommandSign> existingCommandSign = getAtLocation(location);
-        if (existingCommandSign.isEmpty()) {
-            return false;
-        }
-
-        CommandSign commandSign = existingCommandSign.get();
-        if (commandSign.removeCommand(index) && commandSign.getCommands().isEmpty()) {
-            String key = toKey(location);
-            signConfigurationsLocationsMap.remove(key);
-            signConfigurationsList.remove(commandSign);
-        }
-
-        changes = true;
-
-        return true;
-    }
-
-    public static boolean editCommand(@NonNull Location location, int index, @NonNull SignClickType clickType, @NonNull SignCommandType commandType, @NonNull String command) {
-        Optional<CommandSign> existingCommandSign = getAtLocation(location);
-        if (existingCommandSign.isEmpty()) {
-            return false;
-        }
-
-        CommandSign commandSign = existingCommandSign.get();
-        commandSign.editCommand(index, clickType, commandType, command);
-
-        changes = true;
         
-        return true;
+        signConfigurationsList.add(signCommand);
     }
 
-    public static boolean renameSign(@NonNull CommandSign commandSign, @NonNull String newId) {
-        if (signConfigurationsIdsMap.containsKey(newId)) {
-            return false;
-        }
+    protected static void unregister(@NonNull CommandSign signCommand) {
+        String signName = signCommand.getName();
+        signConfigurationsIdsMap.remove(signName);
 
-        String oldId = commandSign.getName();
-        signConfigurationsIdsMap.remove(oldId);
-        commandSign.setName(newId);
-        signConfigurationsIdsMap.put(newId, commandSign);
-
-        changes = true;
-
-        return true;
-    }
-
-    public static boolean deleteSign(@NonNull CommandSign commandSign) {
-        String name = commandSign.getName();
-
-        Optional<Location> signLocation = commandSign.getSignLocation();
-        if (signLocation.isPresent()) {
+        Optional<Location> signLocation = signCommand.getSignLocation();
+        if (!signLocation.isEmpty()) {
             String locationKey = toKey(signLocation.get());
             signConfigurationsLocationsMap.remove(locationKey);
         }
 
-        signConfigurationsIdsMap.remove(name);
-        signConfigurationsList.remove(commandSign);
-
-        changes = true;
-
-        return true;
+        signConfigurationsList.remove(signCommand);
     }
     
     // Loading and Saving
@@ -150,24 +91,19 @@ public class CommandSignManager {
 
         YamlConfiguration config = ConfigFile.get("signs", false);
         for (String name : config.getKeys(false)) {
-            CommandSign signConfiguration = new CommandSign(config, name);
-            register(name, signConfiguration);
+            new CommandSign(config, name);
         }
-
-        changes = false;
 
         SignCommandsPlugin.logInfo("Loaded " + signConfigurationsLocationsMap.size() + " sign configurations.");
     }
 
     public static void saveSigns() {
-        if (!changes || saving) {
+        if (savingSigns) {
             return;
         }
+        savingSigns = true;
 
-        saving = true;
-        changes = false;
-
-        SignCommandsPlugin.logInfo("Saving " + signConfigurationsList.size() + " sign configurations...");
+        SignCommandsPlugin.logInfo("Saving sign configurations...");
 
         YamlConfiguration config = new YamlConfiguration();
         for (CommandSign signConfiguration : signConfigurationsList) {
@@ -175,15 +111,15 @@ public class CommandSignManager {
         }
 
         ConfigFile.save("signs", config);
-        
-        SignCommandsPlugin.logInfo("Saved " + signConfigurationsList.size() + " sign configurations.");
 
-        saving = false;
+        savingSigns = false;
+        
+        SignCommandsPlugin.logInfo("Saved " + signConfigurationsLocationsMap.size() + " sign configurations.");
     }
 
     // Utils
 
-    static String generateName() {
+    protected static String generateName() {
         int idx = 1;
         while (true) {
             String name = "sign-" + idx;
@@ -192,16 +128,6 @@ public class CommandSignManager {
             }
             idx++;
         }
-    }
-
-    private static void register(@NonNull String name, @NonNull CommandSign signCommand) {
-        signConfigurationsIdsMap.put(name, signCommand);
-        Optional<Location> signLocation = signCommand.getSignLocation();
-            if (!signLocation.isEmpty()) {
-                String locationKey = toKey(signLocation.get());
-                signConfigurationsLocationsMap.put(locationKey, signCommand);
-            }
-        signConfigurationsList.add(signCommand);
     }
 
     private static String toKey(@NonNull Location location) {
