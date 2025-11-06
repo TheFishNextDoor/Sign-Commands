@@ -39,7 +39,6 @@ public class CommandSign {
     private int globalMaxClicks = 0;
     private int globalTotalClicks = 0;
 
-
     // User Click Tracking
 
     private long userClickCooldownMillis = 0;
@@ -368,14 +367,50 @@ public class CommandSign {
             blockedPermissions.add(permission);
         }
 
-        // Load User Cooldown
+        // Load Global Click Cooldown Millis
+        if (config.contains(name + ".global-click-cooldown-millis")) {
+            this.globalClickCooldownMillis = config.getLong(name + ".global-click-cooldown-millis");
+        }
+
+        // Load Global Last Click Time Millis
+        if (config.contains(name + ".global-last-click-time-millis")) {
+            this.globalLastClickTimeMillis = config.getLong(name + ".global-last-click-time-millis");
+        }
+
+        // Load Global Max Clicks
+        if (config.contains(name + ".global-max-clicks")) {
+            this.globalMaxClicks = config.getInt(name + ".global-max-clicks");
+        }
+
+        // Load Global Total Clicks
+        if (config.contains(name + ".global-total-clicks")) {
+            this.globalTotalClicks = config.getInt(name + ".global-total-clicks");
+        }
+
+        // Load User Click Cooldown Millis
         if (config.contains(name + ".user-click-cooldown-millis")) {
             this.userClickCooldownMillis = config.getLong(name + ".user-click-cooldown-millis");
         }
 
-        // Load Max Clicks Per User
+        // Load Last User Click Cooldown Reset Time Millis
+        if (config.contains(name + ".last-user-click-cooldown-reset-time-millis")) {
+            this.lastUserClickCooldownResetTimeMillis = config.getLong(name + ".last-user-click-cooldown-reset-time-millis");
+        }
+        else {
+            this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
+        }
+
+        // Load User Max Clicks
         if (config.contains(name + ".user-max-clicks")) {
             this.userMaxClicks = config.getInt(name + ".user-max-clicks");
+        }
+
+        // Load Last User Max Clicks Reset Time Millis
+        if (config.contains(name + ".last-user-max-clicks-reset-time-millis")) {
+            this.lastUserMaxClicksResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
+        }
+        else {
+            this.lastUserMaxClicksResetTimeMillis = System.currentTimeMillis();
         }
     }
 
@@ -406,11 +441,30 @@ public class CommandSign {
         if (!requiredPermissions.isEmpty()) {
             config.set(name + ".required-permissions", new ArrayList<>(requiredPermissions));
         }
-        
 
         // Save Blocked Permissions
         if (!blockedPermissions.isEmpty()) {
             config.set(name + ".blocked-permissions", new ArrayList<>(blockedPermissions));
+        }
+
+        // Save Global Click Cooldown Millis
+        if (globalClickCooldownMillis > 0) {
+            config.set(name + ".global-click-cooldown-millis", globalClickCooldownMillis);
+        }
+
+        // Save Global Last Click Time Millis
+        if (globalLastClickTimeMillis > 0) {
+            config.set(name + ".global-last-click-time-millis", globalLastClickTimeMillis);
+        }
+
+        // Save Global Max Clicks
+        if (globalMaxClicks > 0) {
+            config.set(name + ".global-max-clicks", globalMaxClicks);
+        }
+
+        // Save Global Total Clicks
+        if (globalTotalClicks > 0) {
+            config.set(name + ".global-total-clicks", globalTotalClicks);
         }
 
         // Save User Click Cooldown Millis
@@ -418,9 +472,19 @@ public class CommandSign {
             config.set(name + ".user-click-cooldown-millis", userClickCooldownMillis);
         }
 
+        // Save Last User Click Cooldown Reset Time Millis
+        if (lastUserClickCooldownResetTimeMillis > 0) {
+            config.set(name + ".last-user-click-cooldown-reset-time-millis", lastUserClickCooldownResetTimeMillis);
+        }
+
         // Save User Max Clicks
         if (userMaxClicks > 0) {
             config.set(name + ".user-max-clicks", userMaxClicks);
+        }
+
+        // Save Last User Max Clicks Reset Time Millis
+        if (lastUserMaxClicksResetTimeMillis > 0) {
+            config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserMaxClicksResetTimeMillis);
         }
     }
 }
