@@ -8,8 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-
+import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.file.DataFile;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
@@ -56,53 +55,35 @@ public class CommandSignUser {
         return uuid;
     }
 
-    public Optional<Player> getPlayer() {
-        return Optional.ofNullable(Bukkit.getPlayer(uuid));
-    }
-
     public boolean isOnline() {
-        return getPlayer().isPresent();
+        return Bukkit.getPlayer(uuid) != null;
     }
 
-    public long getLastSignClick(String signId) {
-        return lastSignClickMap.getOrDefault(signId, 0L);
-    }
-
-    public boolean checkSignCooldown(String signId, long cooldownMillis) {
-        long lastClickTime = getLastSignClick(signId);
-        long currentTime = System.currentTimeMillis();
-        return (currentTime - lastClickTime) >= cooldownMillis;
-    }
-
-    public Long getRemainingCooldown(String signId, long cooldownMillis) {
-        long lastClickTime = getLastSignClick(signId);
-        long currentTime = System.currentTimeMillis();
-        long timeSinceLastClick = currentTime - lastClickTime;
-        long remainingCooldown = cooldownMillis - timeSinceLastClick;
-        return Math.max(remainingCooldown, 0);
+    public long getLastSignClickTimeMillis(CommandSign commandSign) {
+        String name = commandSign.getName();
+        return lastSignClickMap.getOrDefault(name, 0L);
     }
     
-    public int getSignClicks(String signId) {
-        return signClicksMap.getOrDefault(signId, 0);
-    }
-
-    public boolean checkMaxSignClicks(String signId, int maxClicks) {
-        if (maxClicks <= 0) {
-            return true;
+    public int getTotalSignClicks(CommandSign commandSign) {
+        String name = commandSign.getName();
+        long lastReset = commandSign.getLastUserMaxClicksResetTimeMillis();
+        if (lastReset > getLastSignClickTimeMillis(commandSign)) {
+            signClicksMap.remove(name);
+            return 0;
         }
-        int currentClicks = getSignClicks(signId);
-        return currentClicks < maxClicks;
+        return signClicksMap.getOrDefault(name, 0);
     }
 
-    public void onSignClick(String signId) {
-        int currentClicks = signClicksMap.getOrDefault(signId, 0);
-        signClicksMap.put(signId, currentClicks + 1);
-        lastSignClickMap.put(signId, System.currentTimeMillis());
+    public void onSignExecute(CommandSign commandSign) {
+        String name = commandSign.getName();
+        long currentTimeMillis = System.currentTimeMillis();
+        int totalSignClicks = getTotalSignClicks(commandSign);
+        signClicksMap.put(name, totalSignClicks + 1);
+        lastSignClickMap.put(name, currentTimeMillis);
     }
 
     public void save() {
-        String id = uuid.toString();
-        YamlConfiguration playerData = DataFile.get(id);
+        YamlConfiguration playerData = getPlayerDataFile();
 
         ArrayList<String> signClicksList = new ArrayList<>();
         for (Entry<String, Integer> entry : signClicksMap.entrySet()) {
@@ -120,10 +101,20 @@ public class CommandSignUser {
         }
         playerData.set(".last-sign-click", lastSignClickList);
 
-        DataFile.save(id, playerData);
+        savePlayerDataFile(playerData);
 
         if (!isOnline()) {
             CommandSignUserManager.unload(uuid);
         }
+    }
+
+    private YamlConfiguration getPlayerDataFile() {
+        String id = uuid.toString();
+        return DataFile.get(id);
+    }
+
+    private void savePlayerDataFile(YamlConfiguration playerData) {
+        String id = uuid.toString();
+        DataFile.save(id, playerData);
     }
 }

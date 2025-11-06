@@ -31,17 +31,22 @@ public class CommandSign {
     private HashSet<String> requiredPermissions = new HashSet<>();
     private HashSet<String> blockedPermissions = new HashSet<>();
 
-    private long lastClickTimeMillis = 0;
-
-    private long userClickCooldownMillis = 0;
+    // Global Click Tracking
 
     private long globalClickCooldownMillis = 0;
-
-    private int totalClicks = 0;
-
-    private int userMaxClicks = 0;
+    private long globalLastClickTimeMillis = 0;
 
     private int globalMaxClicks = 0;
+    private int globalTotalClicks = 0;
+
+
+    // User Click Tracking
+
+    private long userClickCooldownMillis = 0;
+    private long lastUserClickCooldownResetTimeMillis = 0;
+
+    private int userMaxClicks = 0;
+    private long lastUserMaxClicksResetTimeMillis = 0;
 
     public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
@@ -85,9 +90,10 @@ public class CommandSign {
         }
 
         // Check user max clicks
-        String name = getName();
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
-        if (!commandSignUser.checkMaxSignClicks(name, getUserMaxClicks())) {
+        int totalUserClicks = commandSignUser.getTotalSignClicks(this);
+        int maxUserClicks = getUserMaxClicks();
+        if (maxUserClicks > 0 && totalUserClicks >= maxUserClicks) {
             player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
             return false;
         }
@@ -100,15 +106,17 @@ public class CommandSign {
         }
         
         // Check user cooldown
-        if (!commandSignUser.checkSignCooldown(name, getUserClickCooldownMillis())) {
-            Long remainingCooldown = commandSignUser.getRemainingCooldown(name, getUserClickCooldownMillis());
+        long lastUserSignClickTimeMillis = commandSignUser.getLastSignClickTimeMillis(this);
+        long userClickCooldownMillis = getUserClickCooldownMillis();
+        long elapsedMillis = System.currentTimeMillis() - lastUserSignClickTimeMillis;
+        if (userClickCooldownMillis > 0 && elapsedMillis < userClickCooldownMillis) {
+            Long remainingCooldown = userClickCooldownMillis - elapsedMillis;
             player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
             return false;
         }
 
         // Execute command sign
         execute(player, clickType);
-        commandSignUser.onSignClick(name);
         return true;
     }
 
@@ -117,8 +125,10 @@ public class CommandSign {
             return;
         }
 
-        lastClickTimeMillis = System.currentTimeMillis();
-        totalClicks++;
+        globalLastClickTimeMillis = System.currentTimeMillis();
+        globalTotalClicks++;
+
+        CommandSignUserManager.get(player).onSignExecute(this);
 
         for (SignCommand command : commands) {
             command.execute(player, clickType);
@@ -232,6 +242,10 @@ public class CommandSign {
         this.userClickCooldownMillis = cooldownMillis;
     }
 
+    public long getLastUserClickCooldownResetTimeMillis() {
+        return lastUserClickCooldownResetTimeMillis;
+    }
+
     // Global Cooldown Millis
 
     public void setGlobalClickCooldownMillis(long cooldownMillis) {
@@ -242,7 +256,7 @@ public class CommandSign {
         if (globalClickCooldownMillis <= 0) {
             return 0;
         }
-        long elapsedMillis = System.currentTimeMillis() - lastClickTimeMillis;
+        long elapsedMillis = System.currentTimeMillis() - globalLastClickTimeMillis;
         long remainingMillis = globalClickCooldownMillis - elapsedMillis;
         return Math.max(0, remainingMillis);
     }
@@ -257,6 +271,10 @@ public class CommandSign {
         this.userMaxClicks = maxClicksPerUser;
     }
 
+    public long getLastUserMaxClicksResetTimeMillis() {
+        return lastUserMaxClicksResetTimeMillis;
+    }
+
     // Global Max Clicks
 
     public void setGlobalMaxClicks(int maxClicks) {
@@ -267,7 +285,7 @@ public class CommandSign {
         if (globalMaxClicks <= 0) {
             return true;
         }
-        return totalClicks < globalMaxClicks;
+        return globalTotalClicks < globalMaxClicks;
     }
 
     // Loading and Saving
