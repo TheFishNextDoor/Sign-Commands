@@ -215,7 +215,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
         // Reload
         if ((subcommand.equals("reload") || subcommand.equals("rd")) && sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
-            SignCommandsPlugin.loadConfigs();
+            SignCommandsPlugin.reload();
             sender.sendMessage(ChatColor.GOLD + "Configuration reloaded.");
             return true;
         }

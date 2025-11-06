@@ -27,7 +27,7 @@ public class SignCommandsPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        loadConfigs();
+        load();
 
         registerCommand("signcommands", new SignCommands());
 
@@ -52,6 +52,8 @@ public class SignCommandsPlugin extends JavaPlugin {
         logInfo("Plugin disabled.");
     }
 
+    // Instances
+
     public static SignCommandsPlugin getInstance() {
         return instance;
     }
@@ -60,15 +62,25 @@ public class SignCommandsPlugin extends JavaPlugin {
         return mainConfig;
     }
 
-    public static void loadConfigs() {
+    // Saving and Loading
+
+    public static void reload() {
+        save();
+        load();
+    }
+
+    private static void save() {
         CommandSignManager.saveSigns();
         CommandSignUserManager.saveAll();
+    }
 
+    private static void load() {
         mainConfig = new MainConfig();
-        
         CommandSignManager.loadSigns();
         CommandSignUserManager.loadOnline();
     }
+
+    // Logging
 
     public static void logInfo(@NonNull String message) {
         getInstance().getLogger().info(message);
@@ -81,6 +93,8 @@ public class SignCommandsPlugin extends JavaPlugin {
     public static void logSevere(@NonNull String message) {
         getInstance().getLogger().severe(message);
     }
+
+    // Command Registration
 
     private boolean registerCommand(@NonNull String commandName, @NonNull CommandExecutor commandExecutor) {
         PluginCommand command = getCommand(commandName);
