@@ -67,11 +67,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 completions.add("removeblockedpermission");
                 completions.add("listblockedpermissions");
             }
-            if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
-                completions.add("setcooldown");
+            if (isPlayer && sender.hasPermission(Permissions.SET_USER_CLICK_COOLDOWN_PERMISSION)) {
+                completions.add("setuserclickcooldown");
             }
-            if (isPlayer && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION)) {
-                completions.add("setmaxclicksperuser");
+            if (isPlayer && sender.hasPermission(Permissions.SET_USER_MAX_CLICKS)) {
+                completions.add("setusermaxclicks");
             }
             return completions;
         }
@@ -139,13 +139,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
                 return commandSign.get().getBlockedPermissions().stream().toList();
             }
-            // /signcommands setcooldown <cooldownMilliseconds>
-            else if (isPlayer && (subcommand.equals("setcooldown"))) {
+            // /signcommands setuserclickcooldown <cooldownMilliseconds>
+            else if (isPlayer && (subcommand.equals("setuserclickcooldown") || subcommand.equals("succ"))) {
                 return Arrays.asList("<cooldownMilliseconds>");
             }
-            // /signcommands setmaxclicksperuser <maxClicksPerUser>
-            else if (isPlayer && (subcommand.equals("setmaxclicksperuser"))) {
-                return Arrays.asList("<maxClicksPerUser>");
+            // /signcommands setusermaxclicks <maxClicks>
+            else if (isPlayer && (subcommand.equals("setusermaxclicks") || subcommand.equals("sumc"))) {
+                return Arrays.asList("<maxClicks>");
             }
         }
         else if (args.length == 3) {
@@ -741,13 +741,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             return true;
         }
-        // Set Cooldown
-        else if (isPlayer && (subcommand.equals("setcooldown") || subcommand.equals("sc")) && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
+        // Set User Click Cooldown Millis
+        else if (isPlayer && (subcommand.equals("setuserclickcooldown") || subcommand.equals("succ")) && sender.hasPermission(Permissions.SET_USER_CLICK_COOLDOWN_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
             if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setcooldown|sc> <cooldownMilliseconds>");
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setuserclickcooldown|succ> <cooldownMilliseconds>");
                 return true;
             }
 
@@ -774,12 +774,12 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Set the cooldown
-            commandSign.get().setCooldownMillis(cooldown.get());
+            commandSign.get().setUserClickCooldownMillis(cooldown.get());
             player.sendMessage(ChatColor.GOLD + "Cooldown set to: " + cooldown.get() + " milliseconds.");
             return true;
         }
         // Set Max Clicks
-        else if (isPlayer && (subcommand.equals("setmaxclicksperuser") || subcommand.equals("smcpu")) && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION)) {
+        else if (isPlayer && (subcommand.equals("setmaxclicksperuser") || subcommand.equals("smcpu")) && sender.hasPermission(Permissions.SET_USER_MAX_CLICKS)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -811,7 +811,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Set the max clicks
-            commandSign.get().setMaxClicksPerUser(maxClicks.get());
+            commandSign.get().setUserMaxClicks(maxClicks.get());
             player.sendMessage(ChatColor.GOLD + "Max clicks set to: " + maxClicks.get() + ".");
             return true;
         }
@@ -855,11 +855,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <removeblockedpermission | rbp> <permission> " + ChatColor.WHITE + "Remove a blocked permission from a command sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <listblockedpermissions | lbp> " + ChatColor.WHITE + "List blocked permissions of a command sign.");
         }
-        if (isPlayer && sender.hasPermission(Permissions.SET_COOLDOWN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <setcooldown | sc> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the cooldown for a command sign.");
+        if (isPlayer && sender.hasPermission(Permissions.SET_USER_CLICK_COOLDOWN_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <setuserclickcooldown | succ> <cooldownMilliseconds> " + ChatColor.WHITE + "Set the user click cooldown milliseconds for a command sign.");
         }
-        if (isPlayer && sender.hasPermission(Permissions.SET_MAX_CLICKS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <setmaxclicksperuser | smcpu> <maxClicks> " + ChatColor.WHITE + "Set the max clicks per user for a command sign.");
+        if (isPlayer && sender.hasPermission(Permissions.SET_USER_MAX_CLICKS)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <setusermaxclicks | sumc> <maxClicks> " + ChatColor.WHITE + "Set the user max clicks for a command sign.");
         }
     }
 

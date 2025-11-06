@@ -73,14 +73,14 @@ public class BlockInteract implements Listener {
         // Check user cooldown
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         String commandSignId = commandSign.getName();
-        if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getCooldownMillis())) {
-            Long remainingCooldown = commandSignUser.getRemainingCooldown(commandSignId, commandSign.getCooldownMillis());
+        if (!commandSignUser.checkSignCooldown(commandSignId, commandSign.getUserClickCooldownMillis())) {
+            Long remainingCooldown = commandSignUser.getRemainingCooldown(commandSignId, commandSign.getUserClickCooldownMillis());
             player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
             return;
         }
 
         // Check max clicks per user
-        if (!commandSignUser.checkMaxSignClicks(commandSignId, commandSign.getMaxClicksPerUser())) {
+        if (!commandSignUser.checkMaxSignClicks(commandSignId, commandSign.getUserMaxClicks())) {
             player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
             return;
         }

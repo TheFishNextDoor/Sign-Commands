@@ -27,9 +27,9 @@ public class CommandSign {
     private HashSet<String> requiredPermissions = new HashSet<>();
     private HashSet<String> blockedPermissions = new HashSet<>();
 
-    private long cooldownMillis = 0;
+    private long userClickCooldownMillis = 0;
 
-    private int maxClicksPerUser = 0;
+    private int userMaxClicks = 0;
 
     public CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
@@ -155,22 +155,22 @@ public class CommandSign {
 
     // Cooldown Millis
 
-    public long getCooldownMillis() {
-        return cooldownMillis;
+    public long getUserClickCooldownMillis() {
+        return userClickCooldownMillis;
     }
 
-    public void setCooldownMillis(long cooldownMillis) {
-        this.cooldownMillis = cooldownMillis;
+    public void setUserClickCooldownMillis(long cooldownMillis) {
+        this.userClickCooldownMillis = cooldownMillis;
     }
 
     // Max Clicks Per User
 
-    public int getMaxClicksPerUser() {
-        return maxClicksPerUser;
+    public int getUserMaxClicks() {
+        return userMaxClicks;
     }
 
-    public void setMaxClicksPerUser(int maxClicksPerUser) {
-        this.maxClicksPerUser = maxClicksPerUser;
+    public void setUserMaxClicks(int maxClicksPerUser) {
+        this.userMaxClicks = maxClicksPerUser;
     }
 
     // Loading and Saving
@@ -253,14 +253,14 @@ public class CommandSign {
             blockedPermissions.add(permission);
         }
 
-        // Load Cooldown
-        if (config.contains(name + ".cooldown-millis")) {
-            this.cooldownMillis = config.getLong(name + ".cooldown-millis");
+        // Load User Cooldown
+        if (config.contains(name + ".user-click-cooldown-millis")) {
+            this.userClickCooldownMillis = config.getLong(name + ".user-click-cooldown-millis");
         }
 
         // Load Max Clicks Per User
-        if (config.contains(name + ".max-clicks-per-user")) {
-            this.maxClicksPerUser = config.getInt(name + ".max-clicks-per-user");
+        if (config.contains(name + ".user-max-clicks")) {
+            this.userMaxClicks = config.getInt(name + ".user-max-clicks");
         }
     }
 
@@ -298,14 +298,14 @@ public class CommandSign {
             config.set(name + ".blocked-permissions", new ArrayList<>(blockedPermissions));
         }
 
-        // Save Cooldown
-        if (cooldownMillis > 0) {
-            config.set(name + ".cooldown-millis", cooldownMillis);
+        // Save User Click Cooldown Millis
+        if (userClickCooldownMillis > 0) {
+            config.set(name + ".user-click-cooldown-millis", userClickCooldownMillis);
         }
 
-        // Save Max Clicks Per User
-        if (maxClicksPerUser > 0) {
-            config.set(name + ".max-clicks-per-user", maxClicksPerUser);
+        // Save User Max Clicks
+        if (userMaxClicks > 0) {
+            config.set(name + ".user-max-clicks", userMaxClicks);
         }
     }
 }
