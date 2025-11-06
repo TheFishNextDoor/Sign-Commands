@@ -103,8 +103,6 @@ public class CommandSignManager {
         }
         savingSigns = true;
 
-        SignCommandsPlugin.logInfo("Saving sign configurations...");
-
         YamlConfiguration config = new YamlConfiguration();
         for (CommandSign signConfiguration : signConfigurationsList) {
             signConfiguration.saveTo(config);
@@ -113,8 +111,6 @@ public class CommandSignManager {
         ConfigFile.save("signs", config);
 
         savingSigns = false;
-        
-        SignCommandsPlugin.logInfo("Saved " + signConfigurationsLocationsMap.size() + " sign configurations.");
     }
 
     // Utils
