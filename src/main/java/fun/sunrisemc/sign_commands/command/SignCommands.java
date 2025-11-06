@@ -1047,7 +1047,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // Reset for the specific player
             CommandSignUser commandSignUser = CommandSignUserManager.get(targetPlayer.get());
-            commandSignUser.resetTotalSignClicks(commandSign.get());
+            commandSignUser.resetSignClickCount(commandSign.get());
             sender.sendMessage(ChatColor.GOLD + "User click limit reset for " + targetPlayer.get().getName() + ".");
             return true;
         }

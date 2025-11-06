@@ -92,7 +92,7 @@ public class CommandSign {
 
         // Check user max clicks
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
-        int totalUserClicks = commandSignUser.getTotalSignClicks(this);
+        int totalUserClicks = commandSignUser.getSignClickCount(this);
         int maxUserClicks = getUserMaxClicks();
         if (maxUserClicks > 0 && totalUserClicks >= maxUserClicks) {
             player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");

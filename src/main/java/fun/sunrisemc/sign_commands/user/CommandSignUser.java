@@ -18,11 +18,57 @@ public class CommandSignUser {
 
     private HashMap<String, Long> lastSignClickMap = new HashMap<>();
 
-    private HashMap<String, Integer> signClicksMap = new HashMap<>();
+    private HashMap<String, Integer> signClickCountMap = new HashMap<>();
 
     public CommandSignUser(UUID uuid) {
         this.uuid = uuid;
+        load();
+    }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void onSignExecute(CommandSign commandSign) {
+        String name = commandSign.getName();
+        long currentTimeMillis = System.currentTimeMillis();
+        int totalSignClicks = getSignClickCount(commandSign);
+        signClickCountMap.put(name, totalSignClicks + 1);
+        lastSignClickMap.put(name, currentTimeMillis);
+    }
+
+    // Last Sign Click Time
+
+    public long getLastSignClickTimeMillis(CommandSign commandSign) {
+        String name = commandSign.getName();
+        return lastSignClickMap.getOrDefault(name, 0L);
+    }
+
+    public void resetLastSignClickTimeMillis(CommandSign commandSign) {
+        String name = commandSign.getName();
+        lastSignClickMap.remove(name);
+    }
+
+    // Sign Click Count
+
+    public int getSignClickCount(CommandSign commandSign) {
+        String name = commandSign.getName();
+        long lastReset = commandSign.getLastUserClickLimitResetTimeMillis();
+        if (lastReset > getLastSignClickTimeMillis(commandSign)) {
+            signClickCountMap.remove(name);
+            return 0;
+        }
+        return signClickCountMap.getOrDefault(name, 0);
+    }
+
+    public void resetSignClickCount(CommandSign commandSign) {
+        String name = commandSign.getName();
+        signClickCountMap.remove(name);
+    }
+
+    // Loading and Saving
+
+    protected void load() {
         String id = uuid.toString();
         YamlConfiguration playerData = DataFile.get(id);
 
@@ -34,7 +80,7 @@ public class CommandSignUser {
             
             Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
             if (clicks.isPresent()) {
-                signClicksMap.put(signId, clicks.get());
+                signClickCountMap.put(signId, clicks.get());
             }
         }
 
@@ -51,52 +97,11 @@ public class CommandSignUser {
         }
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public boolean isOnline() {
-        return Bukkit.getPlayer(uuid) != null;
-    }
-
-    public long getLastSignClickTimeMillis(CommandSign commandSign) {
-        String name = commandSign.getName();
-        return lastSignClickMap.getOrDefault(name, 0L);
-    }
-
-    public void resetLastSignClickTimeMillis(CommandSign commandSign) {
-        String name = commandSign.getName();
-        lastSignClickMap.remove(name);
-    }
-    
-    public int getTotalSignClicks(CommandSign commandSign) {
-        String name = commandSign.getName();
-        long lastReset = commandSign.getLastUserClickLimitResetTimeMillis();
-        if (lastReset > getLastSignClickTimeMillis(commandSign)) {
-            signClicksMap.remove(name);
-            return 0;
-        }
-        return signClicksMap.getOrDefault(name, 0);
-    }
-
-    public void resetTotalSignClicks(CommandSign commandSign) {
-        String name = commandSign.getName();
-        signClicksMap.remove(name);
-    }
-
-    public void onSignExecute(CommandSign commandSign) {
-        String name = commandSign.getName();
-        long currentTimeMillis = System.currentTimeMillis();
-        int totalSignClicks = getTotalSignClicks(commandSign);
-        signClicksMap.put(name, totalSignClicks + 1);
-        lastSignClickMap.put(name, currentTimeMillis);
-    }
-
-    public void save() {
+    protected void save() {
         YamlConfiguration playerData = getPlayerDataFile();
 
         ArrayList<String> signClicksList = new ArrayList<>();
-        for (Entry<String, Integer> entry : signClicksMap.entrySet()) {
+        for (Entry<String, Integer> entry : signClickCountMap.entrySet()) {
             String signId = entry.getKey();
             Integer clicks = entry.getValue();
             signClicksList.add(signId + ":" + clicks);
@@ -126,5 +131,11 @@ public class CommandSignUser {
     private void savePlayerDataFile(YamlConfiguration playerData) {
         String id = uuid.toString();
         DataFile.save(id, playerData);
+    }
+
+    // Utils
+
+    private boolean isOnline() {
+        return Bukkit.getPlayer(uuid) != null;
     }
 }
