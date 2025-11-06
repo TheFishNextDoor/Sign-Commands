@@ -13,8 +13,10 @@ public class Permissions {
     public static final String DELETE_SIGN_PERMISSION = "signcommands.admin.delete";
     public static final String MANAGE_COMMANDS_PERMISSION = "signcommands.admin.commands";
     public static final String MANAGE_PERMISSIONS_PERMISSION = "signcommands.admin.permissions";
-    public static final String SET_USER_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.cooldown";
-    public static final String SET_USER_MAX_CLICKS = "signcommands.admin.maxclicks";
+    public static final String MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.globalclickcooldown";
+    public static final String MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION = "signcommands.admin.globalmaxclicks";
+    public static final String MANAGE_USER_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.userclickcooldown";
+    public static final String MANAGE_USER_CLICK_LIMIT_PERMISSION = "signcommands.admin.usermaxclicks";
 
     // Sign Edit Permissions
     public static final String COLOR_PERMISSION = "signcommands.color";
