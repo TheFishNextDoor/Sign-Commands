@@ -40,7 +40,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 completions.add("reload");
             }
             if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
-                completions.add("listsigns");
+                completions.add("list");
             }
             if (sender.hasPermission(Permissions.INFO_PERMISSION)) {
                 completions.add("info");
@@ -267,13 +267,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         String subcommand = args[0].toLowerCase();
 
         // Reload
-        if ((subcommand.equals("reload") || subcommand.equals("rd")) && sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
+        if ((subcommand.equals("reload") || subcommand.equals("rl")) && sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
             SignCommandsPlugin.reload();
             sender.sendMessage(ChatColor.GOLD + "Configuration reloaded.");
             return true;
         }
         // List Signs
-        else if ((subcommand.equals("listsigns") || subcommand.equals("ls")) && sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
+        else if ((subcommand.equals("list") || subcommand.equals("l")) && sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
             // Check if there are any command signs
             List<CommandSign> commandSigns = CommandSignManager.getAll();
             if (commandSigns.isEmpty()) {
@@ -1027,10 +1027,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands Help");
         sender.sendMessage(ChatColor.GOLD + "/signcommands help " + ChatColor.WHITE + "Show this help message.");
         if (sender.hasPermission(Permissions.RELOAD_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <reload | rd> " + ChatColor.WHITE + "Reload the plugin.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <reload | rl> " + ChatColor.WHITE + "Reload the plugin.");
         }
         if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <listsigns | ls> " + ChatColor.WHITE + "List all command signs.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <list | l> " + ChatColor.WHITE + "List all command signs.");
         }
         if (isPlayer && sender.hasPermission(Permissions.INFO_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <info | i> <signName> " + ChatColor.WHITE + "List a command sign's commands and other information.");
