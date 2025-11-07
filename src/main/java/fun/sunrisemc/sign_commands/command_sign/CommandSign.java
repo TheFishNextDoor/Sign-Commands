@@ -75,6 +75,10 @@ public class CommandSign {
     // Executing
 
     public boolean attemptExecute(@NonNull Player player, @NonNull SignClickType clickType) {
+        if (!hasCommandForClickType(clickType)) {
+            return false;
+        }
+
         if (!player.hasPermission("signcommands.use")) {
             player.sendMessage(ChatColor.RED + "You do not have permission to use command signs.");
             return false;
@@ -203,6 +207,15 @@ public class CommandSign {
         
         commands.set(index, newCommand);
         return true;
+    }
+
+    public boolean hasCommandForClickType(@NonNull SignClickType clickType) {
+        for (SignCommand command : commands) {
+            if (command.getClickType() == SignClickType.ANY_CLICK || command.getClickType() == clickType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Required Permissions

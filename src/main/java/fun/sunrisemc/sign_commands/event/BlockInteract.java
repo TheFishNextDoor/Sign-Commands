@@ -27,7 +27,7 @@ public class BlockInteract implements Listener {
             return;
         }
 
-        // Check correct action
+        // Check valid action
         Optional<SignClickType> signClickType = SignClickType.fromAction(event.getAction());
         if (signClickType.isEmpty()) {
             return;
@@ -40,12 +40,13 @@ public class BlockInteract implements Listener {
         }
         CommandSign commandSign = commandSignOptional.get();
 
-        // Prevent editing command signs
-        event.setCancelled(true);
-
         // Check sign click delay tick
-        if (tickDelayBetwenClicksCheck(player)) {
-            commandSign.attemptExecute(player, signClickType.get());
+        if (!tickDelayBetwenClicksCheck(player)) {
+            return;
+        }
+
+        if (commandSign.attemptExecute(player, signClickType.get())) {
+            event.setCancelled(true);
         }
     }
 
