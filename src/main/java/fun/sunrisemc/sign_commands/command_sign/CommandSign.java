@@ -46,7 +46,7 @@ public class CommandSign {
     private int userMaxClicks = 0;
     private long lastUserClickLimitResetTimeMillis = 0;
 
-    public CommandSign(@NonNull Location location) {
+    protected CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
         this.signLocation = Optional.of(location);
         this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
