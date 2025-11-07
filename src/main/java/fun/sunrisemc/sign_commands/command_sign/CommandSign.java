@@ -290,7 +290,12 @@ public class CommandSign {
             return 0;
         }
 
-        long elapsedMillis = System.currentTimeMillis() - commandSignUser.getLastSignClickTimeMillis(this);
+        long lastClickTimeMillis = commandSignUser.getLastSignClickTimeMillis(this);
+        if (lastClickTimeMillis < lastUserClickCooldownResetTimeMillis) {
+            return 0;
+        }
+
+        long elapsedMillis = System.currentTimeMillis() - lastClickTimeMillis;
         return Math.max(0, userClickCooldownMillis - elapsedMillis);
     }
 
