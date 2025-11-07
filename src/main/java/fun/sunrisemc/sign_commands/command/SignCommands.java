@@ -384,7 +384,17 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             player.sendMessage(ChatColor.GOLD + "Commands:");
             for (int i = 0; i < signCommands.size(); i++) {
                 SignCommand signCommand = signCommands.get(i);
-                player.sendMessage(ChatColor.GOLD + "" + i + ". " + ChatColor.WHITE + signCommand.getCommandType().getName() + ": /" + signCommand.getCommand());
+                SignCommandType commandType = signCommand.getCommandType();
+                SignClickType clickType = signCommand.getClickType();
+                if (commandType == SignCommandType.CONSOLE || commandType == SignCommandType.PLAYER) {
+                    player.sendMessage(ChatColor.GOLD + "" + i + ". " + ChatColor.WHITE + clickType.getName() + " -> " + commandType.getName() + ": /" + signCommand.getCommand());
+                } 
+                else if (commandType == SignCommandType.MESSAGE || commandType == SignCommandType.BROADCAST) {
+                    String message = ChatColor.translateAlternateColorCodes('&', signCommand.getCommand());
+                    player.sendMessage(ChatColor.GOLD + "" + i + ". " + ChatColor.WHITE + clickType.getName() + " -> " + commandType.getName() + ": " + message);
+                }
+
+                
             }
             
             return true;
@@ -402,20 +412,20 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             // Get the command sign
             Optional<CommandSign> commandSign = CommandSignManager.getByName(args[1]);
             if (commandSign.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Sign does not exist.");
+                player.sendMessage(ChatColor.RED + "Command sign does not exist.");
                 return true;
             }
 
             // Get the sign location
             Optional<Location> location = commandSign.get().getSignLocation();
             if (location.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Sign has no location.");
+                player.sendMessage(ChatColor.RED + "Command sign has no location.");
                 return true;
             }
 
             // Teleport the player to the sign location
             player.teleport(location.get());
-            player.sendMessage(ChatColor.GOLD + "Teleported to sign.");
+            player.sendMessage(ChatColor.GOLD + "Teleported to command sign.");
             return true;
         }
         // Rename
