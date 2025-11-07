@@ -17,6 +17,7 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
+import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
@@ -111,11 +112,11 @@ public class CommandSign {
         long remainingUserCooldown = getRemainingUserClickCooldown(commandSignUser);
         if (remainingGlobalCooldown > 0 || remainingUserCooldown > 0) {
             if (remainingGlobalCooldown > remainingUserCooldown) {
-                player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + formatMillis(remainingGlobalCooldown) + " before clicking again.");
+                player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + StringUtils.formatMillis(remainingGlobalCooldown) + " before clicking again.");
                 return false;
             }
             else {
-                player.sendMessage(ChatColor.RED + "You must wait " + formatMillis(remainingUserCooldown) + " before clicking this sign again.");
+                player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingUserCooldown) + " before clicking this sign again.");
                 return false;
             }
         }
@@ -251,6 +252,10 @@ public class CommandSign {
 
     // Global Cooldown Millis
 
+    public long getGlobalClickCooldownMillis() {
+        return globalClickCooldownMillis;
+    }
+
     public void setGlobalClickCooldownMillis(long cooldownMillis) {
         this.globalClickCooldownMillis = cooldownMillis;
     }
@@ -269,6 +274,10 @@ public class CommandSign {
     }
 
     // Global Max Clicks
+
+    public int getGlobalMaxClicks() {
+        return globalMaxClicks;
+    }
 
     public void setGlobalMaxClicks(int maxClicks) {
         this.globalMaxClicks = maxClicks;
@@ -559,50 +568,5 @@ public class CommandSign {
 
     // Utils
 
-    private static String formatMillis(long millis) {
-        if (millis < 1000) {
-            if (millis == 1) {
-                return millis + " millisecond";
-            }
-            else {
-                return millis + " milliseconds";
-            }
-        } 
-        else if (millis < 60000) {
-            int seconds = (int) (millis / 1000);
-            if (seconds == 1) {
-                return seconds + " second";
-            }
-            else {
-                return seconds + " seconds";
-            }
-        }
-        else if (millis < 3600000) {
-            int minutes = (int) (millis / 60000);
-            if (minutes == 1) {
-                return minutes + " minute";
-            }
-            else {
-                return minutes + " minutes";
-            }
-        }
-        else if (millis < 86400000) {
-            int hours = (int) (millis / 3600000);
-            if (hours == 1) {
-                return hours + " hour";
-            }
-            else {
-                return hours + " hours";
-            }
-        }
-        else {
-            int days = (int) (millis / 86400000);
-            if (days == 1) {
-                return days + " day";
-            }
-            else {
-                return days + " days";
-            }
-        }
-    }
+
 }

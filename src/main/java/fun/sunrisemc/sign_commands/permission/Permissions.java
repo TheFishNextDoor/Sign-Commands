@@ -7,6 +7,7 @@ public class Permissions {
 
     // Admin Permissions
     public static final String RELOAD_PERMISSION = "signcommands.admin.reload";
+    public static final String INFO_PERMISSION = "signcommands.admin.info";
     public static final String LIST_SIGNS_PERMISSION = "signcommands.admin.list";
     public static final String GOTO_SIGN_PERMISSION = "signcommands.admin.goto";
     public static final String RENAME_SIGN_PERMISSION = "signcommands.admin.rename";
