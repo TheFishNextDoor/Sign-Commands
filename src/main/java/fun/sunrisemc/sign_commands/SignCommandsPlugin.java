@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.command.SignCommands;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
+import fun.sunrisemc.sign_commands.event.BlockBreak;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
 import fun.sunrisemc.sign_commands.event.PlayerJoin;
 import fun.sunrisemc.sign_commands.event.SignChange;
@@ -33,8 +34,9 @@ public class SignCommandsPlugin extends JavaPlugin {
         registerCommand("signcommands", new SignCommands());
 
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new BlockInteract(), this);
         pluginManager.registerEvents(new PlayerJoin(), this);
+        pluginManager.registerEvents(new BlockBreak(), this);
+        pluginManager.registerEvents(new BlockInteract(), this);
         pluginManager.registerEvents(new SignChange(), this);
 
         TickCounterTask.start();
