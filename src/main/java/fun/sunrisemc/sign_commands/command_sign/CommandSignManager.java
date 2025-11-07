@@ -8,12 +8,15 @@ import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
+import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.file.DataFile;
-import fun.sunrisemc.sign_commands.utils.RayTrace;
 
 public class CommandSignManager {
 
@@ -34,8 +37,31 @@ public class CommandSignManager {
         return Optional.ofNullable(signConfigurationsLocationsMap.get(key));
     }
 
+    public static Optional<CommandSign> getOrCreateLookingAt(@NonNull Player player) {
+        Optional<Block> block = rayTraceBlock(player);
+        if (block.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Location blockLocation = block.get().getLocation();
+        Optional<CommandSign> commandSign = getAtLocation(blockLocation);
+        if (!commandSign.isEmpty()) {
+            return commandSign;
+        }
+
+        MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
+        if (mainConfig.ONLY_ALLOW_SIGNS) {
+            if (!isSign(block.get())) {
+                return Optional.empty();
+            }
+        }
+
+        CommandSign newSign = new CommandSign(blockLocation);
+        return Optional.of(newSign);
+    }
+
     public static Optional<CommandSign> getLookingAt(@NonNull Player player) {
-        Optional<Block> block = RayTrace.block(player);
+        Optional<Block> block = rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
@@ -128,5 +154,21 @@ public class CommandSignManager {
 
     private static String toKey(@NonNull Location location) {
         return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
+    }
+
+    private static Optional<Block> rayTraceBlock(@NonNull Player player) {
+        RayTraceResult result = player.rayTraceBlocks(64.0);
+        if (result == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(result.getHitBlock());
+    }
+
+    private static boolean isSign(@NonNull Block block) {
+        BlockState state = block.getState();
+        if (state == null) {
+            return false;
+        }
+        return (state instanceof Sign);
     }
 }

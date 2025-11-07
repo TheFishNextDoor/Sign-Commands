@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,14 +17,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
-import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
-import fun.sunrisemc.sign_commands.utils.RayTrace;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
@@ -308,16 +303,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -366,21 +353,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
-            // Check if the block is valid
-            MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
-            if (mainConfig.ONLY_ALLOW_SIGNS && !isSign(targetBlock.get())) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a sign.");
-                return true;
-            }
-
             // Parse the click type
             Optional<SignClickType> signClickType = SignClickType.fromName(args[1]);
             if (signClickType.isEmpty()) {
@@ -396,19 +368,16 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Get or create the command sign
-            Optional<CommandSign> existingCommandSign = CommandSignManager.getAtLocation(location);
-            CommandSign commandSign;
-            if (existingCommandSign.isEmpty()) {
-                commandSign = new CommandSign(location);
-            } 
-            else {
-                commandSign = existingCommandSign.get();
+            Optional<CommandSign> commandSign = CommandSignManager.getOrCreateLookingAt(player);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a valid block.");
+                return true;
             }
 
             // Add the command to the command sign
             String signCommandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
             SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), signCommandString);
-            commandSign.addCommand(signCommand);
+            commandSign.get().addCommand(signCommand);
             player.sendMessage(ChatColor.GOLD + "Command added.");
             return true;
         }
@@ -422,16 +391,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
                 return true;
@@ -471,16 +432,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign at that location
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
                 return true;
@@ -530,16 +483,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         else if (isPlayer && (subcommand.equals("listcommands" ) || subcommand.equals("lc")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
             Player player = (Player) sender;
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign at that location
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "No commands assigned to this block.");
                 return true;
@@ -565,16 +510,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -600,16 +537,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -629,16 +558,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         else if (isPlayer && (subcommand.equals("listrequiredpermissions") || subcommand.equals("lrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -668,16 +589,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -703,16 +616,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -732,16 +637,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         else if (isPlayer && (subcommand.equals("listblockedpermissions") || subcommand.equals("lbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
             Player player = (Player) sender;
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -771,16 +668,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -803,16 +692,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         else if (isPlayer && (subcommand.equals("resetglobalclickcooldown") || subcommand.equals("rgcc")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION)) {
             Player player = (Player) sender;
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -833,16 +714,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -864,16 +737,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         else if (isPlayer && (subcommand.equals("resetglobalclicklimit") || subcommand.equals("rgcl")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
             Player player = (Player) sender;
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -894,16 +759,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -931,16 +788,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -977,16 +826,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -1014,16 +855,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the block the player is looking at
-            Optional<Block> targetBlock = RayTrace.block(player);
-            if (targetBlock.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "You must be looking at a block.");
-                return true;
-            }
-            Location location = targetBlock.get().getLocation();
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
                 return true;
@@ -1114,14 +947,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             rangeStrings.add(String.valueOf(i));
         }
         return rangeStrings;
-    }
-
-    private static boolean isSign(@NonNull Block block) {
-        BlockState state = block.getState();
-        if (state == null) {
-            return false;
-        }
-        return (state instanceof Sign);
     }
 
     private static Optional<Player> getPlayerByName(String name) {
