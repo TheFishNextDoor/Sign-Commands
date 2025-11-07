@@ -335,7 +335,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (!requiredPermissions.isEmpty()) {
                 player.sendMessage(ChatColor.GOLD + "Required Permissions:");
                 for (String permission : requiredPermissions) {
-                    player.sendMessage(ChatColor.GOLD + "- " + permission);
+                    player.sendMessage(ChatColor.GOLD + "- " + ChatColor.WHITE + permission);
                 }
             }
 
@@ -344,7 +344,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (!blockedPermissions.isEmpty()) {
                 player.sendMessage(ChatColor.GOLD + "Blocked Permissions:");
                 for (String permission : blockedPermissions) {
-                    player.sendMessage(ChatColor.GOLD + "- " + permission);
+                    player.sendMessage(ChatColor.GOLD + "- " + ChatColor.WHITE + permission);
                 }
             }
 
