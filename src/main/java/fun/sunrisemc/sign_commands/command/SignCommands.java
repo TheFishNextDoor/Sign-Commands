@@ -42,7 +42,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (sender.hasPermission(Permissions.LIST_SIGNS_PERMISSION)) {
                 completions.add("listsigns");
             }
-            if (isPlayer && sender.hasPermission(Permissions.INFO_PERMISSION)) {
+            if (sender.hasPermission(Permissions.INFO_PERMISSION)) {
                 completions.add("info");
             }
             if (isPlayer && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
@@ -90,36 +90,29 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         }
         else if (args.length == 2) {
             String subcommand = args[0].toLowerCase();
-            // /signcommands goto <signName>
-            if (subcommand.equals("goto")) {
-                return CommandSignManager.getAllIds();
-            }
-            // /signcommands info <signName>
-            if (subcommand.equals("info") || subcommand.equals("i")) {
-                return CommandSignManager.getAllIds();
-            }
-            else if (isPlayer && (subcommand.equals("info") || subcommand.equals("i"))) {
-                Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
-                if (commandSign.isEmpty()) {
-                    return null;
-                }
 
-                return Arrays.asList(commandSign.get().getName());
+            // /signcommands info <signName>
+            if ((subcommand.equals("info") || subcommand.equals("i")) && sender.hasPermission(Permissions.INFO_PERMISSION)) {
+                return CommandSignManager.getAllIds();
+            }
+            // /signcommands goto <signName>
+            else if (isPlayer && (subcommand.equals("goto") || subcommand.equals("gt")) && sender.hasPermission(Permissions.GOTO_SIGN_PERMISSION)) {
+                return CommandSignManager.getAllIds();
             }
             // /signcommands rename <newName>
-            else if (isPlayer && (subcommand.equals("rename") || subcommand.equals("rn"))) {
+            else if (isPlayer && (subcommand.equals("rename") || subcommand.equals("rn")) && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
                 return Arrays.asList("<newName>");
             }
             // /signcommands delete <signName>
-            else if (isPlayer && (subcommand.equals("delete") || subcommand.equals("dt"))) {
+            else if (isPlayer && (subcommand.equals("delete") || subcommand.equals("dt")) && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
                 return CommandSignManager.getAllIds();
             }
             // /signcommands addcommand <clickType>
-            else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+            else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 return SignClickType.getNames();
             }
             // /signcommands removecommand <commandIndex>
-            else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc"))) {
+            else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -129,7 +122,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return getRangeStrings(0, commands.size() - 1);
             }
             // /signcommands editcommand <commandIndex>
-            else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+            else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -139,11 +132,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return getRangeStrings(0, commands.size() - 1);
             }
             // /signcommands addrequiredpermission <permission>
-            else if (isPlayer && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp"))) {
+            else if (isPlayer && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
                 return Arrays.asList("<permission>");
             }
             // /signcommands removerequiredpermission <permission>
-            else if (isPlayer && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp"))) {
+            else if (isPlayer && (subcommand.equals("removerequiredpermission") || subcommand.equals("rrp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -152,11 +145,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return commandSign.get().getRequiredPermissions().stream().toList();
             }
             // /signcommands addblockedpermission <permission>
-            else if (isPlayer && (subcommand.equals("addblockedpermission") || subcommand.equals("abp"))) {
+            else if (isPlayer && (subcommand.equals("addblockedpermission") || subcommand.equals("abp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
                 return Arrays.asList("<permission>");
             }
             // /signcommands removeblockedpermission <permission>
-            else if (isPlayer && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp"))) {
+            else if (isPlayer && (subcommand.equals("removeblockedpermission") || subcommand.equals("rbp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
@@ -165,35 +158,35 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return commandSign.get().getBlockedPermissions().stream().toList();
             }
             // /signcommands setglobalclickcooldown <cooldownMilliseconds>
-            else if (isPlayer && (subcommand.equals("setglobalclickcooldown") || subcommand.equals("sgcc"))) {
+            else if (isPlayer && (subcommand.equals("setglobalclickcooldown") || subcommand.equals("sgcc")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION)) {
                 return Arrays.asList("<cooldownMilliseconds>");
             }
             // /signcommands setglobalclicklimit <clickLimit>
-            else if (isPlayer && (subcommand.equals("setglobalclicklimit") || subcommand.equals("sgcl"))) {
+            else if (isPlayer && (subcommand.equals("setglobalclicklimit") || subcommand.equals("sgcl")) && sender.hasPermission(Permissions.MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION)) {
                 return Arrays.asList("<clickLimit>");
             }
             // /signcommands setuserclickcooldown <cooldownMilliseconds>
-            else if (isPlayer && (subcommand.equals("setuserclickcooldown") || subcommand.equals("succ"))) {
+            else if (isPlayer && (subcommand.equals("setuserclickcooldown") || subcommand.equals("succ")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
                 return Arrays.asList("<cooldownMilliseconds>");
             }
             // /signcommands setuserclicklimit <clickLimit>
-            else if (isPlayer && (subcommand.equals("setuserclicklimit") || subcommand.equals("sucl"))) {
+            else if (isPlayer && (subcommand.equals("setuserclicklimit") || subcommand.equals("sucl")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
                 return Arrays.asList("<clickLimit>");
             }
             // /signcommands resetuserclicklimit <username>
-            else if (isPlayer && (subcommand.equals("resetuserclicklimit") || subcommand.equals("rucl"))) {
+            else if (isPlayer && (subcommand.equals("resetuserclicklimit") || subcommand.equals("rucl")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
                 ArrayList<String> completions = getAllPlayerNames();
                 completions.add("all");
                 return completions;
             }
             // /signcommands resetuserclickcooldown <username>
-            else if (isPlayer && (subcommand.equals("resetuserclickcooldown") || subcommand.equals("rucc"))) {
+            else if (isPlayer && (subcommand.equals("resetuserclickcooldown") || subcommand.equals("rucc")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
                 ArrayList<String> completions = getAllPlayerNames();
                 completions.add("all");
                 return completions;
             }
             // /signcommands setclickcost <clickCost>
-            else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc"))) {
+            else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
                 return Arrays.asList("<clickCost>");
             }
         }
@@ -201,11 +194,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             // /signcommands addcommand <clickType> <commandType>
-            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 return SignCommandType.getNames();
             }
             // /signcommands editcommand <commandIndex> <clickType>
-            else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+            else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 return SignClickType.getNames();
             }
         }
@@ -213,7 +206,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             // /signcommands addcommand <clickType> <commandType> <command>
-            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
+            if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(args[2]);
                 if (signCommandTypeOptional.isEmpty()) {
                     return null;
@@ -228,7 +221,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
             }
             // /signcommands editcommand <commandIndex> <clickType> <commandType>
-            if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+            if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 return SignCommandType.getNames();
             }
         }
@@ -236,7 +229,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             // /signcommands editcommand <commandIndex> <clickType> <commandType> <command>
-            if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
+            if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
                 Optional<CommandSign> commandSign = CommandSignManager.getLookingAt((Player) sender);
                 if (commandSign.isEmpty()) {
                     return null;
