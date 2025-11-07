@@ -98,22 +98,20 @@ public class CommandSign {
             return false;
         }
 
-        // Check global cooldown
-        long remainingGlobalCooldown = getRemainingCooldown();
-        if (remainingGlobalCooldown > 0) {
-            player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + formatMillis(remainingGlobalCooldown) + " before clicking again.");
-            return false;
+        // Check user and global cooldown
+        long remainingGlobalCooldown = getRemainingGlobalCooldown();
+        long remainingUserCooldown = getRemainingUserClickCooldown(commandSignUser);
+        if (remainingGlobalCooldown > 0 || remainingUserCooldown > 0) {
+            if (remainingGlobalCooldown > remainingUserCooldown) {
+                player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + formatMillis(remainingGlobalCooldown) + " before clicking again.");
+                return false;
+            }
+            else {
+                player.sendMessage(ChatColor.RED + "You must wait " + formatMillis(remainingUserCooldown) + " before clicking this sign again.");
+                return false;
+            }
         }
-        
-        // Check user cooldown
-        long lastUserSignClickTimeMillis = commandSignUser.getLastSignClickTimeMillis(this);
-        long userClickCooldownMillis = getUserClickCooldownMillis();
-        long elapsedMillis = System.currentTimeMillis() - lastUserSignClickTimeMillis;
-        if (userClickCooldownMillis > 0 && elapsedMillis < userClickCooldownMillis) {
-            Long remainingCooldown = userClickCooldownMillis - elapsedMillis;
-            player.sendMessage(ChatColor.RED + "You must wait " + formatMillis(remainingCooldown) + " before clicking this sign again.");
-            return false;
-        }
+
 
         // Execute command sign
         execute(player, clickType);
@@ -242,7 +240,7 @@ public class CommandSign {
         this.globalLastClickTimeMillis = 0;
     }
 
-    private long getRemainingCooldown() {
+    private long getRemainingGlobalCooldown() {
         if (globalClickCooldownMillis <= 0) {
             return 0;
         }
@@ -284,6 +282,16 @@ public class CommandSign {
 
     public long getLastUserClickCooldownResetTimeMillis() {
         return lastUserClickCooldownResetTimeMillis;
+    }
+
+    public long getRemainingUserClickCooldown(@NonNull CommandSignUser commandSignUser) {
+        long userClickCooldownMillis = getUserClickCooldownMillis();
+        if (userClickCooldownMillis <= 0) {
+            return 0;
+        }
+
+        long elapsedMillis = System.currentTimeMillis() - commandSignUser.getLastSignClickTimeMillis(this);
+        return Math.max(0, userClickCooldownMillis - elapsedMillis);
     }
 
     // User Max Clicks
