@@ -1,14 +1,13 @@
-package fun.sunrisemc.sign_commands.file;
-
-import java.net.http.WebSocket.Listener;
+package fun.sunrisemc.sign_commands.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
-public class PlayerJoin implements Listener{
+public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

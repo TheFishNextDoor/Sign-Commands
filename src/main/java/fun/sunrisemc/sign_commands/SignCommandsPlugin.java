@@ -12,6 +12,7 @@ import fun.sunrisemc.sign_commands.command.SignCommands;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
+import fun.sunrisemc.sign_commands.event.PlayerJoin;
 import fun.sunrisemc.sign_commands.event.SignChange;
 import fun.sunrisemc.sign_commands.repeating_task.AutoSaveTask;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
@@ -33,6 +34,7 @@ public class SignCommandsPlugin extends JavaPlugin {
 
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new BlockInteract(), this);
+        pluginManager.registerEvents(new PlayerJoin(), this);
         pluginManager.registerEvents(new SignChange(), this);
 
         TickCounterTask.start();
