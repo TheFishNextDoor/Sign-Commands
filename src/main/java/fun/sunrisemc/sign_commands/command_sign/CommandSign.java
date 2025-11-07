@@ -131,6 +131,7 @@ public class CommandSign {
             }
 
             economy.withdrawPlayer(player, clickCost);
+            player.sendMessage(ChatColor.GOLD + "You have been charged " + economy.format(clickCost) + " for clicking this sign.");
         }
 
         // Execute command sign
