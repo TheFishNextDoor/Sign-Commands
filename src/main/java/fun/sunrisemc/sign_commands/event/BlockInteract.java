@@ -56,7 +56,7 @@ public class BlockInteract implements Listener {
         long currentTicks = TickCounterTask.getTicksFromServerStart();
         long lastInteractionTick = lastInteractionTickMap.getOrDefault(key, 0L);
         long ticksSinceLastInteraction = currentTicks - lastInteractionTick;
-        if (ticksSinceLastInteraction >= mainConfig.SIGN_CLICK_COOLDOWN_TICKS) {
+        if (ticksSinceLastInteraction >= mainConfig.SIGN_CLICK_DELAY_TICKS) {
             lastInteractionTickMap.put(key, currentTicks);
             return true;
         }
