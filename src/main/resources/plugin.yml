@@ -10,6 +10,10 @@ commands:
     usage: /signcommands <subcommand>
     permission: signcommands.use
     aliases: [sc]
+  signedit:
+    description: Edit a sign.
+    usage: /signedit <subcommand>
+    permission: signedit.use
 permissions:
   signcommands.use:
     description: Allows the player to use command signs.
@@ -29,3 +33,5 @@ permissions:
     description: Allows managing blocked permissions for command signs.
   signcommands.color:
     description: Allows use of color codes on signs.
+  signedit.use:
+    description: Allows the player to use the sign edit commands.

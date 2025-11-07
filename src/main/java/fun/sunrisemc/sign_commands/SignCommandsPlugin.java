@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.command.SignCommands;
+import fun.sunrisemc.sign_commands.command.SignEdit;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.event.BlockBreak;
@@ -40,6 +41,7 @@ public class SignCommandsPlugin extends JavaPlugin {
         load();
 
         registerCommand("signcommands", new SignCommands());
+        registerCommand("signedit", new SignEdit());
 
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoin(), this);

@@ -21,6 +21,7 @@ public class Permissions {
     public static final String MANAGE_CLICK_COST_PERMISSION = "signcommands.admin.clickcost";
 
     // Sign Edit Permissions
-    public static final String COLOR_PERMISSION = "signcommands.color";
+    public static final String SIGN_EDIT_USE_PERMISSION = "signedit.use";
+    public static final String SIGN_EDIT_COLOR_PERMISSION = "signedit.color";
     
 }

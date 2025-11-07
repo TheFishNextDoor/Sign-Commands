@@ -10,7 +10,7 @@ public class SignChange implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
-        if (!event.getPlayer().hasPermission(Permissions.COLOR_PERMISSION)) {
+        if (!event.getPlayer().hasPermission(Permissions.SIGN_EDIT_COLOR_PERMISSION)) {
             return;
         }
 
