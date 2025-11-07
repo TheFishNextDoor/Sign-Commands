@@ -27,7 +27,6 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
-import fun.sunrisemc.sign_commands.utils.PlayerUtils;
 import fun.sunrisemc.sign_commands.utils.RayTrace;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -956,7 +955,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Get the target player
-            Optional<Player> targetPlayer = PlayerUtils.getPlayerByName(target);
+            Optional<Player> targetPlayer = getPlayerByName(target);
             if (targetPlayer.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Player not found.");
                 return true;
@@ -1039,7 +1038,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Get the target player
-            Optional<Player> targetPlayer = PlayerUtils.getPlayerByName(target);
+            Optional<Player> targetPlayer = getPlayerByName(target);
             if (targetPlayer.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Player not found.");
                 return true;
@@ -1123,5 +1122,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return false;
         }
         return (state instanceof Sign);
+    }
+
+    private static Optional<Player> getPlayerByName(String name) {
+        Player player = org.bukkit.Bukkit.getPlayerExact(name);
+        return Optional.ofNullable(player);
     }
 }
