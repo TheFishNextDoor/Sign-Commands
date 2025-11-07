@@ -8,9 +8,10 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.file.PlayerDataFile;
-import fun.sunrisemc.sign_commands.utils.StringUtils;
 
 public class CommandSignUser {
 
@@ -28,6 +29,12 @@ public class CommandSignUser {
     public UUID getUuid() {
         return uuid;
     }
+
+    private boolean isOnline() {
+        return Bukkit.getPlayer(uuid) != null;
+    }
+
+    // On Sign Execute
 
     public void onSignExecute(CommandSign commandSign) {
         String name = commandSign.getName();
@@ -77,7 +84,7 @@ public class CommandSignUser {
             String signId = parts[0];
             String clicksString = parts[1];
             
-            Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
+            Optional<Integer> clicks = parseInteger(clicksString);
             if (clicks.isPresent()) {
                 signClickCountMap.put(signId, clicks.get());
             }
@@ -89,7 +96,7 @@ public class CommandSignUser {
             String signId = parts[0];
             String timestampString = parts[1];
             
-            Optional<Long> timestamp = StringUtils.parseLong(timestampString);
+            Optional<Long> timestamp = parseLong(timestampString);
             if (timestamp.isPresent()) {
                 lastSignClickMap.put(signId, timestamp.get());
             }
@@ -124,7 +131,23 @@ public class CommandSignUser {
 
     // Utils
 
-    private boolean isOnline() {
-        return Bukkit.getPlayer(uuid) != null;
+    private static Optional<Integer> parseInteger(@NonNull String str) {
+        try {
+            int value = Integer.parseInt(str);
+            return Optional.of(value);
+        }
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<Long> parseLong(@NonNull String str) {
+        try {
+            long value = Long.parseLong(str);
+            return Optional.of(value);
+        } 
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }

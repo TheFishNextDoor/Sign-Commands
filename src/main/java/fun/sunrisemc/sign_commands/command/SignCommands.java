@@ -23,7 +23,6 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
-import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
 public class SignCommands implements CommandExecutor, TabCompleter {
@@ -200,7 +199,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 String indexString = args[1];
 
-                Optional<Integer> index = StringUtils.parseInteger(indexString);
+                Optional<Integer> index = parseInteger(indexString);
                 if (index.isEmpty()) {
                     return null;
                 }
@@ -252,7 +251,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
 
                 Location location = signLocation.get();
-                String locationString = StringUtils.getName(location);
+                String locationString = locationString(location);
                 int commandCount = sign.getCommands().size();
                 if (commandCount == 1) {
                     sender.sendMessage(ChatColor.GOLD + sign.getName() + " " + locationString + " (" + commandCount + " command)");
@@ -399,7 +398,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the command index
-            Optional<Integer> index = StringUtils.parseInteger(args[1]);
+            Optional<Integer> index = parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -440,7 +439,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the command index
-            Optional<Integer> index = StringUtils.parseInteger(args[1]);
+            Optional<Integer> index = parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -676,7 +675,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the cooldown
-            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
+            Optional<Long> cooldown = parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -722,7 +721,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the click limit
-            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
+            Optional<Integer> maxClicks = parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -767,7 +766,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the cooldown
-            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
+            Optional<Long> cooldown = parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -834,7 +833,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the max clicks
-            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
+            Optional<Integer> maxClicks = parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -952,5 +951,29 @@ public class SignCommands implements CommandExecutor, TabCompleter {
     private static Optional<Player> getPlayerByName(String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
+    }
+
+    private static String locationString(Location location) {
+        return "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+    }
+
+    private static Optional<Integer> parseInteger(@NonNull String str) {
+        try {
+            int value = Integer.parseInt(str);
+            return Optional.of(value);
+        } 
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<Long> parseLong(@NonNull String str) {
+        try {
+            long value = Long.parseLong(str);
+            return Optional.of(value);
+        } 
+        catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }

@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.bukkit.event.block.Action;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import fun.sunrisemc.sign_commands.utils.StringUtils;
-
 public enum SignClickType {
 
     ANY_CLICK,
@@ -15,7 +13,7 @@ public enum SignClickType {
     RIGHT_CLICK;
 
     public String getName() {
-        return StringUtils.normalizeString(name());
+        return normalizeName(name());
     }
     
     public static Optional<SignClickType> fromAction(@NonNull Action action) {
@@ -30,7 +28,7 @@ public enum SignClickType {
     }
 
     public static Optional<@NonNull SignClickType> fromName(@NonNull String name) {
-        String clickTypeBName = StringUtils.normalizeString(name);
+        String clickTypeBName = normalizeName(name);
         for (SignClickType clickTypeA : values()) {
             if (clickTypeA.getName().equals(clickTypeBName)) {
                 return Optional.of(clickTypeA);
@@ -47,5 +45,7 @@ public enum SignClickType {
         return names;
     }
 
-
+    private static String normalizeName(@NonNull String str) {
+        return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
+    }
 }

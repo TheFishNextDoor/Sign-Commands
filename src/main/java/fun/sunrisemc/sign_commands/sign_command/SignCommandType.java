@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import fun.sunrisemc.sign_commands.utils.StringUtils;
-
 public enum SignCommandType {
 
     PLAYER,
@@ -15,11 +13,11 @@ public enum SignCommandType {
     BROADCAST;
 
     public String getName() {
-        return StringUtils.normalizeString(name());
+        return normalizeName(name());
     }
     
     public static Optional<SignCommandType> fromName(@NonNull String name) {
-        String commandTypeBName = StringUtils.normalizeString(name);
+        String commandTypeBName = normalizeName(name);
         for (SignCommandType commandTypeA : values()) {
             if (commandTypeA.getName().equals(commandTypeBName)) {
                 return Optional.of(commandTypeA);
@@ -34,5 +32,9 @@ public enum SignCommandType {
             names.add(commandType.getName());
         }
         return names;
+    }
+
+    private static String normalizeName(@NonNull String str) {
+        return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
     }
 }

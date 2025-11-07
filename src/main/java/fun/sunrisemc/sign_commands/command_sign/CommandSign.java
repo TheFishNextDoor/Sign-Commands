@@ -16,7 +16,6 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
-import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandSign {
@@ -102,7 +101,7 @@ public class CommandSign {
         // Check global cooldown
         long remainingGlobalCooldown = getRemainingCooldown();
         if (remainingGlobalCooldown > 0) {
-            player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + StringUtils.formatMillis(remainingGlobalCooldown) + " before clicking again.");
+            player.sendMessage(ChatColor.RED + "This sign is on global cooldown. Please wait " + formatMillis(remainingGlobalCooldown) + " before clicking again.");
             return false;
         }
         
@@ -112,7 +111,7 @@ public class CommandSign {
         long elapsedMillis = System.currentTimeMillis() - lastUserSignClickTimeMillis;
         if (userClickCooldownMillis > 0 && elapsedMillis < userClickCooldownMillis) {
             Long remainingCooldown = userClickCooldownMillis - elapsedMillis;
-            player.sendMessage(ChatColor.RED + "You must wait " + StringUtils.formatMillis(remainingCooldown) + " before clicking this sign again.");
+            player.sendMessage(ChatColor.RED + "You must wait " + formatMillis(remainingCooldown) + " before clicking this sign again.");
             return false;
         }
 
@@ -503,6 +502,55 @@ public class CommandSign {
         // Save Last User Max Clicks Reset Time Millis
         if (lastUserClickLimitResetTimeMillis > 0) {
             config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserClickLimitResetTimeMillis);
+        }
+    }
+
+    // Utils
+
+    private static String formatMillis(long millis) {
+        if (millis < 1000) {
+            if (millis == 1) {
+                return millis + " millisecond";
+            }
+            else {
+                return millis + " milliseconds";
+            }
+        } 
+        else if (millis < 60000) {
+            int seconds = (int) (millis / 1000);
+            if (seconds == 1) {
+                return seconds + " second";
+            }
+            else {
+                return seconds + " seconds";
+            }
+        }
+        else if (millis < 3600000) {
+            int minutes = (int) (millis / 60000);
+            if (minutes == 1) {
+                return minutes + " minute";
+            }
+            else {
+                return minutes + " minutes";
+            }
+        }
+        else if (millis < 86400000) {
+            int hours = (int) (millis / 3600000);
+            if (hours == 1) {
+                return hours + " hour";
+            }
+            else {
+                return hours + " hours";
+            }
+        }
+        else {
+            int days = (int) (millis / 86400000);
+            if (days == 1) {
+                return days + " day";
+            }
+            else {
+                return days + " days";
+            }
         }
     }
 }
