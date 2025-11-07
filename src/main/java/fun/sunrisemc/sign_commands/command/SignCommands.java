@@ -179,7 +179,18 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // /signcommands addcommand <clickType> <commandType> <command>
             if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac"))) {
-                return Arrays.asList("<command>");
+                Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(args[3]);
+                if (signCommandTypeOptional.isEmpty()) {
+                    return null;
+                }
+
+                SignCommandType signCommandType = signCommandTypeOptional.get();
+                if (signCommandType == SignCommandType.CONSOLE || signCommandType == SignCommandType.PLAYER) {
+                    return Arrays.asList("<command>");
+                }
+                else if (signCommandType == SignCommandType.MESSAGE || signCommandType == SignCommandType.BROADCAST) {
+                    return Arrays.asList("<message>");
+                }
             }
             // /signcommands editcommand <commandIndex> <clickType> <commandType>
             if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec"))) {
