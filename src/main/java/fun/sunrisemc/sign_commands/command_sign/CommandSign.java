@@ -11,12 +11,14 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
+import fun.sunrisemc.sign_commands.hook.Vault;
 import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
 
 public class CommandSign {
 
@@ -45,6 +47,12 @@ public class CommandSign {
 
     private int userMaxClicks = 0;
     private long lastUserClickLimitResetTimeMillis = 0;
+
+    // Click Cost
+
+    private double clickCost = 0.0;
+
+    // Constructors
 
     protected CommandSign(@NonNull Location location) {
         this.name = CommandSignManager.generateName();
@@ -112,6 +120,17 @@ public class CommandSign {
             }
         }
 
+        // Click Cost
+        if (Vault.usingVault() && clickCost > 0.0) {
+            Economy economy = Vault.getEconomy();
+
+            if (!economy.has(player, clickCost)) {
+                player.sendMessage(ChatColor.RED + "You do not have enough money to click this sign. You need " + economy.format(clickCost) + ".");
+                return false;
+            }
+
+            economy.withdrawPlayer(player, clickCost);
+        }
 
         // Execute command sign
         execute(player, clickType);
@@ -317,6 +336,16 @@ public class CommandSign {
         return lastUserClickLimitResetTimeMillis;
     }
 
+    // Click Cost
+
+    public double getClickCost() {
+        return clickCost;
+    }
+
+    public void setClickCost(double cost) {
+        this.clickCost = cost;
+    }
+
     // Loading and Saving
 
     protected void loadFrom(@NonNull YamlConfiguration config) {
@@ -442,6 +471,11 @@ public class CommandSign {
         else {
             this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
         }
+
+        // Load Click Cost
+        if (config.contains(name + ".click-cost")) {
+            this.clickCost = config.getDouble(name + ".click-cost");
+        }
     }
 
     protected void saveTo(@NonNull YamlConfiguration config) {
@@ -515,6 +549,11 @@ public class CommandSign {
         // Save Last User Max Clicks Reset Time Millis
         if (lastUserClickLimitResetTimeMillis > 0) {
             config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserClickLimitResetTimeMillis);
+        }
+
+        // Save Click Cost
+        if (clickCost > 0.0) {
+            config.set(name + ".click-cost", clickCost);
         }
     }
 

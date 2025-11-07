@@ -17,6 +17,7 @@ public class Permissions {
     public static final String MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION = "signcommands.admin.globalmaxclicks";
     public static final String MANAGE_USER_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.userclickcooldown";
     public static final String MANAGE_USER_CLICK_LIMIT_PERMISSION = "signcommands.admin.usermaxclicks";
+    public static final String MANAGE_CLICK_COST_PERMISSION = "signcommands.admin.clickcost";
 
     // Sign Edit Permissions
     public static final String COLOR_PERMISSION = "signcommands.color";

@@ -24,6 +24,7 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommand;
 import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
+import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
 public class SignCommands implements CommandExecutor, TabCompleter {
@@ -79,6 +80,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             if (isPlayer && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
                 completions.add("setuserclicklimit");
                 completions.add("resetuserclicklimit");
+            }
+            if (isPlayer && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+                completions.add("setclickcost");
             }
             return completions;
         }
@@ -174,6 +178,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 completions.add("all");
                 return completions;
             }
+            // /signcommands setclickcost <clickCost>
+            else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc"))) {
+                return Arrays.asList("<clickCost>");
+            }
         }
         else if (args.length == 3) {
             String subcommand = args[0].toLowerCase();
@@ -223,7 +231,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 String indexString = args[1];
 
-                Optional<Integer> index = parseInteger(indexString);
+                Optional<Integer> index = StringUtils.parseInteger(indexString);
                 if (index.isEmpty()) {
                     return null;
                 }
@@ -422,7 +430,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the command index
-            Optional<Integer> index = parseInteger(args[1]);
+            Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -463,7 +471,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the command index
-            Optional<Integer> index = parseInteger(args[1]);
+            Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -699,7 +707,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the cooldown
-            Optional<Long> cooldown = parseLong(args[1]);
+            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -745,7 +753,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the click limit
-            Optional<Integer> maxClicks = parseInteger(args[1]);
+            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -790,7 +798,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the cooldown
-            Optional<Long> cooldown = parseLong(args[1]);
+            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -857,7 +865,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Parse the max clicks
-            Optional<Integer> maxClicks = parseInteger(args[1]);
+            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -904,6 +912,35 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             CommandSignUser commandSignUser = CommandSignUserManager.get(targetPlayer.get());
             commandSignUser.resetSignClickCount(commandSign.get());
             sender.sendMessage(ChatColor.GOLD + "User click limit reset for " + targetPlayer.get().getName() + ".");
+            return true;
+        }
+        // Set Click Cost
+        else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+            Player player = (Player) sender;
+
+            // Check if the player provided enough arguments
+            if (args.length < 2) {
+                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setclickcost|scc> <cost>");
+                return true;
+            }
+
+            // Get the command sign
+            Optional<CommandSign> commandSign = CommandSignManager.getLookingAt(player);
+            if (commandSign.isEmpty()) {
+                player.sendMessage(ChatColor.RED + "You must be looking at a command sign.");
+                return true;
+            }
+
+            // Parse the cost
+            Optional<Double> cost = StringUtils.parseDouble(args[1]);
+            if (cost.isEmpty() || cost.get() < 0) {
+                player.sendMessage(ChatColor.RED + "Invalid cost value.");
+                return true;
+            }
+
+            // Set the click cost
+            commandSign.get().setClickCost(cost.get());
+            player.sendMessage(ChatColor.GOLD + "Click cost set to: " + cost.get() + ".");
             return true;
         }
 
@@ -962,6 +999,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setuserclicklimit | sucl> <clickLimit> " + ChatColor.WHITE + "Set the user click limit for a command sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <resetuserclicklimit | rucl> <player | all> " + ChatColor.WHITE + "Reset the user click limit for all users for a command sign.");
         }
+        if (isPlayer && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <setclickcost | scc> <clickCost> " + ChatColor.WHITE + "Set the click cost for a command sign.");
+        }
     }
 
     private static ArrayList<String> getRangeStrings(int start, int end) {
@@ -987,25 +1027,5 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
     private static String locationString(Location location) {
         return "(" + location.getWorld().getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
-    }
-
-    private static Optional<Integer> parseInteger(@NonNull String str) {
-        try {
-            int value = Integer.parseInt(str);
-            return Optional.of(value);
-        } 
-        catch (NumberFormatException e) {
-            return Optional.empty();
-        }
-    }
-
-    private static Optional<Long> parseLong(@NonNull String str) {
-        try {
-            long value = Long.parseLong(str);
-            return Optional.of(value);
-        } 
-        catch (NumberFormatException e) {
-            return Optional.empty();
-        }
     }
 }

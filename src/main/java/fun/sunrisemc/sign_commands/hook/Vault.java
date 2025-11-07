@@ -68,6 +68,10 @@ public class Vault {
         }
         chat = chatService.getProvider();
 
+        if (economy == null || permissions == null || chat == null) {
+            return false;
+        }
+
         usingVault = true;
         return true;
     }

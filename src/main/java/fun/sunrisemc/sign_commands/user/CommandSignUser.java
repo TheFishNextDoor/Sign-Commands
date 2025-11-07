@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.file.PlayerDataFile;
+import fun.sunrisemc.sign_commands.utils.StringUtils;
 
 public class CommandSignUser {
 
@@ -21,7 +22,7 @@ public class CommandSignUser {
 
     private HashMap<String, Integer> signClickCountMap = new HashMap<>();
 
-    public CommandSignUser(UUID uuid) {
+    public CommandSignUser(@NonNull UUID uuid) {
         this.uuid = uuid;
         load();
     }
@@ -36,7 +37,7 @@ public class CommandSignUser {
 
     // On Sign Execute
 
-    public void onSignExecute(CommandSign commandSign) {
+    public void onSignExecute(@NonNull CommandSign commandSign) {
         String name = commandSign.getName();
         long currentTimeMillis = System.currentTimeMillis();
         int totalSignClicks = getSignClickCount(commandSign);
@@ -46,19 +47,19 @@ public class CommandSignUser {
 
     // Last Sign Click Time
 
-    public long getLastSignClickTimeMillis(CommandSign commandSign) {
+    public long getLastSignClickTimeMillis(@NonNull CommandSign commandSign) {
         String name = commandSign.getName();
         return lastSignClickMap.getOrDefault(name, 0L);
     }
 
-    public void resetLastSignClickTimeMillis(CommandSign commandSign) {
+    public void resetLastSignClickTimeMillis(@NonNull CommandSign commandSign) {
         String name = commandSign.getName();
         lastSignClickMap.remove(name);
     }
 
     // Sign Click Count
 
-    public int getSignClickCount(CommandSign commandSign) {
+    public int getSignClickCount(@NonNull CommandSign commandSign) {
         String name = commandSign.getName();
         long lastReset = commandSign.getLastUserClickLimitResetTimeMillis();
         if (lastReset > getLastSignClickTimeMillis(commandSign)) {
@@ -68,7 +69,7 @@ public class CommandSignUser {
         return signClickCountMap.getOrDefault(name, 0);
     }
 
-    public void resetSignClickCount(CommandSign commandSign) {
+    public void resetSignClickCount(@NonNull CommandSign commandSign) {
         String name = commandSign.getName();
         signClickCountMap.remove(name);
     }
@@ -84,7 +85,7 @@ public class CommandSignUser {
             String signId = parts[0];
             String clicksString = parts[1];
             
-            Optional<Integer> clicks = parseInteger(clicksString);
+            Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
             if (clicks.isPresent()) {
                 signClickCountMap.put(signId, clicks.get());
             }
@@ -96,7 +97,7 @@ public class CommandSignUser {
             String signId = parts[0];
             String timestampString = parts[1];
             
-            Optional<Long> timestamp = parseLong(timestampString);
+            Optional<Long> timestamp = StringUtils.parseLong(timestampString);
             if (timestamp.isPresent()) {
                 lastSignClickMap.put(signId, timestamp.get());
             }
@@ -126,28 +127,6 @@ public class CommandSignUser {
 
         if (!isOnline()) {
             CommandSignUserManager.unload(uuid);
-        }
-    }
-
-    // Utils
-
-    private static Optional<Integer> parseInteger(@NonNull String str) {
-        try {
-            int value = Integer.parseInt(str);
-            return Optional.of(value);
-        }
-        catch (NumberFormatException e) {
-            return Optional.empty();
-        }
-    }
-
-    private static Optional<Long> parseLong(@NonNull String str) {
-        try {
-            long value = Long.parseLong(str);
-            return Optional.of(value);
-        } 
-        catch (NumberFormatException e) {
-            return Optional.empty();
         }
     }
 }
