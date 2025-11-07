@@ -20,8 +20,6 @@ import fun.sunrisemc.sign_commands.file.DataFile;
 
 public class CommandSignManager {
 
-    private static boolean savingSigns = false;
-
     private static HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
     private static HashMap<String, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
     private static ArrayList<CommandSign> signConfigurationsList = new ArrayList<>();
@@ -124,19 +122,12 @@ public class CommandSignManager {
     }
 
     public static void saveSigns() {
-        if (savingSigns) {
-            return;
-        }
-        savingSigns = true;
-
         YamlConfiguration config = new YamlConfiguration();
         for (CommandSign signConfiguration : signConfigurationsList) {
             signConfiguration.saveTo(config);
         }
 
         DataFile.save("signs", config);
-
-        savingSigns = false;
     }
 
     // Utils
