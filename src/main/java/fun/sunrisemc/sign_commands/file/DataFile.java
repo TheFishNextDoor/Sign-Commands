@@ -16,27 +16,29 @@ public class DataFile {
                 dataFile.createNewFile();
             }
             catch (Exception e) {
+                SignCommandsPlugin.logWarning("Failed to create data file for " + name + ".yml.");
                 e.printStackTrace();
+                return new YamlConfiguration();
             }
         }
         return YamlConfiguration.loadConfiguration(dataFile);
     }
 
-    public static void save(@NonNull String name, @NonNull YamlConfiguration data) {
+    public static boolean save(@NonNull String name, @NonNull YamlConfiguration data) {
         File dataFile = new File(getFolder(), name + ".yml");
         try {
             data.save(dataFile);
+            return true;
         }
         catch (Exception e) {
+            SignCommandsPlugin.logWarning("Failed to save data file for " + name + ".yml.");
             e.printStackTrace();
+            return false;
         }
     }
 
-    private static File getFolder() {
-        File pluginFolder = SignCommandsPlugin.getInstance().getDataFolder();
-        if (!pluginFolder.exists()) {
-            pluginFolder.mkdirs();
-        }
+    public static File getFolder() {
+        File pluginFolder = ConfigFile.getFolder();
 
         File dataFolder = new File(pluginFolder, "data");
         if (!dataFolder.exists()) {
@@ -44,5 +46,5 @@ public class DataFile {
         }
 
         return dataFolder;
-    }   
+    }
 }

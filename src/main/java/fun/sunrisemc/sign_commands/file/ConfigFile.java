@@ -17,18 +17,52 @@ public class ConfigFile {
 
     public static YamlConfiguration get(@NonNull String name, boolean copyMissingDefaults) {
         File configFile = new File(getFolder(), name + ".yml");
+
+        // Create the file if it does not exist using the default resource
         if (!configFile.exists()) {
-            create(name);
+            try {
+                SignCommandsPlugin.getInstance().saveResource(name + ".yml", false);
+            } 
+            catch (Exception e) {
+                SignCommandsPlugin.logWarning("Failed to create configuration file for " + name + ".yml.");
+                e.printStackTrace();
+                return new YamlConfiguration();
+            }
         }
 
+        // Load the configuration
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         if (config == null) {
             SignCommandsPlugin.logWarning("Failed to load configuration for " + name + ".yml. Using empty configuration.");
             config = new YamlConfiguration();
         }
 
+        // Copy missing default values from the resource file
         if (copyMissingDefaults) {
-            if (copyDefaults(config, getDefault(name))) {
+            YamlConfiguration defaultConfig = new YamlConfiguration();
+            try {
+                InputStream resourceStream = SignCommandsPlugin.getInstance().getResource(name + ".yml");
+                if (resourceStream != null) {
+                    InputStreamReader reader = new InputStreamReader(resourceStream, StandardCharsets.UTF_8);
+                    defaultConfig.load(reader);
+                }
+            } 
+            catch (Exception e) {
+                SignCommandsPlugin.logWarning("Failed to get default configuration for " + name + ".yml.");
+                e.printStackTrace();
+                return config;
+            }
+
+            boolean changed = false;
+            for (String key : defaultConfig.getKeys(true)) {
+                if (!config.contains(key)) {
+                    config.set(key, defaultConfig.get(key));
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                SignCommandsPlugin.logInfo("Added missing default values to " + name + ".yml.");
                 save(name, config);
             }
         }
@@ -48,71 +82,11 @@ public class ConfigFile {
         }
     }
 
-    public static boolean create(@NonNull String filename) {
-        try {
-            SignCommandsPlugin.getInstance().saveResource(filename + ".yml", false);
-        } catch (Exception e) {
-            SignCommandsPlugin.logWarning("Failed to save default configuration for " + filename + ".yml.");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean moveKeyIfExists(@NonNull String filename, @NonNull String fromKey, @NonNull String toKey) {
-        YamlConfiguration config = get(filename, false);
-        if (config.contains(fromKey)) {
-            config.set(toKey, config.get(fromKey));
-            config.set(fromKey, null);
-            save(filename, config);
-            return true;
-        }
-        return false;
-    }
-
     public static File getFolder() {
         File pluginFolder = SignCommandsPlugin.getInstance().getDataFolder();
         if (!pluginFolder.exists()) {
             pluginFolder.mkdirs();
         }
         return pluginFolder;
-    }
-
-    public static YamlConfiguration getDefault(@NonNull String name) {
-        YamlConfiguration defaultConfig = new YamlConfiguration();
-        try {
-            InputStream resourceStream = SignCommandsPlugin.getInstance().getResource(name + ".yml");
-            if (resourceStream != null) {
-                InputStreamReader reader = new InputStreamReader(resourceStream, StandardCharsets.UTF_8);
-                defaultConfig.load(reader);
-            }
-        } catch (Exception e) {
-            SignCommandsPlugin.logWarning("Failed to load default configuration for " + name + ".yml.");
-            e.printStackTrace();
-        }
-        return defaultConfig;
-    }
-
-    private static boolean copyDefaults(@NonNull YamlConfiguration config, @NonNull YamlConfiguration defaultConfig) {
-        boolean changed = false;
-        for (String key : defaultConfig.getKeys(true)) {
-            if (!config.contains(key)) {
-                config.set(key, defaultConfig.get(key));
-                changed = true;
-            }
-        }
-        return changed;
-    }
-
-    // File Reading Helpers
-
-    public static int getIntClamped(@NonNull YamlConfiguration config, @NonNull String path, int min, int max) {
-        int value = config.getInt(path);
-        return Math.clamp(value, min, max);
-    }
-
-    public static double getDoubleClamped(@NonNull YamlConfiguration config, @NonNull String path, double min, double max) {
-        double value = config.getDouble(path);
-        return Math.clamp(value, min, max);
     }
 }

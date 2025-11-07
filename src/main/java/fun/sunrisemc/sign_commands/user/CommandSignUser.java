@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
-import fun.sunrisemc.sign_commands.file.DataFile;
+import fun.sunrisemc.sign_commands.file.PlayerDataFile;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
 public class CommandSignUser {
@@ -69,8 +69,7 @@ public class CommandSignUser {
     // Loading and Saving
 
     protected void load() {
-        String id = uuid.toString();
-        YamlConfiguration playerData = DataFile.get(id);
+        YamlConfiguration playerData = PlayerDataFile.get(uuid);
 
         for (String signClicksString : playerData.getStringList(".sign-clicks")) {
             String[] parts = signClicksString.split(":");
@@ -98,7 +97,7 @@ public class CommandSignUser {
     }
 
     protected void save() {
-        YamlConfiguration playerData = getPlayerDataFile();
+        YamlConfiguration playerData = PlayerDataFile.get(uuid);
 
         ArrayList<String> signClicksList = new ArrayList<>();
         for (Entry<String, Integer> entry : signClickCountMap.entrySet()) {
@@ -116,21 +115,11 @@ public class CommandSignUser {
         }
         playerData.set(".last-sign-click", lastSignClickList);
 
-        savePlayerDataFile(playerData);
+        PlayerDataFile.save(uuid, playerData);
 
         if (!isOnline()) {
             CommandSignUserManager.unload(uuid);
         }
-    }
-
-    private YamlConfiguration getPlayerDataFile() {
-        String id = uuid.toString();
-        return DataFile.get(id);
-    }
-
-    private void savePlayerDataFile(YamlConfiguration playerData) {
-        String id = uuid.toString();
-        DataFile.save(id, playerData);
     }
 
     // Utils

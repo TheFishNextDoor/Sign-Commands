@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
-import fun.sunrisemc.sign_commands.file.ConfigFile;
+import fun.sunrisemc.sign_commands.file.DataFile;
 import fun.sunrisemc.sign_commands.utils.RayTrace;
 
 public class CommandSignManager {
@@ -89,7 +89,7 @@ public class CommandSignManager {
         signConfigurationsLocationsMap.clear();
         signConfigurationsList.clear();
 
-        YamlConfiguration config = ConfigFile.get("signs", false);
+        YamlConfiguration config = DataFile.get("signs");
         for (String name : config.getKeys(false)) {
             new CommandSign(config, name);
         }
@@ -108,7 +108,7 @@ public class CommandSignManager {
             signConfiguration.saveTo(config);
         }
 
-        ConfigFile.save("signs", config);
+        DataFile.save("signs", config);
 
         savingSigns = false;
     }

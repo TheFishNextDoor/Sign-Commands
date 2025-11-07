@@ -3,6 +3,7 @@ package fun.sunrisemc.sign_commands.config;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fun.sunrisemc.sign_commands.file.ConfigFile;
+import fun.sunrisemc.sign_commands.file.YAMLUtils;
 
 public class MainConfig {
 
@@ -14,6 +15,6 @@ public class MainConfig {
         YamlConfiguration config = ConfigFile.get("config", true);
 
         this.ONLY_ALLOW_SIGNS = config.getBoolean("only-allow-signs", true);
-        this.SIGN_CLICK_COOLDOWN_TICKS = ConfigFile.getIntClamped(config, "sign-click-cooldown-ticks", 0, Integer.MAX_VALUE);
+        this.SIGN_CLICK_COOLDOWN_TICKS = YAMLUtils.getIntClamped(config, "sign-click-cooldown-ticks", 0, Integer.MAX_VALUE);
     }
 }
