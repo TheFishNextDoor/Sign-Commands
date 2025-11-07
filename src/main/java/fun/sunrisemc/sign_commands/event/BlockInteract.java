@@ -40,17 +40,17 @@ public class BlockInteract implements Listener {
         }
         CommandSign commandSign = commandSignOptional.get();
 
+        event.setCancelled(true);
+
         // Check sign click delay tick
         if (!tickDelayBetwenClicksCheck(player)) {
             return;
         }
 
-        if (commandSign.attemptExecute(player, signClickType.get())) {
-            event.setCancelled(true);
-        }
+        commandSign.attemptExecute(player, signClickType.get());
     }
 
-    private boolean tickDelayBetwenClicksCheck (Player player) {
+    private boolean tickDelayBetwenClicksCheck(Player player) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         String key = player.getUniqueId().toString();
         long currentTicks = TickCounterTask.getTicksFromServerStart();
