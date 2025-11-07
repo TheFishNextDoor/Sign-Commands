@@ -58,8 +58,7 @@ public class SignCommandsPlugin extends JavaPlugin {
         TickCounterTask.stop();
         AutoSaveTask.stop();
 
-        CommandSignManager.saveSigns();
-        CommandSignUserManager.saveAll();
+        save();
 
         logInfo("Plugin disabled.");
     }

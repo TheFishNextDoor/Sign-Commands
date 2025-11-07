@@ -1,9 +1,8 @@
 package fun.sunrisemc.sign_commands.config;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import fun.sunrisemc.sign_commands.file.ConfigFile;
+import fun.sunrisemc.sign_commands.utils.ConfigUtils;
 
 public class MainConfig {
 
@@ -15,11 +14,6 @@ public class MainConfig {
         YamlConfiguration config = ConfigFile.get("config", true);
 
         this.ONLY_ALLOW_SIGNS = config.getBoolean("only-allow-signs", true);
-        this.SIGN_CLICK_COOLDOWN_TICKS = getIntClamped(config, "sign-click-cooldown-ticks", 0, Integer.MAX_VALUE);
-    }
-
-    private static int getIntClamped(@NonNull YamlConfiguration config, @NonNull String path, int min, int max) {
-        int value = config.getInt(path);
-        return Math.clamp(value, min, max);
+        this.SIGN_CLICK_COOLDOWN_TICKS = ConfigUtils.getIntClamped(config, "sign-click-cooldown-ticks", 0, Integer.MAX_VALUE);
     }
 }

@@ -160,6 +160,6 @@ public class CommandSignManager {
         if (state == null) {
             return false;
         }
-        return (state instanceof Sign);
+        return state instanceof Sign;
     }
 }
