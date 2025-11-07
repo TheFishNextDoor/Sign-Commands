@@ -21,7 +21,7 @@ import fun.sunrisemc.sign_commands.file.DataFile;
 public class CommandSignManager {
 
     private static HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
-    private static HashMap<String, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
+    private static HashMap<Location, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
     private static ArrayList<CommandSign> signConfigurationsList = new ArrayList<>();
 
     // Getting
@@ -31,8 +31,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getAtLocation(@NonNull Location location) {
-        String key = toKey(location);
-        return Optional.ofNullable(signConfigurationsLocationsMap.get(key));
+        return Optional.ofNullable(signConfigurationsLocationsMap.get(location));
     }
 
     public static Optional<CommandSign> getOrCreateLookingAt(@NonNull Player player) {
@@ -84,7 +83,7 @@ public class CommandSignManager {
 
         Optional<Location> signLocation = signCommand.getSignLocation();
         if (!signLocation.isEmpty()) {
-            String locationKey = toKey(signLocation.get());
+            Location locationKey = signLocation.get();
             signConfigurationsLocationsMap.put(locationKey, signCommand);
         }
         
@@ -97,7 +96,7 @@ public class CommandSignManager {
 
         Optional<Location> signLocation = signCommand.getSignLocation();
         if (!signLocation.isEmpty()) {
-            String locationKey = toKey(signLocation.get());
+            Location locationKey = signLocation.get();
             signConfigurationsLocationsMap.remove(locationKey);
         }
 
@@ -141,10 +140,6 @@ public class CommandSignManager {
             }
             idx++;
         }
-    }
-
-    private static String toKey(@NonNull Location location) {
-        return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
     }
 
     private static Optional<Block> rayTraceBlock(@NonNull Player player) {
