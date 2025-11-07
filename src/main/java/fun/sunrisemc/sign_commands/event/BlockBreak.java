@@ -2,7 +2,7 @@ package fun.sunrisemc.sign_commands.event;
 
 import java.util.Optional;
 
-import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,8 +17,8 @@ public class BlockBreak implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        Location location = event.getBlock().getLocation();
-        Optional<CommandSign> commandSign = CommandSignManager.getAtLocation(location);
+        Block block = event.getBlock();
+        Optional<CommandSign> commandSign = CommandSignManager.getByBlock(block);
         if (!commandSign.isPresent()) {
             return;
         }

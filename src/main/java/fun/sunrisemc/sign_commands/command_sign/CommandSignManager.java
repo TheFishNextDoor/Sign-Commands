@@ -30,7 +30,14 @@ public class CommandSignManager {
         return Optional.ofNullable(signConfigurationsIdsMap.get(id));
     }
 
-    public static Optional<CommandSign> getAtLocation(@NonNull Location location) {
+    public static Optional<CommandSign> getByBlock(@NonNull Block block) {
+        MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
+        if (mainConfig.ONLY_ALLOW_SIGNS) {
+            if (!isSign(block)) {
+                return Optional.empty();
+            }
+        }
+        Location location = block.getLocation();
         return Optional.ofNullable(signConfigurationsLocationsMap.get(location));
     }
 
@@ -40,8 +47,7 @@ public class CommandSignManager {
             return Optional.empty();
         }
 
-        Location blockLocation = block.get().getLocation();
-        Optional<CommandSign> commandSign = getAtLocation(blockLocation);
+        Optional<CommandSign> commandSign = getByBlock(block.get());
         if (!commandSign.isEmpty()) {
             return commandSign;
         }
@@ -53,6 +59,7 @@ public class CommandSignManager {
             }
         }
 
+        Location blockLocation = block.get().getLocation();
         CommandSign newSign = new CommandSign(blockLocation);
         return Optional.of(newSign);
     }
@@ -63,8 +70,7 @@ public class CommandSignManager {
             return Optional.empty();
         }
 
-        Location blockLocation = block.get().getLocation();
-        return getAtLocation(blockLocation);
+        return getByBlock(block.get());
     }
 
     public static ArrayList<String> getAllIds() {

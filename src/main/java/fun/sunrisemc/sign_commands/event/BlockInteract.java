@@ -34,7 +34,7 @@ public class BlockInteract implements Listener {
         }
 
         // Check if clicked block is a command sign
-        Optional<CommandSign> commandSignOptional = CommandSignManager.getAtLocation(event.getClickedBlock().getLocation());
+        Optional<CommandSign> commandSignOptional = CommandSignManager.getByBlock(event.getClickedBlock());
         if (!commandSignOptional.isPresent()) {
             return;
         }
