@@ -15,6 +15,7 @@ import fun.sunrisemc.sign_commands.event.BlockBreak;
 import fun.sunrisemc.sign_commands.event.BlockInteract;
 import fun.sunrisemc.sign_commands.event.PlayerJoin;
 import fun.sunrisemc.sign_commands.event.SignChange;
+import fun.sunrisemc.sign_commands.hook.Vault;
 import fun.sunrisemc.sign_commands.repeating_task.AutoSaveTask;
 import fun.sunrisemc.sign_commands.repeating_task.TickCounterTask;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
@@ -28,6 +29,13 @@ public class SignCommandsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        if (Vault.hook(this)) {
+            logInfo("Vault hooked.");
+        } 
+        else {
+            logWarning("Vault not found. Economy and Permissions features will be disabled.");
+        }
 
         load();
 
