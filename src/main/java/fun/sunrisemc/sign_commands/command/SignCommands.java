@@ -120,7 +120,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
 
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
-                return getRangeStrings(0, commands.size() - 1);
+                return StringUtils.getRangeStrings(0, commands.size() - 1);
             }
             // /signcommands editcommand <commandIndex>
             else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
@@ -130,7 +130,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
 
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
-                return getRangeStrings(0, commands.size() - 1);
+                return StringUtils.getRangeStrings(0, commands.size() - 1);
             }
             // /signcommands addrequiredpermission <permission>
             else if (isPlayer && (subcommand.equals("addrequiredpermission") || subcommand.equals("arp")) && sender.hasPermission(Permissions.MANAGE_PERMISSIONS_PERMISSION)) {
@@ -1098,14 +1098,6 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.YELLOW + "Note: Some commands are only available to players.");
         }
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
-    }
-
-    private static ArrayList<String> getRangeStrings(int start, int end) {
-        ArrayList<String> rangeStrings = new ArrayList<String>();
-        for (int i = start; i <= end; i++) {
-            rangeStrings.add(String.valueOf(i));
-        }
-        return rangeStrings;
     }
 
     private static Optional<Player> getPlayerByName(String name) {

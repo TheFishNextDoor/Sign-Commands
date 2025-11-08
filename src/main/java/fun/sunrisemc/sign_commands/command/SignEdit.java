@@ -56,7 +56,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
                     return null;
                 }
 
-                return getRangeStrings(1, lineCount(sign.get(), side.get()));
+                return StringUtils.getRangeStrings(1, lineCount(sign.get(), side.get()));
             }
             else if (subcommand.equals("set") || subcommand.equals("s")) {
                 Optional<Side> side = parseSide(args[1]);
@@ -160,7 +160,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
             // Parse the line number
             Optional<Integer> line = StringUtils.parseInteger(args[2]);
             if (line.isEmpty() || line.get() < 1 || line.get() > lineCount(sign.get(), side.get())) {
-                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", getRangeStrings(1, lineCount(sign.get(), side.get()))));
+                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", StringUtils.getRangeStrings(1, lineCount(sign.get(), side.get()))));
                 return true;
             }
 
@@ -282,13 +282,5 @@ public class SignEdit implements CommandExecutor, TabCompleter {
 
     private static int lineCount(Sign sign, Side side) {
         return sign.getSide(side).getLines().length;
-    }
-
-    private static ArrayList<String> getRangeStrings(int start, int end) {
-        ArrayList<String> rangeStrings = new ArrayList<String>();
-        for (int i = start; i <= end; i++) {
-            rangeStrings.add(String.valueOf(i));
-        }
-        return rangeStrings;
     }
 }

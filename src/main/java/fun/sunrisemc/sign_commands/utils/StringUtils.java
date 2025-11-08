@@ -1,5 +1,6 @@
 package fun.sunrisemc.sign_commands.utils;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -85,5 +86,13 @@ public class StringUtils {
                 return days + " days";
             }
         }
+    }
+
+    public static ArrayList<String> getRangeStrings(int start, int end) {
+        ArrayList<String> rangeStrings = new ArrayList<String>();
+        for (int i = start; i <= end; i++) {
+            rangeStrings.add(String.valueOf(i));
+        }
+        return rangeStrings;
     }
 }
