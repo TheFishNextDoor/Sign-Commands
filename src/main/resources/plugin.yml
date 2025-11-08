@@ -45,7 +45,7 @@ permissions:
   signcommands.admin.clickcost:
     description: Allows the player to manage the click cost on command signs.
   signedit.use:
-    description: Allows the player to use the sign edit commands.
+    description: Allows the player to use the sign edit command.
   signedit.color:
     description: Allows use of color codes on signs.
   signedit.bypassprotections:
