@@ -454,6 +454,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             }
 
             // Rename the sign
+            newName = newName.replace(":", "");
             commandSign.get().setName(newName);
             player.sendMessage(ChatColor.GOLD + "Command sign renamed to: " + newName);
             return true;
