@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
@@ -50,7 +51,7 @@ public class BlockInteract implements Listener {
         commandSign.attemptExecute(player, signClickType.get());
     }
 
-    private boolean tickDelayBetwenClicksCheck(Player player) {
+    private boolean tickDelayBetwenClicksCheck(@NonNull Player player) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         String key = player.getUniqueId().toString();
         long currentTicks = TickCounterTask.getTicksFromServerStart();

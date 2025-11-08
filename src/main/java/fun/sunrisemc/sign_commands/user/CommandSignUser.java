@@ -16,16 +16,26 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 
 public class CommandSignUser {
 
+    // UUID
+
     private final UUID uuid;
+
+    // Last Sign Click Time
 
     private HashMap<String, Long> lastSignClickMap = new HashMap<>();
 
+    // Sign Click Count
+
     private HashMap<String, Integer> signClickCountMap = new HashMap<>();
+
+    // Constructors
 
     public CommandSignUser(@NonNull UUID uuid) {
         this.uuid = uuid;
         load();
     }
+
+    // UUID
 
     public UUID getUuid() {
         return uuid;

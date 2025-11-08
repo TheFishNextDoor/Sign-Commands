@@ -137,17 +137,6 @@ public class CommandSignManager {
 
     // Utils
 
-    protected static String generateName() {
-        int idx = 1;
-        while (true) {
-            String name = "sign-" + idx;
-            if (!signConfigurationsIdsMap.containsKey(name)) {
-                return name;
-            }
-            idx++;
-        }
-    }
-
     private static Optional<Block> rayTraceBlock(@NonNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {

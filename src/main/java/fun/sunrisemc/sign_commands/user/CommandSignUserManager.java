@@ -28,6 +28,11 @@ public class CommandSignUserManager {
         Bukkit.getScheduler().runTaskAsynchronously(SignCommandsPlugin.getInstance(), () -> get(player));
     }
 
+    public static boolean unload(@NonNull UUID uuid) {
+        CommandSignUser signUser = signUsers.remove(uuid);
+        return signUser != null;
+    }
+
     public static void loadOnline() {
         signUsers.clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -37,10 +42,5 @@ public class CommandSignUserManager {
 
     public static void saveAll() {
         signUsers.values().forEach(CommandSignUser::save);
-    }
-
-    public static boolean unload(@NonNull UUID uuid) {
-        CommandSignUser signUser = signUsers.remove(uuid);
-        return signUser != null;
     }
 }

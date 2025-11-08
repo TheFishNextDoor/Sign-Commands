@@ -1100,7 +1100,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
     }
 
-    private static Optional<Player> getPlayerByName(String name) {
+    private static Optional<Player> getPlayerByName(@NonNull String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
     }

@@ -23,12 +23,20 @@ import net.milkbowl.vault.economy.Economy;
 
 public class CommandSign {
 
+    // Name
+
     private String name;
+
+    // Location
 
     private Optional<Location> signLocation = Optional.empty();
     private Optional<String> lastValidSignLocationString = Optional.empty();
 
+    // Commands
+
     private ArrayList<SignCommand> commands = new ArrayList<>();
+
+    // Permissions
 
     private HashSet<String> requiredPermissions = new HashSet<>();
     private HashSet<String> blockedPermissions = new HashSet<>();
@@ -56,7 +64,7 @@ public class CommandSign {
     // Constructors
 
     protected CommandSign(@NonNull Location location) {
-        this.name = CommandSignManager.generateName();
+        this.name = generateName();
         this.signLocation = Optional.of(location);
         this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
         this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
@@ -168,6 +176,17 @@ public class CommandSign {
         CommandSignManager.unregister(this);
         this.name = newId;
         CommandSignManager.register(this);
+    }
+
+    private String generateName() {
+        int idx = 1;
+        while (true) {
+            String name = "sign-" + idx;
+            if (!CommandSignManager.getByName(name).isPresent()) {
+                return name;
+            }
+            idx++;
+        }
     }
 
     // Delete
@@ -579,8 +598,4 @@ public class CommandSign {
             config.set(name + ".click-cost", clickCost);
         }
     }
-
-    // Utils
-
-
 }

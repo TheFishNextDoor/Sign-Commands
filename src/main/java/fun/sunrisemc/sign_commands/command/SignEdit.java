@@ -269,7 +269,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return sides;
     }
 
-    private static Optional<Side> parseSide(String sideStr) {
+    private static Optional<Side> parseSide(@NonNull String sideStr) {
         sideStr = StringUtils.normalize(sideStr);
         for (Side side : Side.values()) {
             String sideName = StringUtils.normalize(side.name());
@@ -280,7 +280,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return Optional.empty();
     }
 
-    private static int lineCount(Sign sign, Side side) {
+    private static int lineCount(@NonNull Sign sign, @NonNull Side side) {
         return sign.getSide(side).getLines().length;
     }
 }
