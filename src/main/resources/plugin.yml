@@ -36,3 +36,5 @@ permissions:
     description: Allows the player to use the sign edit commands.
   signedit.color:
     description: Allows use of color codes on signs.
+  signedit.bypassprotections:
+    description: Allows bypassing protections when editing signs.

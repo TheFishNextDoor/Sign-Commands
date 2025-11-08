@@ -17,6 +17,7 @@ import org.bukkit.util.RayTraceResult;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import fun.sunrisemc.sign_commands.permission.Permissions;
+import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 
@@ -135,6 +136,11 @@ public class SignEdit implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            if (!player.hasPermission(Permissions.BYPASS_PROTECTIONS_PERMISSION) && !ProtectionCheck.canBreak(player, sign.get().getBlock())) {
+                player.sendMessage(ChatColor.RED + "You do not have permission to edit this sign due to protections.");
+                return true;
+            }
+
             // Get the text to set
             String text = String.join(" ", List.of(args).subList(3, args.length));
             if (player.hasPermission(Permissions.SIGN_EDIT_COLOR_PERMISSION)) {
@@ -165,6 +171,11 @@ public class SignEdit implements CommandExecutor, TabCompleter {
             Optional<Side> side = parseSide(args[1]);
             if (side.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", sideNames()));
+                return true;
+            }
+
+            if (!player.hasPermission(Permissions.BYPASS_PROTECTIONS_PERMISSION) && !ProtectionCheck.canBreak(player, sign.get().getBlock())) {
+                player.sendMessage(ChatColor.RED + "You do not have permission to edit this sign due to protections.");
                 return true;
             }
 

@@ -11,12 +11,17 @@ import org.bukkit.event.block.BlockBreakEvent;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.permission.Permissions;
+import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
 import net.md_5.bungee.api.ChatColor;
 
 public class BlockBreak implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (!ProtectionCheck.isReal(event)) {
+            return;
+        }
+
         Block block = event.getBlock();
         Optional<CommandSign> commandSign = CommandSignManager.getByBlock(block);
         if (!commandSign.isPresent()) {

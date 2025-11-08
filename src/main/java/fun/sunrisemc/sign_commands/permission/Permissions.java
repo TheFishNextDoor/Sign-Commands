@@ -2,10 +2,10 @@ package fun.sunrisemc.sign_commands.permission;
 
 public class Permissions {
 
-    // User Permissions
+    // SignCommands User Permissions
     public static final String USE_PERMISSION = "signcommands.use";
 
-    // Admin Permissions
+    // SignCommands Admin Permissions
     public static final String RELOAD_PERMISSION = "signcommands.admin.reload";
     public static final String INFO_PERMISSION = "signcommands.admin.info";
     public static final String LIST_SIGNS_PERMISSION = "signcommands.admin.list";
@@ -23,5 +23,6 @@ public class Permissions {
     // Sign Edit Permissions
     public static final String SIGN_EDIT_USE_PERMISSION = "signedit.use";
     public static final String SIGN_EDIT_COLOR_PERMISSION = "signedit.color";
+    public static final String BYPASS_PROTECTIONS_PERMISSION = "signedit.bypassprotections";
     
 }
