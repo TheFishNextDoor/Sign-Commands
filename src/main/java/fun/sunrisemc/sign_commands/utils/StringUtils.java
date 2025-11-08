@@ -36,6 +36,10 @@ public class StringUtils {
         }
     }
 
+    public static String normalize(@NonNull String str) {
+        return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
+    }
+
     public static String formatMillis(long millis) {
         if (millis < 1000) {
             if (millis == 1) {

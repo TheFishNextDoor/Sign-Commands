@@ -253,6 +253,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return Arrays.asList(currentCommand);
             }
         }
+        
         return null;
     }
 
