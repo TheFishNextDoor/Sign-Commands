@@ -70,21 +70,49 @@ public class SignEdit implements CommandExecutor, TabCompleter {
                 }
 
                 int maxLines = lineCount(sign.get(), side.get());
-                String example = "";
-                for (int i = 1; i <= maxLines; i++) {
-                    example += "line" + i;
-                    if (i < maxLines) {
-                        example += ";";
-                    }
+                String currentText = String.join(";", sign.get().getSide(side.get()).getLines()).replace('§', '&');
+                if (!currentText.isEmpty()) {
+                    return List.of(currentText);
                 }
-                return List.of("<" + example + ">");
+                else {
+                    String example = "";
+                    for (int i = 1; i <= maxLines; i++) {
+                        example += "line" + i;
+                        if (i < maxLines) {
+                            example += ";";
+                        }
+                    }
+                    return List.of("<" + example + ">");
+                }
+
             }
         }
         else if (args.length == 4) {
             String subcommand = args[0].toLowerCase();
 
             if (subcommand.equals("setline") || subcommand.equals("sl")) {
-                return List.of("<text>");
+                Optional<Side> side = parseSide(args[1]);
+                if (side.isEmpty()) {
+                    return List.of("<text>");
+                }
+
+                Optional<Sign> sign = rayTraceSign((Player) sender);
+                if (sign.isEmpty()) {
+                    return List.of("<text>");
+                }
+
+                Optional<Integer> line = StringUtils.parseInteger(args[2]);
+                if (line.isEmpty() || line.get() < 1 || line.get() > lineCount(sign.get(), side.get())) {
+                    return List.of("<text>");
+                }
+
+                String currentText = sign.get().getSide(side.get()).getLine(line.get() - 1).replace('§', '&');
+                if (currentText.isEmpty()) {
+                    return List.of("<text>");
+                } 
+                else {
+                    return List.of(currentText);
+                }
             }
         }
 
