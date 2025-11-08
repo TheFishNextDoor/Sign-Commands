@@ -511,6 +511,11 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            // Warn the player that they should not use the / at the start of the command
+            if ((signCommandType.get() == SignCommandType.CONSOLE || signCommandType.get() == SignCommandType.PLAYER) && args[3].startsWith("/")) {
+                player.sendMessage(ChatColor.YELLOW + "Warning: You do not need to use '/' at the start of the command.");
+            }
+
             // Add the command to the command sign
             String signCommandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
             SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), signCommandString);
