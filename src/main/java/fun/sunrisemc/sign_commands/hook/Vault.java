@@ -1,5 +1,7 @@
 package fun.sunrisemc.sign_commands.hook;
 
+import java.util.Optional;
+
 import org.bukkit.Server;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,41 +12,26 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class Vault {
-    
-    private static boolean usingVault = false;
 
     private static Economy economy = null;
+
     private static Permission permissions = null;
+
     private static Chat chat = null;
 
-    public static boolean usingVault() {
-        return usingVault;
+    public static Optional<Economy> getEconomy() {
+        return Optional.ofNullable(economy);
     }
 
-    public static Economy getEconomy() {
-        if (!usingVault) {
-            throw new IllegalStateException("Vault not found");
-        }
-        return economy;
+    public static Optional<Permission> getPermissions() {
+        return Optional.ofNullable(permissions);
     }
 
-    public static Permission getPermissions() {
-        if (!usingVault) {
-            throw new IllegalStateException("Vault not found");
-        }
-        return permissions;
-    }
-
-    public static Chat getChat() {
-        if (!usingVault) {
-            throw new IllegalStateException("Vault not found");
-        }
-        return chat;
+    public static Optional<Chat> getChat() {
+        return Optional.ofNullable(chat);
     }
 
     public static boolean hook(@NonNull JavaPlugin plugin) {
-        usingVault = false;
-        
         Server server = plugin.getServer();
         if (server.getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -68,11 +55,6 @@ public class Vault {
         }
         chat = chatService.getProvider();
 
-        if (economy == null || permissions == null || chat == null) {
-            return false;
-        }
-
-        usingVault = true;
         return true;
     }
 }

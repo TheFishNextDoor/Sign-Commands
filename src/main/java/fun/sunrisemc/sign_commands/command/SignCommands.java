@@ -84,7 +84,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 completions.add("setuserclicklimit");
                 completions.add("resetuserclicklimit");
             }
-            if (isPlayer && Vault.usingVault() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+            if (isPlayer && Vault.getEconomy().isPresent() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
                 completions.add("setclickcost");
             }
             return completions;
@@ -187,7 +187,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return completions;
             }
             // /signcommands setclickcost <clickCost>
-            else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && Vault.usingVault() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+            else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && Vault.getEconomy().isPresent() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
                 return Arrays.asList("<clickCost>");
             }
         }
@@ -376,7 +376,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // Click Cost
             double clickCost = commandSign.getClickCost();
-            if (clickCost > 0 && Vault.usingVault()) {
+            if (clickCost > 0 && Vault.getEconomy().isPresent()) {
                 player.sendMessage(ChatColor.GOLD + "Click Cost: " + ChatColor.WHITE + clickCost);
             }
             
@@ -1005,7 +1005,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             return true;
         }
         // Set Click Cost
-        else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && Vault.usingVault() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+        else if (isPlayer && (subcommand.equals("setclickcost") || subcommand.equals("scc")) && Vault.getEconomy().isPresent() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
             Player player = (Player) sender;
 
             // Check if the player provided enough arguments
@@ -1091,7 +1091,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setuserclicklimit | sucl> <clickLimit> " + ChatColor.WHITE + "Set the user click limit for a command sign.");
             sender.sendMessage(ChatColor.GOLD + "/signcommands <resetuserclicklimit | rucl> <player | all> " + ChatColor.WHITE + "Reset the user click limit for all users for a command sign.");
         }
-        if (isPlayer && Vault.usingVault() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
+        if (isPlayer && Vault.getEconomy().isPresent() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setclickcost | scc> <clickCost> " + ChatColor.WHITE + "Set the click cost for a command sign.");
         }
         if (!isPlayer) {

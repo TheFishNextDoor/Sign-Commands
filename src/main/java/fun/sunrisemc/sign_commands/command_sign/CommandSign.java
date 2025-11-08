@@ -134,16 +134,15 @@ public class CommandSign {
         }
 
         // Click Cost
-        if (Vault.usingVault() && clickCost > 0.0) {
-            Economy economy = Vault.getEconomy();
-
-            if (!economy.has(player, clickCost)) {
-                player.sendMessage(ChatColor.RED + "You do not have enough money to click this sign. You need " + economy.format(clickCost) + ".");
+        Optional<Economy> economy = Vault.getEconomy();
+        if (economy.isPresent() && clickCost > 0.0) {
+            if (!economy.get().has(player, clickCost)) {
+                player.sendMessage(ChatColor.RED + "You do not have enough money to click this sign. You need " + economy.get().format(clickCost) + ".");
                 return false;
             }
 
-            economy.withdrawPlayer(player, clickCost);
-            player.sendMessage(ChatColor.GOLD + "You have been charged " + economy.format(clickCost) + " for clicking this sign.");
+            economy.get().withdrawPlayer(player, clickCost);
+            player.sendMessage(ChatColor.GOLD + "You have been charged " + economy.get().format(clickCost) + " for clicking this sign.");
         }
 
         // Execute command sign
