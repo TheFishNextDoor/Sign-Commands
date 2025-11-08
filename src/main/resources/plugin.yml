@@ -18,20 +18,32 @@ commands:
 permissions:
   signcommands.use:
     description: Allows the player to use command signs.
-  signcommands.reload:
-    description: Allows use of the reload command.
-  signcommands.rename:
-    description: Allows renaming of command signs.
-  signcommands.list:
-    description: Allows listing of command signs.
-  signcommands.goto:
-    description: Allows teleporting to command signs.
-  signcommands.managecommands:
-    description: Allows managing commands on command signs.
-  signcommands.managerequiredpermission:
-    description: Allows managing required permissions for command signs.
-  signcommands.manageblockedpermission:
-    description: Allows managing blocked permissions for command signs.
+  signcommands.admin.reload:
+    description: Allows the player to reload the SignCommands configuration.
+  signcommands.admin.info:
+    description: Allows the player to view information about a command sign.
+  signcommands.admin.list:
+    description: Allows the player to list all command signs.
+  signcommands.admin.goto:
+    description: Allows the player to teleport to a command sign.
+  signcommands.admin.rename:
+    description: Allows the player to rename a command sign.
+  signcommands.admin.delete:
+    description: Allows the player to delete a command sign.
+  signcommands.admin.commands:
+    description: Allows the player to manage commands on command signs.
+  signcommands.admin.permissions:
+    description: Allows the player to manage permissions on command signs.
+  signcommands.admin.globalclickcooldown:
+    description: Allows the player to manage the global click cooldown on command signs.
+  signcommands.admin.globalmaxclicks:
+    description: Allows the player to manage the global max clicks on command signs.
+  signcommands.admin.userclickcooldown:
+    description: Allows the player to manage the user click cooldown on command signs.
+  signcommands.admin.usermaxclicks:
+    description: Allows the player to manage the user max clicks on command signs.
+  signcommands.admin.clickcost:
+    description: Allows the player to manage the click cost on command signs.
   signedit.use:
     description: Allows the player to use the sign edit commands.
   signedit.color:
