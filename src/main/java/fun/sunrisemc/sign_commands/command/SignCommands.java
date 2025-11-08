@@ -1094,6 +1094,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         if (isPlayer && Vault.usingVault() && sender.hasPermission(Permissions.MANAGE_CLICK_COST_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <setclickcost | scc> <clickCost> " + ChatColor.WHITE + "Set the click cost for a command sign.");
         }
+        if (!isPlayer) {
+            sender.sendMessage(ChatColor.YELLOW + "Note: Some commands are only available to players.");
+        }
+        sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
     }
 
     private static ArrayList<String> getRangeStrings(int start, int end) {
