@@ -22,9 +22,9 @@ import fun.sunrisemc.sign_commands.file.DataFile;
 
 public class CommandSignManager {
 
-    private static HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
-    private static HashMap<Location, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
-    private static ArrayList<CommandSign> signConfigurationsList = new ArrayList<>();
+    private static @NotNull HashMap<String, CommandSign> signConfigurationsIdsMap = new HashMap<>();
+    private static @NotNull HashMap<Location, CommandSign> signConfigurationsLocationsMap = new HashMap<>();
+    private static @NotNull ArrayList<CommandSign> signConfigurationsList = new ArrayList<>();
 
     // Getting
 
@@ -75,10 +75,12 @@ public class CommandSignManager {
         return getByBlock(block.get());
     }
 
+    @NotNull
     public static ArrayList<String> getAllIds() {
         return new ArrayList<>(signConfigurationsIdsMap.keySet());
     }
 
+    @NotNull
     public static List<CommandSign> getAll() {
         return Collections.unmodifiableList(signConfigurationsList);
     }

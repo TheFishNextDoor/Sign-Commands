@@ -26,7 +26,8 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 public class SignEdit implements CommandExecutor, TabCompleter {
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (!(sender instanceof Player)) {
             return null;
         }
@@ -245,7 +246,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         player.sendMessage(ChatColor.YELLOW + "/signedit <set | s> <side> <line1;line2;line3;line4> " + ChatColor.WHITE + "Set all lines on the sign at once.");
     }
 
-    private static @NotNull Optional<Sign> rayTraceSign(@NotNull Player player) {
+    private static Optional<Sign> rayTraceSign(@NotNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {
             return Optional.empty();
@@ -264,7 +265,8 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return Optional.of((Sign) state);
     }
 
-    private static @NotNull ArrayList<String> sideNames() {
+    @NotNull
+    private static ArrayList<String> sideNames() {
         ArrayList<String> sides = new ArrayList<>();
         for (Side side : Side.values()) {
             String sideName = side.name();
@@ -277,7 +279,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return sides;
     }
 
-    private static @NotNull Optional<Side> parseSide(@NotNull String sideNameB) {
+    private static Optional<Side> parseSide(@NotNull String sideNameB) {
         String sideNameBNormalized = StringUtils.normalize(sideNameB);
         for (Side side : Side.values()) {
             String sideNameA = side.name();

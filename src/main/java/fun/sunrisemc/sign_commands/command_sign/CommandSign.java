@@ -27,7 +27,7 @@ public class CommandSign {
 
     // Name
 
-    private String name;
+    private @NotNull String name;
 
     // Location
 
@@ -36,12 +36,12 @@ public class CommandSign {
 
     // Commands
 
-    private ArrayList<SignCommand> commands = new ArrayList<>();
+    private @NotNull ArrayList<SignCommand> commands = new ArrayList<>();
 
     // Permissions
 
-    private HashSet<String> requiredPermissions = new HashSet<>();
-    private HashSet<String> blockedPermissions = new HashSet<>();
+    private @NotNull HashSet<String> requiredPermissions = new HashSet<>();
+    private @NotNull HashSet<String> blockedPermissions = new HashSet<>();
 
     // Global Click Tracking
 
@@ -169,6 +169,7 @@ public class CommandSign {
 
     // Name
 
+    @NotNull
     public String getName() {
         return name;
     }
@@ -179,6 +180,7 @@ public class CommandSign {
         CommandSignManager.register(this);
     }
 
+    @NotNull
     private String generateName() {
         int idx = 1;
         while (true) {
@@ -204,6 +206,7 @@ public class CommandSign {
 
     // Commands
 
+    @NotNull
     public ArrayList<SignCommand> getCommands() {
         return commands;
     }
@@ -240,6 +243,7 @@ public class CommandSign {
 
     // Required Permissions
 
+    @NotNull
     public HashSet<String> getRequiredPermissions() {
         return requiredPermissions;
     }
@@ -266,6 +270,7 @@ public class CommandSign {
     
     // Blocked Permissions
 
+    @NotNull
     public HashSet<String> getBlockedPermissions() {
         return blockedPermissions;
     }

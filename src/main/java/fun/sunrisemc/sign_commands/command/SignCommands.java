@@ -34,7 +34,8 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 public class SignCommands implements CommandExecutor, TabCompleter {
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         boolean isPlayer = sender instanceof Player;
         // /signcommands <subcommand>
         if (args.length == 1) {
@@ -1239,12 +1240,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
     }
 
-    private static @NotNull Optional<Player> getPlayerByName(@NotNull String name) {
+    private static Optional<Player> getPlayerByName(@NotNull String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
     }
 
-    private static @NotNull ArrayList<String> getAllPlayerNames() {
+    @NotNull
+    private static ArrayList<String> getAllPlayerNames() {
         ArrayList<String> playerNames = new ArrayList<String>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player == null) {
@@ -1255,12 +1257,17 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         return playerNames;
     }
 
-    private static @NotNull String locationString(Location location) {
+    @NotNull 
+    private static String locationString(@NotNull Location location) {
         World world = location.getWorld();
-        if (world == null) {
-            return "Unknown World";
+        String worldName;
+        if (world != null) {
+            worldName = world.getName();
+        } 
+        else {
+            worldName = "Unknown World";
         }
         
-        return "(" + world.getName() + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
+        return "(" + worldName + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
     }
 }
