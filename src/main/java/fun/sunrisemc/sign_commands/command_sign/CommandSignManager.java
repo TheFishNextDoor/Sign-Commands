@@ -60,6 +60,9 @@ public class CommandSignManager {
         }
 
         Location blockLocation = block.get().getLocation();
+        if (blockLocation == null) {
+            return Optional.empty();
+        }
         CommandSign newSign = new CommandSign(blockLocation);
         return Optional.of(newSign);
     }
