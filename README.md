@@ -2,8 +2,8 @@
 Run commands when a player clicks a sign or block.
 
 ## Setup
-- Add Sign Commands jar into your plugins folder
-- Restart your server
+- Add Sign Commands jar into your plugins folder.
+- Restart your server.
 
 ## Commands
 - **/signcommands help:** Show the help message.
@@ -54,3 +54,9 @@ Run commands when a player clicks a sign or block.
 - **signedit.use**: Allows the player to use the sign edit command.  
 - **signedit.color**: Allows the player to use color codes on signs.  
 - **signedit.bypassprotections**: Allows the player to bypass protections when editing signs.
+
+## Config
+```yaml
+only-allow-signs: true # If true, only allow signs to have commands assigned to them. If false, any block can have commands assigned.
+sign-click-delay-ticks: 5 # The number of ticks a player must wait between running sign commands.
+```
