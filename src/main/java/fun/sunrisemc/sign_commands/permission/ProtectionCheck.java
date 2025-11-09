@@ -12,10 +12,15 @@ public class ProtectionCheck {
     private static BlockBreakEvent checking = null;
 
     public static boolean canBreak(@NotNull Player player, @NotNull Block block) {
-        checking = new BlockBreakEvent(block, player);
-        Bukkit.getServer().getPluginManager().callEvent(checking);
+        BlockBreakEvent eventToCheck = new BlockBreakEvent(block, player);
+
+        checking = eventToCheck;
+
+        Bukkit.getServer().getPluginManager().callEvent(eventToCheck);
         boolean cancelled = checking.isCancelled();
+
         checking = null;
+        
         return !cancelled;
     }
 

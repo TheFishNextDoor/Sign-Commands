@@ -51,6 +51,10 @@ public class ConfigFile {
 
             boolean changed = false;
             for (String key : defaultConfig.getKeys(true)) {
+                if (key == null) {
+                    continue;
+                }
+
                 if (!config.contains(key)) {
                     config.set(key, defaultConfig.get(key));
                     changed = true;
