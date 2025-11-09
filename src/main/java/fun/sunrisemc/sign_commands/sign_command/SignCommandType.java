@@ -15,7 +15,11 @@ public enum SignCommandType {
     BROADCAST;
 
     public String getName() {
-        return StringUtils.normalize(name());
+        String name = name();
+        if (name == null) {
+            return "";
+        }
+        return StringUtils.normalize(name);
     }
     
     public static Optional<SignCommandType> fromName(@NotNull String name) {

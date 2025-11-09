@@ -16,7 +16,11 @@ public enum SignClickType {
     RIGHT_CLICK;
 
     public String getName() {
-        return StringUtils.normalize(name());
+        String name = name();
+        if (name == null) {
+            return "";
+        }
+        return StringUtils.normalize(name);
     }
     
     public static Optional<SignClickType> fromAction(@NotNull Action action) {
