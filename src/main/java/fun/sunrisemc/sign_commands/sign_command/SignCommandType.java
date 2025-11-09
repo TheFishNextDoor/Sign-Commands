@@ -14,12 +14,9 @@ public enum SignCommandType {
     MESSAGE,
     BROADCAST;
 
+    @NotNull
     public String getName() {
-        String name = name();
-        if (name == null) {
-            return "";
-        }
-        return StringUtils.normalize(name);
+        return StringUtils.normalize(name());
     }
     
     public static Optional<SignCommandType> fromName(@NotNull String name) {
@@ -32,6 +29,7 @@ public enum SignCommandType {
         return Optional.empty();
     }
 
+    @NotNull
     public static ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (SignCommandType commandType : values()) {

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class SignCommand {
 
-    private final SignClickType clickType;
+    private final @NotNull SignClickType clickType;
 
-    private final SignCommandType commandType;
+    private final @NotNull SignCommandType commandType;
 
     private final @NotNull String command;
 
@@ -22,15 +22,18 @@ public class SignCommand {
         this.command = command;
     }
 
+    @NotNull
     public SignClickType getClickType() {
         return clickType;
     }
 
+    @NotNull
     public SignCommandType getCommandType() {
         return commandType;
     }
 
-    public @NotNull String getCommand() {
+    @NotNull
+    public String getCommand() {
         return command;
     }
 
@@ -41,10 +44,6 @@ public class SignCommand {
 
         String playerName = player.getName();
         String parsedCommand = command.replace("{player}", playerName);
-        if (parsedCommand == null) {
-            return;
-        }
-
         if (commandType == SignCommandType.PLAYER) {
             player.performCommand(parsedCommand);
         }

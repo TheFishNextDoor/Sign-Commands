@@ -15,12 +15,9 @@ public enum SignClickType {
     LEFT_CLICK,
     RIGHT_CLICK;
 
+    @NotNull
     public String getName() {
-        String name = name();
-        if (name == null) {
-            return "";
-        }
-        return StringUtils.normalize(name);
+        return StringUtils.normalize(name());
     }
     
     public static Optional<SignClickType> fromAction(@NotNull Action action) {
@@ -44,6 +41,7 @@ public enum SignClickType {
         return Optional.empty();
     }
 
+    @NotNull
     public static ArrayList<String> getNames() {
         ArrayList<String> names = new ArrayList<String>();
         for (SignClickType clickType : values()) {
