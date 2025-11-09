@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
@@ -15,7 +15,7 @@ public class ConfigFile {
 
     // File Modification Helpers
 
-    public static YamlConfiguration get(@NonNull String name, boolean copyMissingDefaults) {
+    public static YamlConfiguration get(@NotNull String name, boolean copyMissingDefaults) {
         File configFile = new File(getFolder(), name + ".yml");
 
         // Create the file if it does not exist using the default resource
@@ -32,10 +32,6 @@ public class ConfigFile {
 
         // Load the configuration
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-        if (config == null) {
-            SignCommandsPlugin.logWarning("Failed to load configuration for " + name + ".yml. Using empty configuration.");
-            config = new YamlConfiguration();
-        }
 
         // Copy missing default values from the resource file
         if (copyMissingDefaults) {
@@ -70,7 +66,7 @@ public class ConfigFile {
         return config;
     }
 
-    public static boolean save(@NonNull String filename, @NonNull YamlConfiguration config) {
+    public static boolean save(@NotNull String filename, @NotNull YamlConfiguration config) {
         File configFile = new File(getFolder(), filename + ".yml");
         try {
             config.save(configFile);

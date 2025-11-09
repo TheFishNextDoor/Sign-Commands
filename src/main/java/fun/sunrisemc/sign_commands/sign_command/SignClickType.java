@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.bukkit.event.block.Action;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
@@ -18,7 +19,7 @@ public enum SignClickType {
         return StringUtils.normalize(name());
     }
     
-    public static Optional<SignClickType> fromAction(@NonNull Action action) {
+    public static Optional<SignClickType> fromAction(@NotNull Action action) {
         switch (action) {
             case LEFT_CLICK_BLOCK:
                 return Optional.of(LEFT_CLICK);
@@ -29,7 +30,7 @@ public enum SignClickType {
         }
     }
 
-    public static Optional<@NonNull SignClickType> fromName(@NonNull String name) {
+    public static Optional<SignClickType> fromName(@NotNull String name) {
         String clickTypeBName = StringUtils.normalize(name);
         for (SignClickType clickTypeA : values()) {
             if (clickTypeA.getName().equals(clickTypeBName)) {

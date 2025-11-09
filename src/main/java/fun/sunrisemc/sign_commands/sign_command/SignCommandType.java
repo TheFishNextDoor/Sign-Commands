@@ -3,7 +3,7 @@ package fun.sunrisemc.sign_commands.sign_command;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
@@ -18,7 +18,7 @@ public enum SignCommandType {
         return StringUtils.normalize(name());
     }
     
-    public static Optional<SignCommandType> fromName(@NonNull String name) {
+    public static Optional<SignCommandType> fromName(@NotNull String name) {
         String commandTypeBName = StringUtils.normalize(name);
         for (SignCommandType commandTypeA : values()) {
             if (commandTypeA.getName().equals(commandTypeBName)) {

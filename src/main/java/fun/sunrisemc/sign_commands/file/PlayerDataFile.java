@@ -4,13 +4,14 @@ import java.io.File;
 import java.util.UUID;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class PlayerDataFile {
 
-    public static YamlConfiguration get(@NonNull UUID uuid) {
+    public static YamlConfiguration get(@NotNull UUID uuid) {
         File playerDataFile = new File(getFolder(), uuid.toString() + ".yml");
         if (!playerDataFile.exists()) {
             try {
@@ -25,7 +26,7 @@ public class PlayerDataFile {
         return YamlConfiguration.loadConfiguration(playerDataFile);
     }
 
-    public static boolean save(@NonNull UUID uuid, @NonNull YamlConfiguration data) {
+    public static boolean save(@NotNull UUID uuid, @NotNull YamlConfiguration data) {
         String name = uuid.toString();
         File playerDataFile = new File(getFolder(), name + ".yml");
         try {

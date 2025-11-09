@@ -3,11 +3,11 @@ package fun.sunrisemc.sign_commands.utils;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 public class StringUtils {
 
-    public static Optional<Integer> parseInteger(@NonNull String str) {
+    public static Optional<Integer> parseInteger(@NotNull String str) {
         try {
             int value = Integer.parseInt(str);
             return Optional.of(value);
@@ -17,7 +17,7 @@ public class StringUtils {
         }
     }
 
-    public static Optional<Double> parseDouble(@NonNull String str) {
+    public static Optional<Double> parseDouble(@NotNull String str) {
         try {
             double value = Double.parseDouble(str);
             return Optional.of(value);
@@ -27,7 +27,7 @@ public class StringUtils {
         }
     }
 
-    public static Optional<Long> parseLong(@NonNull String str) {
+    public static Optional<Long> parseLong(@NotNull String str) {
         try {
             long value = Long.parseLong(str);
             return Optional.of(value);
@@ -37,7 +37,7 @@ public class StringUtils {
         }
     }
 
-    public static String normalize(@NonNull String str) {
+    public static String normalize(@NotNull String str) {
         return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
     }
 

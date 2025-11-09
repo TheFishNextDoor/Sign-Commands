@@ -4,12 +4,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import org.jetbrains.annotations.NotNull;
+
 import fun.sunrisemc.sign_commands.permission.Permissions;
 
 public class SignChange implements Listener {
 
     @EventHandler(ignoreCancelled = true)
-    public void onSignChange(SignChangeEvent event) {
+    public void onSignChange(@NotNull SignChangeEvent event) {
         if (!event.getPlayer().hasPermission(Permissions.SIGN_EDIT_COLOR_PERMISSION)) {
             return;
         }

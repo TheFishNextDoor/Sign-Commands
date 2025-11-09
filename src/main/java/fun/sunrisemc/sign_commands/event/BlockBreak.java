@@ -2,34 +2,28 @@ package fun.sunrisemc.sign_commands.event;
 
 import java.util.Optional;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
-import net.md_5.bungee.api.ChatColor;
 
 public class BlockBreak implements Listener {
 
     @EventHandler(ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (event == null) {
-            return;
-        }
-
+    public void onBlockBreak(@NotNull BlockBreakEvent event) {
         if (!ProtectionCheck.isReal(event)) {
             return;
         }
 
         Block block = event.getBlock();
-        if (block == null) {
-            return;
-        }
         Optional<CommandSign> commandSign = CommandSignManager.getByBlock(block);
         if (!commandSign.isPresent()) {
             return;

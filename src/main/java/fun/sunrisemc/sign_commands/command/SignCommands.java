@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
@@ -26,12 +28,11 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
-import net.md_5.bungee.api.ChatColor;
 
 public class SignCommands implements CommandExecutor, TabCompleter {
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         boolean isPlayer = sender instanceof Player;
         // /signcommands <subcommand>
         if (args.length == 1) {
@@ -258,7 +259,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         boolean isPlayer = sender instanceof Player;
 
         if (args.length == 0) {
@@ -1039,7 +1040,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void helpMessage(@NonNull CommandSender sender) {
+    private void helpMessage(@NotNull CommandSender sender) {
         boolean isPlayer = sender instanceof Player;
 
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands Help");
@@ -1100,7 +1101,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
     }
 
-    private static Optional<Player> getPlayerByName(@NonNull String name) {
+    private static Optional<Player> getPlayerByName(@NotNull String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
     }

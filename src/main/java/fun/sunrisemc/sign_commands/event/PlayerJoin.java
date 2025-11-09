@@ -5,16 +5,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import org.jetbrains.annotations.NotNull;
+
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
 public class PlayerJoin implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
         CommandSignUserManager.preload(player);
     }
 }

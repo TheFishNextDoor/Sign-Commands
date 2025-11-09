@@ -13,7 +13,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.file.DataFile;
@@ -26,11 +28,11 @@ public class CommandSignManager {
 
     // Getting
 
-    public static Optional<CommandSign> getByName(@NonNull String id) {
+    public static Optional<CommandSign> getByName(@NotNull String id) {
         return Optional.ofNullable(signConfigurationsIdsMap.get(id));
     }
 
-    public static Optional<CommandSign> getByBlock(@NonNull Block block) {
+    public static Optional<CommandSign> getByBlock(@NotNull Block block) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
             if (!isSign(block)) {
@@ -41,7 +43,7 @@ public class CommandSignManager {
         return Optional.ofNullable(signConfigurationsLocationsMap.get(location));
     }
 
-    public static Optional<CommandSign> getOrCreateLookingAt(@NonNull Player player) {
+    public static Optional<CommandSign> getOrCreateLookingAt(@NotNull Player player) {
         Optional<Block> block = rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
@@ -67,7 +69,7 @@ public class CommandSignManager {
         return Optional.of(newSign);
     }
 
-    public static Optional<CommandSign> getLookingAt(@NonNull Player player) {
+    public static Optional<CommandSign> getLookingAt(@NotNull Player player) {
         Optional<Block> block = rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
@@ -86,7 +88,7 @@ public class CommandSignManager {
 
     // Registering and Unregistering
 
-    protected static void register(@NonNull CommandSign signCommand) {
+    protected static void register(@NotNull CommandSign signCommand) {
         String name = signCommand.getName();
         signConfigurationsIdsMap.put(name, signCommand);
 
@@ -99,7 +101,7 @@ public class CommandSignManager {
         signConfigurationsList.add(signCommand);
     }
 
-    protected static void unregister(@NonNull CommandSign signCommand) {
+    protected static void unregister(@NotNull CommandSign signCommand) {
         String signName = signCommand.getName();
         signConfigurationsIdsMap.remove(signName);
 
@@ -143,7 +145,7 @@ public class CommandSignManager {
 
     // Utils
 
-    private static Optional<Block> rayTraceBlock(@NonNull Player player) {
+    private static Optional<Block> rayTraceBlock(@NotNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {
             return Optional.empty();
@@ -151,11 +153,8 @@ public class CommandSignManager {
         return Optional.ofNullable(result.getHitBlock());
     }
 
-    private static boolean isSign(@NonNull Block block) {
+    private static boolean isSign(@NotNull Block block) {
         BlockState state = block.getState();
-        if (state == null) {
-            return false;
-        }
         return state instanceof Sign;
     }
 }

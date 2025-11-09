@@ -8,7 +8,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
 import fun.sunrisemc.sign_commands.file.PlayerDataFile;
@@ -30,7 +31,7 @@ public class CommandSignUser {
 
     // Constructors
 
-    public CommandSignUser(@NonNull UUID uuid) {
+    public CommandSignUser(@NotNull UUID uuid) {
         this.uuid = uuid;
         load();
     }
@@ -47,7 +48,7 @@ public class CommandSignUser {
 
     // On Sign Execute
 
-    public void onSignExecute(@NonNull CommandSign commandSign) {
+    public void onSignExecute(@NotNull CommandSign commandSign) {
         String name = commandSign.getName();
         long currentTimeMillis = System.currentTimeMillis();
         int totalSignClicks = getSignClickCount(commandSign);
@@ -57,19 +58,19 @@ public class CommandSignUser {
 
     // Last Sign Click Time
 
-    public long getLastSignClickTimeMillis(@NonNull CommandSign commandSign) {
+    public long getLastSignClickTimeMillis(@NotNull CommandSign commandSign) {
         String name = commandSign.getName();
         return lastSignClickMap.getOrDefault(name, 0L);
     }
 
-    public void resetLastSignClickTimeMillis(@NonNull CommandSign commandSign) {
+    public void resetLastSignClickTimeMillis(@NotNull CommandSign commandSign) {
         String name = commandSign.getName();
         lastSignClickMap.remove(name);
     }
 
     // Sign Click Count
 
-    public int getSignClickCount(@NonNull CommandSign commandSign) {
+    public int getSignClickCount(@NotNull CommandSign commandSign) {
         String name = commandSign.getName();
         long lastReset = commandSign.getLastUserClickLimitResetTimeMillis();
         if (lastReset > getLastSignClickTimeMillis(commandSign)) {
@@ -79,7 +80,7 @@ public class CommandSignUser {
         return signClickCountMap.getOrDefault(name, 0);
     }
 
-    public void resetSignClickCount(@NonNull CommandSign commandSign) {
+    public void resetSignClickCount(@NotNull CommandSign commandSign) {
         String name = commandSign.getName();
         signClickCountMap.remove(name);
     }

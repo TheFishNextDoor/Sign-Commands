@@ -9,7 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
@@ -23,7 +24,7 @@ public class BlockInteract implements Listener {
     private HashMap<String, Long> lastInteractionTickMap = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
-    public void onBlockInteract(PlayerInteractEvent event) {
+    public void onBlockInteract(@NotNull PlayerInteractEvent event) {
         // Don't execute command signs while sneaking
         Player player = event.getPlayer();
         if (player.isSneaking()) {
@@ -32,9 +33,6 @@ public class BlockInteract implements Listener {
 
         // Check valid action
         Action action = event.getAction();
-        if (action == null) {
-            return;
-        }
         Optional<SignClickType> signClickType = SignClickType.fromAction(action);
         if (signClickType.isEmpty()) {
             return;
@@ -60,7 +58,7 @@ public class BlockInteract implements Listener {
         commandSign.get().attemptExecute(player, signClickType.get());
     }
 
-    private boolean tickDelayBetwenClicksCheck(@NonNull Player player) {
+    private boolean tickDelayBetwenClicksCheck(@NotNull Player player) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         String key = player.getUniqueId().toString();
         long currentTicks = TickCounterTask.getTicksFromServerStart();

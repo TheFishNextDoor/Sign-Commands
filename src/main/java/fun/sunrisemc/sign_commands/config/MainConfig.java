@@ -1,6 +1,7 @@
 package fun.sunrisemc.sign_commands.config;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import fun.sunrisemc.sign_commands.file.ConfigFile;
 import fun.sunrisemc.sign_commands.utils.ConfigUtils;
 

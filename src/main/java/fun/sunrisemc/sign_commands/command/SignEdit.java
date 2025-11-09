@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -14,17 +15,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
-import net.md_5.bungee.api.ChatColor;
 
 public class SignEdit implements CommandExecutor, TabCompleter {
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
             return null;
         }
@@ -120,7 +121,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED  + "Only players can use this command.");
             return true;
@@ -232,13 +233,13 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void helpMessage(@NonNull Player player) {
+    private void helpMessage(@NotNull Player player) {
         player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Sign Edit Help");
         player.sendMessage(ChatColor.YELLOW + "/signedit <setline | sl> <side> <line> <text> " + ChatColor.WHITE + "Set a specific line on the sign.");
         player.sendMessage(ChatColor.YELLOW + "/signedit <set | s> <side> <line1;line2;line3;line4> " + ChatColor.WHITE + "Set all lines on the sign at once.");
     }
 
-    private static Optional<Sign> rayTraceSign(@NonNull Player player) {
+    private static Optional<Sign> rayTraceSign(@NotNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {
             return Optional.empty();
@@ -250,10 +251,6 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         }
 
         BlockState state = block.getState();
-        if (state == null) {
-            return Optional.empty();
-        }
-
         if (!(state instanceof Sign)) {
             return Optional.empty();
         }
@@ -269,7 +266,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return sides;
     }
 
-    private static Optional<Side> parseSide(@NonNull String sideStr) {
+    private static Optional<Side> parseSide(@NotNull String sideStr) {
         sideStr = StringUtils.normalize(sideStr);
         for (Side side : Side.values()) {
             String sideName = StringUtils.normalize(side.name());
@@ -280,7 +277,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return Optional.empty();
     }
 
-    private static int lineCount(@NonNull Sign sign, @NonNull Side side) {
+    private static int lineCount(@NotNull Sign sign, @NotNull Side side) {
         return sign.getSide(side).getLines().length;
     }
 }

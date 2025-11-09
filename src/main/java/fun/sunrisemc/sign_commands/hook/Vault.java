@@ -5,7 +5,8 @@ import java.util.Optional;
 import org.bukkit.Server;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -31,7 +32,7 @@ public class Vault {
         return Optional.ofNullable(chat);
     }
 
-    public static boolean hook(@NonNull JavaPlugin plugin) {
+    public static boolean hook(@NotNull JavaPlugin plugin) {
         Server server = plugin.getServer();
         if (server.getPluginManager().getPlugin("Vault") == null) {
             return false;

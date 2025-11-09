@@ -3,14 +3,14 @@ package fun.sunrisemc.sign_commands.file;
 import java.io.File;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class DataFile {
 
-    @NonNull
-    public static YamlConfiguration get(@NonNull String name) {
+    public static YamlConfiguration get(@NotNull String name) {
         File dataFile = new File(getFolder(), name + ".yml");
         if (!dataFile.exists()) {
             try {
@@ -24,13 +24,10 @@ public class DataFile {
         }
         
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
-        if (yamlConfiguration == null) {
-            return new YamlConfiguration();
-        }
         return yamlConfiguration;
     }
 
-    public static boolean save(@NonNull String name, @NonNull YamlConfiguration data) {
+    public static boolean save(@NotNull String name, @NotNull YamlConfiguration data) {
         File dataFile = new File(getFolder(), name + ".yml");
         try {
             data.save(dataFile);

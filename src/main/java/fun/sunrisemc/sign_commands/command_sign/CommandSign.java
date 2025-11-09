@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.milkbowl.vault.economy.Economy;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.hook.Vault;
@@ -18,8 +22,6 @@ import fun.sunrisemc.sign_commands.sign_command.SignCommandType;
 import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
-import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.economy.Economy;
 
 public class CommandSign {
 
@@ -63,7 +65,7 @@ public class CommandSign {
 
     // Constructors
 
-    protected CommandSign(@NonNull Location location) {
+    protected CommandSign(@NotNull Location location) {
         this.name = generateName();
         this.signLocation = Optional.of(location);
         this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
@@ -72,7 +74,7 @@ public class CommandSign {
         CommandSignManager.register(this);
     }
 
-    protected CommandSign(@NonNull YamlConfiguration config, @NonNull String name) {
+    protected CommandSign(@NotNull YamlConfiguration config, @NotNull String name) {
         this.name = name;
 
         loadFrom(config);
@@ -82,7 +84,7 @@ public class CommandSign {
 
     // Executing
 
-    public boolean attemptExecute(@NonNull Player player, @NonNull SignClickType clickType) {
+    public boolean attemptExecute(@NotNull Player player, @NotNull SignClickType clickType) {
         if (!hasCommandForClickType(clickType)) {
             return false;
         }
@@ -150,7 +152,7 @@ public class CommandSign {
         return true;
     }
 
-    public void execute(@NonNull Player player, @NonNull SignClickType clickType) {
+    public void execute(@NotNull Player player, @NotNull SignClickType clickType) {
         if (!signLocation.isPresent()) {
             return;
         }
@@ -171,7 +173,7 @@ public class CommandSign {
         return name;
     }
 
-    public void setName(@NonNull String newId) {
+    public void setName(@NotNull String newId) {
         CommandSignManager.unregister(this);
         this.name = newId;
         CommandSignManager.register(this);
@@ -206,7 +208,7 @@ public class CommandSign {
         return commands;
     }
 
-    public void addCommand(@NonNull SignCommand command) {
+    public void addCommand(@NotNull SignCommand command) {
         commands.add(command);
     }
 
@@ -218,7 +220,7 @@ public class CommandSign {
         return true;
     }
 
-    public boolean editCommand(int index, @NonNull SignCommand newCommand) {
+    public boolean editCommand(int index, @NotNull SignCommand newCommand) {
         if (index < 0 || index >= commands.size()) {
             return false;
         }
@@ -227,7 +229,7 @@ public class CommandSign {
         return true;
     }
 
-    public boolean hasCommandForClickType(@NonNull SignClickType clickType) {
+    public boolean hasCommandForClickType(@NotNull SignClickType clickType) {
         for (SignCommand command : commands) {
             if (command.getClickType() == SignClickType.ANY_CLICK || command.getClickType() == clickType) {
                 return true;
@@ -242,15 +244,15 @@ public class CommandSign {
         return requiredPermissions;
     }
 
-    public boolean addRequiredPermission(@NonNull String permission) {
+    public boolean addRequiredPermission(@NotNull String permission) {
         return requiredPermissions.add(permission);
     }
 
-    public boolean removeRequiredPermission(@NonNull String permission) {
+    public boolean removeRequiredPermission(@NotNull String permission) {
         return requiredPermissions.remove(permission);
     }
 
-    private boolean hasRequiredPermissions(@NonNull Player player) {
+    private boolean hasRequiredPermissions(@NotNull Player player) {
         for (String permission : requiredPermissions) {
             if (!player.hasPermission(permission)) {
                 return false;
@@ -265,15 +267,15 @@ public class CommandSign {
         return blockedPermissions;
     }
 
-    public boolean addBlockedPermission(@NonNull String permission) {
+    public boolean addBlockedPermission(@NotNull String permission) {
         return blockedPermissions.add(permission);
     }
 
-    public boolean removeBlockedPermission(@NonNull String permission) {
+    public boolean removeBlockedPermission(@NotNull String permission) {
         return blockedPermissions.remove(permission);
     }
 
-    private boolean hasBlockedPermissions(@NonNull Player player) {
+    private boolean hasBlockedPermissions(@NotNull Player player) {
         for (String permission : blockedPermissions) {
             if (player.hasPermission(permission)) {
                 return true;
@@ -344,7 +346,7 @@ public class CommandSign {
         return lastUserClickCooldownResetTimeMillis;
     }
 
-    public long getRemainingUserClickCooldown(@NonNull CommandSignUser commandSignUser) {
+    public long getRemainingUserClickCooldown(@NotNull CommandSignUser commandSignUser) {
         long userClickCooldownMillis = getUserClickCooldownMillis();
         if (userClickCooldownMillis <= 0) {
             return 0;
@@ -389,7 +391,7 @@ public class CommandSign {
 
     // Loading and Saving
 
-    protected void loadFrom(@NonNull YamlConfiguration config) {
+    protected void loadFrom(@NotNull YamlConfiguration config) {
         // Load Location
         if (config.contains(name + ".location")) {
             String locationString = config.getString(name + ".location");
@@ -519,7 +521,7 @@ public class CommandSign {
         }
     }
 
-    protected void saveTo(@NonNull YamlConfiguration config) {
+    protected void saveTo(@NotNull YamlConfiguration config) {
         // Save Location
         String locationString;
         if (signLocation.isPresent()) {

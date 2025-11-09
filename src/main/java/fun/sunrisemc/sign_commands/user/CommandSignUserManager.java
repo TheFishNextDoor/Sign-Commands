@@ -5,7 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
@@ -13,7 +14,7 @@ public class CommandSignUserManager {
 
     private static ConcurrentHashMap<UUID, CommandSignUser> signUsers = new ConcurrentHashMap<>();
 
-    public static CommandSignUser get(@NonNull Player player) {
+    public static CommandSignUser get(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
         CommandSignUser signUser = signUsers.get(uuid);
         if (signUser == null) {
@@ -23,11 +24,11 @@ public class CommandSignUserManager {
         return signUser;
     }
 
-    public static void preload(@NonNull Player player) {
+    public static void preload(@NotNull Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(SignCommandsPlugin.getInstance(), () -> get(player));
     }
 
-    public static boolean unload(@NonNull UUID uuid) {
+    public static boolean unload(@NotNull UUID uuid) {
         CommandSignUser signUser = signUsers.remove(uuid);
         return signUser != null;
     }
