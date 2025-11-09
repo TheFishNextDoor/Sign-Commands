@@ -13,7 +13,6 @@ public class CommandSignUserManager {
 
     private static ConcurrentHashMap<UUID, CommandSignUser> signUsers = new ConcurrentHashMap<>();
 
-
     public static CommandSignUser get(@NonNull Player player) {
         UUID uuid = player.getUniqueId();
         CommandSignUser signUser = signUsers.get(uuid);
@@ -36,6 +35,9 @@ public class CommandSignUserManager {
     public static void loadOnline() {
         signUsers.clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player == null) {
+                continue;
+            }
             get(player);
         }
     }

@@ -91,6 +91,9 @@ public class CommandSignUser {
 
         for (String signClicksString : playerData.getStringList(".sign-clicks")) {
             String[] parts = signClicksString.split(":");
+            if (parts.length != 2) {
+                continue;
+            }
 
             String signId = parts[0];
             String clicksString = parts[1];
@@ -103,6 +106,9 @@ public class CommandSignUser {
 
         for (String lastSignClickString : playerData.getStringList(".last-sign-click")) {
             String[] parts = lastSignClickString.split(":");
+            if (parts.length != 2) {
+                continue;
+            }
 
             String signId = parts[0];
             String timestampString = parts[1];
