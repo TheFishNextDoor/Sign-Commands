@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
@@ -25,7 +26,7 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 public class SignEdit implements CommandExecutor, TabCompleter {
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (!(sender instanceof Player)) {
             return null;
         }
@@ -121,7 +122,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED  + "Only players can use this command.");
             return true;
@@ -244,7 +245,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         player.sendMessage(ChatColor.YELLOW + "/signedit <set | s> <side> <line1;line2;line3;line4> " + ChatColor.WHITE + "Set all lines on the sign at once.");
     }
 
-    private static Optional<Sign> rayTraceSign(@NotNull Player player) {
+    private static @NotNull Optional<Sign> rayTraceSign(@NotNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {
             return Optional.empty();
@@ -263,7 +264,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return Optional.of((Sign) state);
     }
 
-    private static ArrayList<String> sideNames() {
+    private static @NotNull ArrayList<String> sideNames() {
         ArrayList<String> sides = new ArrayList<>();
         for (Side side : Side.values()) {
             String sideName = side.name();
@@ -276,7 +277,7 @@ public class SignEdit implements CommandExecutor, TabCompleter {
         return sides;
     }
 
-    private static Optional<Side> parseSide(@NotNull String sideNameB) {
+    private static @NotNull Optional<Side> parseSide(@NotNull String sideNameB) {
         String sideNameBNormalized = StringUtils.normalize(sideNameB);
         for (Side side : Side.values()) {
             String sideNameA = side.name();

@@ -17,6 +17,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 import fun.sunrisemc.sign_commands.command_sign.CommandSign;
@@ -33,7 +34,7 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 public class SignCommands implements CommandExecutor, TabCompleter {
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         boolean isPlayer = sender instanceof Player;
         // /signcommands <subcommand>
         if (args.length == 1) {
@@ -1238,12 +1239,12 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
     }
 
-    private static Optional<Player> getPlayerByName(@NotNull String name) {
+    private static @NotNull Optional<Player> getPlayerByName(@NotNull String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
     }
 
-    private static ArrayList<String> getAllPlayerNames() {
+    private static @NotNull ArrayList<String> getAllPlayerNames() {
         ArrayList<String> playerNames = new ArrayList<String>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player == null) {
@@ -1254,7 +1255,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
         return playerNames;
     }
 
-    private static String locationString(Location location) {
+    private static @NotNull String locationString(Location location) {
         World world = location.getWorld();
         if (world == null) {
             return "Unknown World";
