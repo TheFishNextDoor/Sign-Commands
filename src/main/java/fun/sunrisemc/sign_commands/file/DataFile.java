@@ -21,7 +21,12 @@ public class DataFile {
                 return new YamlConfiguration();
             }
         }
-        return YamlConfiguration.loadConfiguration(dataFile);
+        
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(dataFile);
+        if (yamlConfiguration == null) {
+            return new YamlConfiguration();
+        }
+        return yamlConfiguration;
     }
 
     public static boolean save(@NonNull String name, @NonNull YamlConfiguration data) {

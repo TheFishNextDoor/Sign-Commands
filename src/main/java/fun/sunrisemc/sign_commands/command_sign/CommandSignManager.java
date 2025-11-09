@@ -120,6 +120,9 @@ public class CommandSignManager {
 
         YamlConfiguration config = DataFile.get("signs");
         for (String name : config.getKeys(false)) {
+            if (name == null) {
+                continue;
+            }
             new CommandSign(config, name);
         }
 
