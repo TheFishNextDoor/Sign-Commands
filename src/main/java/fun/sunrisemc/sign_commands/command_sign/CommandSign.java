@@ -254,6 +254,9 @@ public class CommandSign {
 
     private boolean hasRequiredPermissions(@NotNull Player player) {
         for (String permission : requiredPermissions) {
+            if (permission == null) {
+                continue;
+            }
             if (!player.hasPermission(permission)) {
                 return false;
             }
@@ -277,6 +280,9 @@ public class CommandSign {
 
     private boolean hasBlockedPermissions(@NotNull Player player) {
         for (String permission : blockedPermissions) {
+            if (permission == null) {
+                continue;
+            }
             if (player.hasPermission(permission)) {
                 return true;
             }
@@ -396,37 +402,43 @@ public class CommandSign {
         if (config.contains(name + ".location")) {
             String locationString = config.getString(name + ".location");
 
-            this.lastValidSignLocationString = Optional.of(locationString);
-            
-            String[] parts = locationString.split(",");
-            if (parts.length != 4) {
-                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
-                return;
-            }
+            if (locationString != null) {
+                this.lastValidSignLocationString = Optional.of(locationString);
+                
+                String[] parts = locationString.split(",");
+                if (parts.length != 4) {
+                    SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
+                    return;
+                }
 
-            String worldName = parts[0].trim();
-            String xString = parts[1].trim();
-            String yString = parts[2].trim();
-            String zString = parts[3].trim();
+                String worldName = parts[0].trim();
+                if (worldName == null) {
+                    worldName = "";
+                }
 
-            World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
-            if (world == null) {
-                SignCommandsPlugin.logWarning("World not found for sign configuration: " + name);
-                return;
-            }
+                String xString = parts[1].trim();
+                String yString = parts[2].trim();
+                String zString = parts[3].trim();
 
-            int x, y, z;
-            try {
-                x = Integer.parseInt(xString);
-                y = Integer.parseInt(yString);
-                z = Integer.parseInt(zString);
-            }
-            catch (NumberFormatException e) {
-                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
-                return;
-            }
+                World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
+                if (world == null) {
+                    SignCommandsPlugin.logWarning("World not found for sign configuration: " + name);
+                    return;
+                }
 
-            this.signLocation = Optional.of(new Location(world, x, y, z));
+                int x, y, z;
+                try {
+                    x = Integer.parseInt(xString);
+                    y = Integer.parseInt(yString);
+                    z = Integer.parseInt(zString);
+                }
+                catch (NumberFormatException e) {
+                    SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
+                    return;
+                }
+
+                this.signLocation = Optional.of(new Location(world, x, y, z));
+            }
         }
 
         // Load Commands
@@ -439,8 +451,19 @@ public class CommandSign {
                 }
 
                 String clickTypeString = entryParts[0].trim();
+                if (clickTypeString == null) {
+                    clickTypeString = "";
+                }
+
                 String commandTypeString = entryParts[1].trim();
+                if (commandTypeString == null) {
+                    commandTypeString = "";
+                }
+
                 String commandString = entryParts[2].trim();
+                if (commandString == null) {
+                    commandString = "";
+                }
 
                 Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
                 if (signClickType.isEmpty()) {
@@ -526,7 +549,11 @@ public class CommandSign {
         String locationString;
         if (signLocation.isPresent()) {
             Location loc = signLocation.get();
-            locationString = loc.getWorld().getName() + ", " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
+
+            World world = loc.getWorld();
+            String worldName = (world != null) ? world.getName() : "Unknown World";
+            
+            locationString = worldName + ", " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
         }
         else if (lastValidSignLocationString.isPresent()) {
             locationString = lastValidSignLocationString.get();
