@@ -19,15 +19,15 @@ public class CommandSignUser {
 
     // UUID
 
-    private final UUID uuid;
+    private final @NotNull UUID uuid;
 
     // Last Sign Click Time
 
-    private HashMap<String, Long> lastSignClickMap = new HashMap<>();
+    private @NotNull HashMap<String, Long> lastSignClickMap = new HashMap<>();
 
     // Sign Click Count
 
-    private HashMap<String, Integer> signClickCountMap = new HashMap<>();
+    private @NotNull HashMap<String, Integer> signClickCountMap = new HashMap<>();
 
     // Constructors
 
@@ -38,6 +38,7 @@ public class CommandSignUser {
 
     // UUID
 
+    @NotNull
     public UUID getUuid() {
         return uuid;
     }

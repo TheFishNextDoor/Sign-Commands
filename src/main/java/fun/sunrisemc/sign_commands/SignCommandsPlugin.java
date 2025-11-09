@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.sign_commands.command.SignCommands;
 import fun.sunrisemc.sign_commands.command.SignEdit;
@@ -23,9 +24,9 @@ import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 
 public class SignCommandsPlugin extends JavaPlugin {
 
-    private static SignCommandsPlugin instance;
+    private static @Nullable SignCommandsPlugin instance;
 
-    private static MainConfig mainConfig;
+    private static @Nullable MainConfig mainConfig;
 
     @Override
     public void onEnable() {
@@ -67,12 +68,23 @@ public class SignCommandsPlugin extends JavaPlugin {
 
     // Instances
 
+    @NotNull
     public static SignCommandsPlugin getInstance() {
-        return instance;
+        if (instance != null) {
+            return instance;
+        }
+        else {
+            throw new IllegalStateException("Plugin instance not initialized.");
+        }
+        
     }
 
+    @NotNull
     public static MainConfig getMainConfig() {
-        return mainConfig;
+        if (mainConfig != null) {
+            return mainConfig;
+        }
+        throw new IllegalStateException("Main config not initialized.");
     }
 
     // Saving and Loading

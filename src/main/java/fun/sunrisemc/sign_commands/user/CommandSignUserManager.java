@@ -12,8 +12,9 @@ import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class CommandSignUserManager {
 
-    private static ConcurrentHashMap<UUID, CommandSignUser> signUsers = new ConcurrentHashMap<>();
+    private static @NotNull ConcurrentHashMap<UUID, CommandSignUser> signUsers = new ConcurrentHashMap<>();
 
+    @NotNull
     public static CommandSignUser get(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
         CommandSignUser signUser = signUsers.get(uuid);

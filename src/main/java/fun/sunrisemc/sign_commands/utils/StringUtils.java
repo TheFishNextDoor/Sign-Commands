@@ -37,10 +37,12 @@ public class StringUtils {
         }
     }
 
+    @NotNull
     public static String normalize(@NotNull String str) {
         return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
     }
 
+    @NotNull
     public static String formatMillis(long millis) {
         if (millis < 1000) {
             if (millis == 1) {
@@ -88,6 +90,7 @@ public class StringUtils {
         }
     }
 
+    @NotNull
     public static ArrayList<String> getRangeStrings(int start, int end) {
         ArrayList<String> rangeStrings = new ArrayList<String>();
         for (int i = start; i <= end; i++) {
