@@ -18,11 +18,18 @@ public class BlockBreak implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event == null) {
+            return;
+        }
+
         if (!ProtectionCheck.isReal(event)) {
             return;
         }
 
         Block block = event.getBlock();
+        if (block == null) {
+            return;
+        }
         Optional<CommandSign> commandSign = CommandSignManager.getByBlock(block);
         if (!commandSign.isPresent()) {
             return;

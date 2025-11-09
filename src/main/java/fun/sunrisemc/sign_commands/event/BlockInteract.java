@@ -3,9 +3,11 @@ package fun.sunrisemc.sign_commands.event;
 import java.util.HashMap;
 import java.util.Optional;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -29,17 +31,24 @@ public class BlockInteract implements Listener {
         }
 
         // Check valid action
-        Optional<SignClickType> signClickType = SignClickType.fromAction(event.getAction());
+        Action action = event.getAction();
+        if (action == null) {
+            return;
+        }
+        Optional<SignClickType> signClickType = SignClickType.fromAction(action);
         if (signClickType.isEmpty()) {
             return;
         }
 
         // Check if clicked block is a command sign
-        Optional<CommandSign> commandSignOptional = CommandSignManager.getByBlock(event.getClickedBlock());
-        if (!commandSignOptional.isPresent()) {
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) {
             return;
         }
-        CommandSign commandSign = commandSignOptional.get();
+        Optional<CommandSign> commandSign = CommandSignManager.getByBlock(clickedBlock);
+        if (commandSign.isEmpty()) {
+            return;
+        }
 
         event.setCancelled(true);
 
@@ -48,7 +57,7 @@ public class BlockInteract implements Listener {
             return;
         }
 
-        commandSign.attemptExecute(player, signClickType.get());
+        commandSign.get().attemptExecute(player, signClickType.get());
     }
 
     private boolean tickDelayBetwenClicksCheck(@NonNull Player player) {
