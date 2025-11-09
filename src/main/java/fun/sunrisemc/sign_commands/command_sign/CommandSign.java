@@ -258,9 +258,6 @@ public class CommandSign {
 
     private boolean hasRequiredPermissions(@NotNull Player player) {
         for (String permission : requiredPermissions) {
-            if (permission == null) {
-                continue;
-            }
             if (!player.hasPermission(permission)) {
                 return false;
             }
@@ -285,9 +282,6 @@ public class CommandSign {
 
     private boolean hasBlockedPermissions(@NotNull Player player) {
         for (String permission : blockedPermissions) {
-            if (permission == null) {
-                continue;
-            }
             if (player.hasPermission(permission)) {
                 return true;
             }
@@ -417,10 +411,6 @@ public class CommandSign {
                 }
 
                 String worldName = parts[0].trim();
-                if (worldName == null) {
-                    worldName = "";
-                }
-
                 String xString = parts[1].trim();
                 String yString = parts[2].trim();
                 String zString = parts[3].trim();
@@ -456,19 +446,8 @@ public class CommandSign {
                 }
 
                 String clickTypeString = entryParts[0].trim();
-                if (clickTypeString == null) {
-                    clickTypeString = "";
-                }
-
                 String commandTypeString = entryParts[1].trim();
-                if (commandTypeString == null) {
-                    commandTypeString = "";
-                }
-
                 String commandString = entryParts[2].trim();
-                if (commandString == null) {
-                    commandString = "";
-                }
 
                 Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
                 if (signClickType.isEmpty()) {

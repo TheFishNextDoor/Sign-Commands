@@ -38,11 +38,13 @@ public class BlockInteract implements Listener {
             return;
         }
 
-        // Check if clicked block is a command sign
+        // Get clicked block
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) {
             return;
         }
+
+        // Check if clicked block is a command sign
         Optional<CommandSign> commandSign = CommandSignManager.getByBlock(clickedBlock);
         if (commandSign.isEmpty()) {
             return;

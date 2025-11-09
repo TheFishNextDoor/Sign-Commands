@@ -212,12 +212,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // /signcommands addcommand <clickType> <commandType> <command>
             if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                String signCommandTypeString = args[2];
-                if (signCommandTypeString == null) {
-                    return null;
-                }
-
-                Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(signCommandTypeString);
+                Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(args[2]);
                 if (signCommandTypeOptional.isEmpty()) {
                     return null;
                 }
@@ -245,19 +240,10 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                     return null;
                 }
 
-                
-                String indexString = args[1];
-                if (indexString == null) {
-                    return null;
-                }
-
                 ArrayList<SignCommand> commands = commandSign.get().getCommands();
-                Optional<Integer> index = StringUtils.parseInteger(indexString);
-                if (index.isEmpty()) {
-                    return null;
-                }
 
-                if (index.get() < 0 || index.get() >= commands.size()) {
+                Optional<Integer> index = StringUtils.parseInteger(args[1]);
+                if (index.isEmpty() || index.get() < 0 || index.get() >= commands.size()) {
                     return null;
                 }
 
@@ -324,12 +310,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
             // Lookup command sign by id if one is provided else get the one the player is looking at
             Optional<CommandSign> commandSignOptional;
             if (args.length >= 2) {
-                String name = args[1];
-                if (name == null) {
-                    player.sendMessage(ChatColor.RED + "Usage: /signcommands <info|i> [signName]");
-                    return true;
-                }
-                commandSignOptional = CommandSignManager.getByName(name);
+                commandSignOptional = CommandSignManager.getByName(args[1]);
             } 
             else {
                 commandSignOptional = CommandSignManager.getLookingAt(player);
@@ -428,15 +409,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the sign name
-            String name = args[1];
-            if (name == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <goto|gt> <signName>");
-                return true;
-            }
-
             // Get the command sign
-            Optional<CommandSign> commandSign = CommandSignManager.getByName(name);
+            Optional<CommandSign> commandSign = CommandSignManager.getByName(args[1]);
             if (commandSign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Command sign does not exist.");
                 return true;
@@ -471,9 +445,9 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the new name
+            // Check new name is valid
             String newName = args[1];
-            if (newName == null || newName.isEmpty() || newName.contains(":")) {
+            if (newName.contains(":")) {
                 player.sendMessage(ChatColor.RED + "Invalid sign name.");
                 return true;
             }
@@ -520,29 +494,15 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the sign click type name
-            String signClickTypeName = args[1];
-            if (signClickTypeName == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <addcommand|ac> <clickType> <commandType> <command>");
-                return true;
-            }
-
             // Parse the click type
-            Optional<SignClickType> signClickType = SignClickType.fromName(signClickTypeName);
+            Optional<SignClickType> signClickType = SignClickType.fromName(args[1]);
             if (signClickType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
                 return true;
             }
 
-            // Get the sign command type name
-            String signCommandTypeName = args[2];
-            if (signCommandTypeName == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <addcommand|ac> <clickType> <commandType> <command>");
-                return true;
-            }
-
             // Parse the command type
-            Optional<SignCommandType> signCommandType = SignCommandType.fromName(signCommandTypeName);
+            Optional<SignCommandType> signCommandType = SignCommandType.fromName(args[2]);
             if (signCommandType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", SignCommandType.getNames()));
                 return true;
@@ -560,14 +520,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.YELLOW + "Warning: You do not need to use '/' at the start of the command.");
             }
 
-            // Get the sign command string
-            String signCommandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
-            if (signCommandString == null || signCommandString.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Command cannot be empty.");
-                return true;
-            }
-
             // Add the command to the command sign
+            String signCommandString = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
             SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), signCommandString);
             commandSign.get().addCommand(signCommand);
             player.sendMessage(ChatColor.GOLD + "Command added.");
@@ -590,15 +544,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the index string
-            String indexString = args[1];
-            if (indexString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <removecommand|rc> <index>");
-                return true;
-            }
-
             // Parse the command index
-            Optional<Integer> index = StringUtils.parseInteger(indexString);
+            Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -638,15 +585,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the index string
-            String indexString = args[1];
-            if (indexString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <editcommand|ec> <commandIndex> <clickType> <commandType> <command>");
-                return true;
-            }
-
             // Parse the command index
-            Optional<Integer> index = StringUtils.parseInteger(indexString);
+            Optional<Integer> index = StringUtils.parseInteger(args[1]);
             if (index.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid command index.");
                 return true;
@@ -659,15 +599,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the sign click type name
-            String signClickTypeName = args[2];
-            if (signClickTypeName == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <editcommand|ec> <commandIndex> <clickType> <commandType> <command>");
-                return true;
-            }
-
             // Parse the click type
-            Optional<SignClickType> signClickType = SignClickType.fromName(signClickTypeName);
+            Optional<SignClickType> signClickType = SignClickType.fromName(args[2]);
             if (signClickType.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
                 return true;
@@ -680,14 +613,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the new sign command string
-            String newSignCommandString = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
-            if (newSignCommandString == null || newSignCommandString.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Command cannot be empty.");
-                return true;
-            }
-
             // Edit the command
+            String newSignCommandString = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
             SignCommand newSignCommand = new SignCommand(signClickType.get(), signCommandType.get(), newSignCommandString);
             if (commandSign.get().editCommand(index.get(), newSignCommand)) {
                 player.sendMessage(ChatColor.GOLD + "Ccommand edited.");
@@ -715,15 +642,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the permission
-            String permission = args[1];
-            if (permission == null || permission.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid permission.");
-                return true;
-            }
-
             // Add the required permission
-            if (commandSign.get().addRequiredPermission(permission)) {
+            if (commandSign.get().addRequiredPermission(args[1])) {
                 player.sendMessage(ChatColor.GOLD + "Required permission added.");
             } 
             else {
@@ -749,15 +669,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the permission
-            String permission = args[1];
-            if (permission == null || permission.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid permission.");
-                return true;
-            }
-
             // Remove the required permission
-            if (commandSign.get().removeRequiredPermission(permission)) {
+            if (commandSign.get().removeRequiredPermission(args[1])) {
                 player.sendMessage(ChatColor.GOLD + "Required permission removed.");
             } 
             else {
@@ -808,15 +721,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the permission
-            String permission = args[1];
-            if (permission == null || permission.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid permission.");
-                return true;
-            }
-
             // Add the blocked permission
-            if (commandSign.get().addBlockedPermission(permission)) {
+            if (commandSign.get().addBlockedPermission(args[1])) {
                 player.sendMessage(ChatColor.GOLD + "Blocked permission added.");
             } 
             else {
@@ -842,15 +748,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the permission
-            String permission = args[1];
-            if (permission == null || permission.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid permission.");
-                return true;
-            }
-
             // Remove the blocked permission
-            if (commandSign.get().removeBlockedPermission(permission)) {
+            if (commandSign.get().removeBlockedPermission(args[1])) {
                 player.sendMessage(ChatColor.GOLD + "Blocked permission removed.");
             } 
             else {
@@ -901,15 +800,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the cooldown string
-            String cooldownString = args[1];
-            if (cooldownString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setglobalclickcooldown|sgcc> <cooldownMilliseconds>");
-                return true;
-            }
-
             // Parse the cooldown
-            Optional<Long> cooldown = StringUtils.parseLong(cooldownString);
+            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -954,15 +846,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the click limit string
-            String clickLimitString = args[1];
-            if (clickLimitString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setglobalclicklimit|sgcl> <clickLimit>");
-                return true;
-            }
-
             // Parse the click limit
-            Optional<Integer> maxClicks = StringUtils.parseInteger(clickLimitString);
+            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -1006,15 +891,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the cooldown string
-            String cooldownString = args[1];
-            if (cooldownString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setuserclickcooldown|succ> <cooldownMilliseconds>");
-                return true;
-            }
-
             // Parse the cooldown
-            Optional<Long> cooldown = StringUtils.parseLong(cooldownString);
+            Optional<Long> cooldown = StringUtils.parseLong(args[1]);
             if (cooldown.isEmpty() || cooldown.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cooldown value.");
                 return true;
@@ -1080,15 +958,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the click limit string
-            String clickLimitString = args[1];
-            if (clickLimitString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setuserclicklimit|sucl> <clickLimit>");
-                return true;
-            }
-
             // Parse the max clicks
-            Optional<Integer> maxClicks = StringUtils.parseInteger(clickLimitString);
+            Optional<Integer> maxClicks = StringUtils.parseInteger(args[1]);
             if (maxClicks.isEmpty() || maxClicks.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
@@ -1154,15 +1025,8 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Get the cost string
-            String costString = args[1];
-            if (costString == null) {
-                player.sendMessage(ChatColor.RED + "Usage: /signcommands <setclickcost|scc> <cost>");
-                return true;
-            }
-
             // Parse the cost
-            Optional<Double> cost = StringUtils.parseDouble(costString);
+            Optional<Double> cost = StringUtils.parseDouble(args[1]);
             if (cost.isEmpty() || cost.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid cost value.");
                 return true;
