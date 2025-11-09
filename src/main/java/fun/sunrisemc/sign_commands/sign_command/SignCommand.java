@@ -14,7 +14,7 @@ public class SignCommand {
 
     private final SignCommandType commandType;
 
-    private final String command;
+    private final @NotNull String command;
 
     public SignCommand(@NotNull SignClickType clickType, @NotNull SignCommandType commandType, @NotNull String command) {
         this.clickType = clickType;
@@ -30,7 +30,7 @@ public class SignCommand {
         return commandType;
     }
 
-    public String getCommand() {
+    public @NotNull String getCommand() {
         return command;
     }
 
