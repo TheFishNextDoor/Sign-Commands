@@ -41,6 +41,10 @@ public class SignCommand {
 
         String playerName = player.getName();
         String parsedCommand = command.replace("{player}", playerName);
+        if (parsedCommand == null) {
+            return;
+        }
+
         if (commandType == SignCommandType.PLAYER) {
             player.performCommand(parsedCommand);
         }
