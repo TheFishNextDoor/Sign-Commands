@@ -172,6 +172,11 @@ public class SignEdit implements CommandExecutor, TabCompleter {
 
             // Get the text to set
             String text = String.join(" ", List.of(args).subList(3, args.length));
+            if (text == null) {
+                text = "";
+            }
+
+            // Translate color codes if the player has permission
             if (player.hasPermission(Permissions.SIGN_EDIT_COLOR_PERMISSION)) {
                 text = ChatColor.translateAlternateColorCodes('&', text);
             }
@@ -261,16 +266,26 @@ public class SignEdit implements CommandExecutor, TabCompleter {
     private static ArrayList<String> sideNames() {
         ArrayList<String> sides = new ArrayList<>();
         for (Side side : Side.values()) {
-            sides.add(StringUtils.normalize(side.name()));
+            String sideName = side.name();
+            if (sideName == null) {
+                continue;
+            }
+
+            sides.add(StringUtils.normalize(sideName));
         }
         return sides;
     }
 
-    private static Optional<Side> parseSide(@NotNull String sideStr) {
-        sideStr = StringUtils.normalize(sideStr);
+    private static Optional<Side> parseSide(@NotNull String sideNameB) {
+        String sideNameBNormalized = StringUtils.normalize(sideNameB);
         for (Side side : Side.values()) {
-            String sideName = StringUtils.normalize(side.name());
-            if (sideName.equals(sideStr)) {
+            String sideNameA = side.name();
+            if (sideNameA == null) {
+                continue;
+            }
+
+            String sideNameANormalized = StringUtils.normalize(sideNameA);
+            if (sideNameANormalized.equals(sideNameBNormalized)) {
                 return Optional.of(side);
             }
         }
