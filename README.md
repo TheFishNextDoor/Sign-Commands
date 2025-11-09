@@ -31,3 +31,26 @@ Run commands when a player clicks a sign or block.
 - **/signcommands &lt;setuserclicklimit | sucl&gt; &lt;clickLimit&gt;:** Set the per-user click limit for a command sign.  
 - **/signcommands &lt;resetuserclicklimit | rucl&gt; &lt;player | all&gt;:** Reset the per-user click limit for a player or all players.  
 - **/signcommands &lt;setclickcost | scc&gt; &lt;clickCost&gt;:** Set the click cost for a command sign.
+
+## Permissions
+- **signcommands.use** (default): Allows the player to use command signs.
+
+**Admin Permissions**
+- **signcommands.admin.reload**: Allows the player to reload the SignCommands configuration.  
+- **signcommands.admin.info**: Allows the player to view information about a command sign.  
+- **signcommands.admin.list**: Allows the player to list all command signs.  
+- **signcommands.admin.goto**: Allows the player to teleport to a command sign.  
+- **signcommands.admin.rename**: Allows the player to rename a command sign.  
+- **signcommands.admin.delete**: Allows the player to delete a command sign.  
+- **signcommands.admin.commands**: Allows the player to manage commands on command signs.  
+- **signcommands.admin.permissions**: Allows the player to manage permissions on command signs.  
+- **signcommands.admin.globalclickcooldown**: Allows the player to manage the global click cooldown on command signs.  
+- **signcommands.admin.globalmaxclicks**: Allows the player to manage the global max clicks on command signs.  
+- **signcommands.admin.userclickcooldown**: Allows the player to manage the user click cooldown on command signs.  
+- **signcommands.admin.usermaxclicks**: Allows the player to manage the user max clicks on command signs.  
+- **signcommands.admin.clickcost**: Allows the player to manage the click cost on command signs.  
+
+**Sign Edit Permissions**
+- **signedit.use**: Allows the player to use the sign edit command.  
+- **signedit.color**: Allows the player to use color codes on signs.  
+- **signedit.bypassprotections**: Allows the player to bypass protections when editing signs.
