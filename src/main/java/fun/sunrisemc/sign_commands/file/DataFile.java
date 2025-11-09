@@ -10,7 +10,7 @@ import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class DataFile {
 
-    public static YamlConfiguration get(@NotNull String name) {
+    public static @NotNull YamlConfiguration get(@NotNull String name) {
         File dataFile = new File(getFolder(), name + ".yml");
         if (!dataFile.exists()) {
             try {
