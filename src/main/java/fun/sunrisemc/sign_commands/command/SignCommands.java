@@ -32,7 +32,7 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 public class SignCommands implements CommandExecutor, TabCompleter {
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull[] args) {
         boolean isPlayer = sender instanceof Player;
         // /signcommands <subcommand>
         if (args.length == 1) {
@@ -209,7 +209,12 @@ public class SignCommands implements CommandExecutor, TabCompleter {
 
             // /signcommands addcommand <clickType> <commandType> <command>
             if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(args[2]);
+                String signCommandTypeString = args[2];
+                if (signCommandTypeString == null) {
+                    return null;
+                }
+
+                Optional<SignCommandType> signCommandTypeOptional = SignCommandType.fromName(signCommandTypeString);
                 if (signCommandTypeOptional.isEmpty()) {
                     return null;
                 }
@@ -237,9 +242,13 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                     return null;
                 }
 
-                ArrayList<SignCommand> commands = commandSign.get().getCommands();
+                
                 String indexString = args[1];
+                if (indexString == null) {
+                    return null;
+                }
 
+                ArrayList<SignCommand> commands = commandSign.get().getCommands();
                 Optional<Integer> index = StringUtils.parseInteger(indexString);
                 if (index.isEmpty()) {
                     return null;
