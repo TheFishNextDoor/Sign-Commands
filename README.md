@@ -6,7 +6,7 @@ Run commands when a player clicks a sign or block.
 - Restart your server
 
 ## Commands
-- **/signcommands help:** Show this help message.
+- **/signcommands help:** Show the help message.
 - **/signcommands &lt;reload | rl&gt;:** Reload the plugin.
 - **/signcommands &lt;list | l&gt;:** List all command signs.
 - **/signcommands &lt;info | i&gt; &lt;signName&gt;:** List a command sign’s commands and other information.
