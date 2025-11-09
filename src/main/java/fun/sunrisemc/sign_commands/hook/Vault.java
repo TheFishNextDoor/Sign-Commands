@@ -4,9 +4,11 @@ import java.util.Optional;
 
 import org.bukkit.Server;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -14,11 +16,11 @@ import net.milkbowl.vault.permission.Permission;
 
 public class Vault {
 
-    private static Economy economy = null;
+    private static @Nullable Economy economy = null;
 
-    private static Permission permissions = null;
+    private static @Nullable Permission permissions = null;
 
-    private static Chat chat = null;
+    private static @Nullable Chat chat = null;
 
     public static Optional<Economy> getEconomy() {
         return Optional.ofNullable(economy);
@@ -38,19 +40,21 @@ public class Vault {
             return false;
         }
 
-        RegisteredServiceProvider<Economy> economyService = server.getServicesManager().getRegistration(Economy.class);
+        ServicesManager servicesManager = server.getServicesManager();
+
+        RegisteredServiceProvider<@NotNull Economy> economyService = servicesManager.getRegistration(Economy.class);
         if (economyService == null) {
             return false;
         }
         economy = economyService.getProvider();
 
-        RegisteredServiceProvider<Permission> permissionService = server.getServicesManager().getRegistration(Permission.class);
+        RegisteredServiceProvider<@NotNull Permission> permissionService = servicesManager.getRegistration(Permission.class);
         if (permissionService == null) {
             return false;
         }
         permissions = permissionService.getProvider();
 
-        RegisteredServiceProvider<Chat> chatService = server.getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<@NotNull Chat> chatService = servicesManager.getRegistration(Chat.class);
         if (chatService == null) {
             return false;
         }

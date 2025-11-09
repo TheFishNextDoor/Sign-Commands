@@ -6,10 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProtectionCheck {
 
-    private static BlockBreakEvent checking = null;
+    private static @Nullable BlockBreakEvent checking = null;
 
     public static boolean canBreak(@NotNull Player player, @NotNull Block block) {
         BlockBreakEvent eventToCheck = new BlockBreakEvent(block, player);
@@ -17,7 +18,7 @@ public class ProtectionCheck {
         checking = eventToCheck;
 
         Bukkit.getServer().getPluginManager().callEvent(eventToCheck);
-        boolean cancelled = checking.isCancelled();
+        boolean cancelled = eventToCheck.isCancelled();
 
         checking = null;
         

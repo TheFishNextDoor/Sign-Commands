@@ -21,7 +21,7 @@ import fun.sunrisemc.sign_commands.sign_command.SignClickType;
 
 public class BlockInteract implements Listener {
 
-    private HashMap<String, Long> lastInteractionTickMap = new HashMap<>();
+    private @NotNull HashMap<String, Long> lastInteractionTickMap = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockInteract(@NotNull PlayerInteractEvent event) {

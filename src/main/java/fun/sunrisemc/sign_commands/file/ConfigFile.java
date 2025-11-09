@@ -15,6 +15,7 @@ public class ConfigFile {
 
     // File Modification Helpers
 
+    @NotNull
     public static YamlConfiguration get(@NotNull String name, boolean copyMissingDefaults) {
         File configFile = new File(getFolder(), name + ".yml");
 

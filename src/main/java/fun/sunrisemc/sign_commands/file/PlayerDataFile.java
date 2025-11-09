@@ -11,6 +11,7 @@ import fun.sunrisemc.sign_commands.SignCommandsPlugin;
 
 public class PlayerDataFile {
 
+    @NotNull
     public static YamlConfiguration get(@NotNull UUID uuid) {
         File playerDataFile = new File(getFolder(), uuid.toString() + ".yml");
         if (!playerDataFile.exists()) {
