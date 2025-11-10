@@ -33,7 +33,7 @@ Run commands when a player clicks a sign or block.
 - **/signcommands &lt;setclickcost | scc&gt; &lt;clickCost&gt;:** Set the click cost for a command sign.
 
 ## Permissions
-- **signcommands.use** (default): Allows the player to use command signs.
+- **signcommands.use (default):** Allows the player to use command signs.
 
 **Admin Permissions**
 - **signcommands.admin.reload**: Allows the player to reload the SignCommands configuration.  
