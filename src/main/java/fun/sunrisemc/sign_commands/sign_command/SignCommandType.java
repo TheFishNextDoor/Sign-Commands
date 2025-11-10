@@ -9,8 +9,9 @@ import fun.sunrisemc.sign_commands.utils.StringUtils;
 
 public enum SignCommandType {
 
-    PLAYER,
     CONSOLE,
+    PLAYER,
+    OP,
     MESSAGE,
     BROADCAST;
 

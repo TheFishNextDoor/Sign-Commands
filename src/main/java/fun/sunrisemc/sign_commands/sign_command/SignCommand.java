@@ -44,13 +44,28 @@ public class SignCommand {
 
         String playerName = player.getName();
         String parsedCommand = command.replace("{player}", playerName);
-        if (commandType == SignCommandType.PLAYER) {
-            player.performCommand(parsedCommand);
-        }
-        else if (commandType == SignCommandType.CONSOLE) {
+
+        if (commandType == SignCommandType.CONSOLE) {
             Server server = Bukkit.getServer();
             ConsoleCommandSender consoleSender = server.getConsoleSender();
             server.dispatchCommand(consoleSender, parsedCommand);
+        }
+        else if (commandType == SignCommandType.PLAYER) {
+            player.performCommand(parsedCommand);
+        }
+        else if (commandType == SignCommandType.OP) {
+            boolean wasOp = player.isOp();
+            try {
+                if (!wasOp) {
+                    player.setOp(true);
+                }
+                player.performCommand(parsedCommand);
+            } 
+            finally {
+                if (!wasOp) {
+                    player.setOp(false);
+                }
+            }
         }
         else if (commandType == SignCommandType.MESSAGE) {
             String message = ChatColor.translateAlternateColorCodes('&', parsedCommand);
