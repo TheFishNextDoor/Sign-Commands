@@ -2,8 +2,8 @@
 Run commands when a player clicks a sign or block.
 
 ## Setup
-- Add Sign Commands jar into your plugins folder.
-- Restart your server.
+1. Add Sign Commands jar into your plugins folder.
+2. Restart your server.
 
 ## Commands
 - **/signcommands help:** Show the help message.
