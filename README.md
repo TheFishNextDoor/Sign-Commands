@@ -1,4 +1,4 @@
-# Sign Commands Plugin
+# Sign Commands
 Run commands when a player clicks a sign or block.
 
 ## Setup
