@@ -218,7 +218,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 }
 
                 SignCommandType signCommandType = signCommandTypeOptional.get();
-                if (signCommandType == SignCommandType.CONSOLE || signCommandType == SignCommandType.PLAYER) {
+                if (signCommandType == SignCommandType.CONSOLE || signCommandType == SignCommandType.PLAYER || signCommandType == SignCommandType.OP) {
                     return Arrays.asList("<command>");
                 }
                 else if (signCommandType == SignCommandType.MESSAGE || signCommandType == SignCommandType.BROADCAST) {
@@ -386,7 +386,7 @@ public class SignCommands implements CommandExecutor, TabCompleter {
                 SignCommand signCommand = signCommands.get(i);
                 SignCommandType commandType = signCommand.getCommandType();
                 SignClickType clickType = signCommand.getClickType();
-                if (commandType == SignCommandType.CONSOLE || commandType == SignCommandType.PLAYER) {
+                if (commandType == SignCommandType.CONSOLE || commandType == SignCommandType.PLAYER || commandType == SignCommandType.OP) {
                     player.sendMessage(ChatColor.GOLD + "" + i + ". " + ChatColor.WHITE + clickType.getName() + " -> " + commandType.getName() + ": /" + signCommand.getCommand());
                 } 
                 else if (commandType == SignCommandType.MESSAGE || commandType == SignCommandType.BROADCAST) {
