@@ -41,6 +41,7 @@ public class PlayerDataFile {
         }
     }
 
+    @NotNull
     public static File getFolder() {
         File dataFolder = DataFile.getFolder();
 

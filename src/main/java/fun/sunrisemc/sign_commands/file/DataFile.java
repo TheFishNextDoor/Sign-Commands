@@ -41,6 +41,7 @@ public class DataFile {
         }
     }
 
+    @NotNull
     public static File getFolder() {
         File pluginFolder = ConfigFile.getFolder();
 

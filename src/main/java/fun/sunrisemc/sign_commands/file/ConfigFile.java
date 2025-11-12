@@ -79,6 +79,7 @@ public class ConfigFile {
         }
     }
 
+    @NotNull
     public static File getFolder() {
         File pluginFolder = SignCommandsPlugin.getInstance().getDataFolder();
         if (!pluginFolder.exists()) {
