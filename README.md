@@ -31,7 +31,7 @@ Run commands when a player clicks a sign or block.
 - **/signcommands &lt;setuserclicklimit | sucl&gt; &lt;clickLimit&gt;:** Set the per-user click limit for a command sign.  
 - **/signcommands &lt;resetuserclicklimit | rucl&gt; &lt;player | all&gt;:** Reset the per-user click limit for a player or all players.  
 - **/signcommands &lt;setclickcost | scc&gt; &lt;clickCost&gt;:** Set the click cost for a command sign.
-- **/signedit &lt;setline | sl&gt; &lt;side&gt; &lt;lineNumber&gt; &lt;text&gt;:** Set a specific line one the sign you are looking at.
+- **/signedit &lt;setline | sl&gt; &lt;side&gt; &lt;lineNumber&gt; &lt;text&gt;:** Set a specific line on the sign you are looking at.
 - **/signedit &lt;set | s&gt; &lt;side&gt; &lt;line1;line2;line3;line4&gt;:** Set all lines on the sign you are looking at at once.
 
 ## Permissions
