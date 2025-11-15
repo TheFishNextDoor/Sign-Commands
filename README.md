@@ -62,3 +62,15 @@ Run commands when a player clicks a sign or block.
 only-allow-signs: true # If true, only allow signs to have commands assigned to them. If false, any block can have commands assigned.
 sign-click-delay-ticks: 5 # The number of ticks a player must wait between running sign commands.
 ```
+
+## Sign Click Types
+- **Left-Click:** Triggers the command when the player left clicks the sign.
+- **Right-Click:** Triggers the command when the player right clicks the sign.
+- **Any-Click:** Triggers the command when the player left or right clicks the sign.
+
+## Sign Command Types
+- **Console:** Runs the command as the server console.
+- **Player:** Runs the command as the player who clicked the sign.
+- **Op:** Runs the command as the player who clicked the sign ignoring permission requirements.
+- **Message:** Sends a message to the player who clicked the sign.
+- **Broadcast:** Broadcasts a message to all players on the server.
