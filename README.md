@@ -13,9 +13,9 @@ Run commands when a player clicks a sign or block.
 - **/signcommands &lt;goto | gt&gt; &lt;signName&gt;:** Teleport to a command sign.
 - **/signcommands &lt;rename | rn&gt; &lt;newSignName&gt;:** Rename a command sign. This resets the sign’s cooldown and max clicks.
 - **/signcommands &lt;delete | dt&gt; &lt;signName&gt;:** Delete all commands from a command sign.
-- **/signcommands &lt;addcommand | ac&gt; &lt;clickType&gt; &lt;commandType&gt; &lt;command&gt;:** Add a command to a command sign.  
+- **/signcommands &lt;addcommand | ac&gt; &lt;[clickType](#sign-click-types)&gt; &lt;commandType&gt; &lt;command&gt;:** Add a command to a command sign.  
 - **/signcommands &lt;removecommand | rc&gt; &lt;commandIndex&gt;:** Remove a command from a command sign.  
-- **/signcommands &lt;editcommand | ec&gt; &lt;commandIndex&gt; &lt;clickType&gt; &lt;commandType&gt; &lt;command&gt;:** Edit a command on a command sign.  
+- **/signcommands &lt;editcommand | ec&gt; &lt;commandIndex&gt; &lt;[clickType](#sign-click-types)&gt; &lt;commandType&gt; &lt;command&gt;:** Edit a command on a command sign.  
 - **/signcommands &lt;addrequiredpermission | arp&gt; &lt;permission&gt;:** Add a required permission to a command sign (players must have **all** required permissions).  
 - **/signcommands &lt;removerequiredpermission | rrp&gt; &lt;permission&gt;:** Remove a required permission from a command sign.  
 - **/signcommands &lt;listrequiredpermissions | lrp&gt;:** List required permissions of a command sign.  
