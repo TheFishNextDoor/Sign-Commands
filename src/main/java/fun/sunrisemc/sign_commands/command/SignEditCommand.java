@@ -23,7 +23,7 @@ import fun.sunrisemc.sign_commands.permission.Permissions;
 import fun.sunrisemc.sign_commands.permission.ProtectionCheck;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
-public class SignEdit implements CommandExecutor, TabCompleter {
+public class SignEditCommand implements CommandExecutor, TabCompleter {
 
     @Override
     @Nullable

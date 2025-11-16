@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import fun.sunrisemc.sign_commands.command.SignCommands;
-import fun.sunrisemc.sign_commands.command.SignEdit;
+import fun.sunrisemc.sign_commands.command.SignCommandsCommand;
+import fun.sunrisemc.sign_commands.command.SignEditCommand;
 import fun.sunrisemc.sign_commands.command_sign.CommandSignManager;
 import fun.sunrisemc.sign_commands.config.MainConfig;
 import fun.sunrisemc.sign_commands.event.BlockBreak;
@@ -41,8 +41,8 @@ public class SignCommandsPlugin extends JavaPlugin {
 
         load();
 
-        registerCommand("signcommands", new SignCommands());
-        registerCommand("signedit", new SignEdit());
+        registerCommand("signcommands", new SignCommandsCommand());
+        registerCommand("signedit", new SignEditCommand());
 
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoin(), this);

@@ -31,7 +31,7 @@ import fun.sunrisemc.sign_commands.user.CommandSignUser;
 import fun.sunrisemc.sign_commands.user.CommandSignUserManager;
 import fun.sunrisemc.sign_commands.utils.StringUtils;
 
-public class SignCommands implements CommandExecutor, TabCompleter {
+public class SignCommandsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     @Nullable
