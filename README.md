@@ -21,7 +21,7 @@ Run commands when a player clicks a sign or block.
 - **/signcommands &lt;listrequiredpermissions | lrp&gt;:** List the required permissions of the command sign you are looking at. Players must have **all** required permissions in order to use the command sign.
 - **/signcommands &lt;addblockedpermission | abp&gt; &lt;permission&gt;:** Add a blocked permission to a command sign. Players must not have **any** blocked permissions in order to use the command sign.
 - **/signcommands &lt;removeblockedpermission | rbp&gt; &lt;permission&gt;:** Remove a blocked permission from the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.
-- **/signcommands &lt;listblockedpermissions | lbp&gt;:** List blocked permissions of the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.   
+- **/signcommands &lt;listblockedpermissions | lbp&gt;:** List blocked permissions of the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.
 - **/signcommands &lt;setglobalclickcooldown | sgcc&gt; &lt;cooldownMilliseconds&gt;:** Set the global click cooldown for the command sign you are looking at. Global click cooldown is the minimum amount of time between any player executing the command sign.
 - **/signcommands &lt;resetglobalclickcooldown | rgcc&gt;:** Reset the global click cooldown of the command sign you are looking at. Global click cooldown is the minimum amount of time between any player executing the command sign.
 - **/signcommands &lt;setglobalclicklimit | sgcl&gt; &lt;clickLimit&gt;:** Set the global click limit for the command sign you are looking at. Global click limit is the maximum amount of times the command sign can be executed by all players combined.
@@ -38,23 +38,23 @@ Run commands when a player clicks a sign or block.
 - **signcommands.use (default):** Allows the player to use command signs.
 
 **Admin Permissions**
-- **signcommands.admin.reload**: Allows the player to reload the SignCommands configuration.  
-- **signcommands.admin.info**: Allows the player to view information about a command sign.  
-- **signcommands.admin.list**: Allows the player to list all command signs.  
-- **signcommands.admin.goto**: Allows the player to teleport to a command sign.  
-- **signcommands.admin.rename**: Allows the player to rename a command sign.  
-- **signcommands.admin.delete**: Allows the player to delete a command sign.  
-- **signcommands.admin.commands**: Allows the player to manage commands on command signs.  
-- **signcommands.admin.permissions**: Allows the player to manage permissions on command signs.  
-- **signcommands.admin.globalclickcooldown**: Allows the player to manage the global click cooldown on command signs.  
-- **signcommands.admin.globalmaxclicks**: Allows the player to manage the global max clicks on command signs.  
-- **signcommands.admin.userclickcooldown**: Allows the player to manage the user click cooldown on command signs.  
-- **signcommands.admin.usermaxclicks**: Allows the player to manage the user max clicks on command signs.  
-- **signcommands.admin.clickcost**: Allows the player to manage the click cost on command signs.  
+- **signcommands.admin.reload**: Allows the player to reload the SignCommands configuration.
+- **signcommands.admin.info**: Allows the player to view information about a command sign.
+- **signcommands.admin.list**: Allows the player to list all command signs.
+- **signcommands.admin.goto**: Allows the player to teleport to a command sign.
+- **signcommands.admin.rename**: Allows the player to rename a command sign.
+- **signcommands.admin.delete**: Allows the player to delete a command sign.
+- **signcommands.admin.commands**: Allows the player to manage commands on command signs.
+- **signcommands.admin.permissions**: Allows the player to manage permissions on command signs.
+- **signcommands.admin.globalclickcooldown**: Allows the player to manage the global click cooldown on command signs.
+- **signcommands.admin.globalmaxclicks**: Allows the player to manage the global max clicks on command signs.
+- **signcommands.admin.userclickcooldown**: Allows the player to manage the user click cooldown on command signs.
+- **signcommands.admin.usermaxclicks**: Allows the player to manage the user max clicks on command signs.
+- **signcommands.admin.clickcost**: Allows the player to manage the click cost on command signs.
 
 **Sign Edit Permissions**
-- **signedit.use**: Allows the player to use the sign edit command.  
-- **signedit.color**: Allows the player to use color codes on signs.  
+- **signedit.use**: Allows the player to use the sign edit command.
+- **signedit.color**: Allows the player to use color codes on signs.
 - **signedit.bypassprotections**: Allows the player to bypass protections when editing signs.
 
 ## Config
