@@ -6,7 +6,7 @@ author: TheFishNextDoor
 description: Allows assigning commands to signs.
 commands:
   signcommands:
-    description: Main plugin command
+    description: Main plugin command.
     usage: /signcommands <subcommand>
     permission: signcommands.use
     aliases: [sc]
