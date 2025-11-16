@@ -15,15 +15,12 @@ public class ConfigFile {
 
     @NotNull
     public static YamlConfiguration get(@NotNull String name, boolean copyMissingDefaults) {
-        SignCommandsPlugin.logInfo("Loading configuration for " + name + ".yml.");
-
         File configFile = new File(getFolder(), name + ".yml");
 
         // Create the file if it does not exist using the default resource
         if (!configFile.exists()) {
             try {
                 SignCommandsPlugin.getInstance().saveResource(name + ".yml", false);
-                SignCommandsPlugin.logInfo("Created configuration file for " + name + ".yml.");
             } 
             catch (Exception e) {
                 SignCommandsPlugin.logWarning("Failed to create configuration file for " + name + ".yml.");
@@ -69,12 +66,9 @@ public class ConfigFile {
     }
 
     public static boolean save(@NotNull String filename, @NotNull YamlConfiguration config) {
-        SignCommandsPlugin.logInfo("Saving configuration for " + filename + ".yml.");
-
         File configFile = new File(getFolder(), filename + ".yml");
         try {
             config.save(configFile);
-            SignCommandsPlugin.logInfo("Configuration for " + filename + ".yml saved successfully.");
             return true;
         } 
         catch (Exception e) {
@@ -88,7 +82,6 @@ public class ConfigFile {
     public static File getFolder() {
         File pluginFolder = SignCommandsPlugin.getInstance().getDataFolder();
         if (!pluginFolder.exists()) {
-            SignCommandsPlugin.logInfo("Creating plugin folder.");
             pluginFolder.mkdirs();
         }
         return pluginFolder;
