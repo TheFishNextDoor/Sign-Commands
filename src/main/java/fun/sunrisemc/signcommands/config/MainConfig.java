@@ -3,7 +3,7 @@ package fun.sunrisemc.signcommands.config;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import fun.sunrisemc.signcommands.file.ConfigFile;
-import fun.sunrisemc.signcommands.utils.ConfigUtils;
+import fun.sunrisemc.signcommands.utils.YAMLUtils;
 
 public class MainConfig {
 
@@ -15,6 +15,6 @@ public class MainConfig {
         YamlConfiguration config = ConfigFile.get("config", true);
 
         this.ONLY_ALLOW_SIGNS = config.getBoolean("only-allow-signs", true);
-        this.SIGN_CLICK_DELAY_TICKS = ConfigUtils.getIntClamped(config, "sign-click-delay-ticks", 0, Integer.MAX_VALUE);
+        this.SIGN_CLICK_DELAY_TICKS = YAMLUtils.getIntClamped(config, "sign-click-delay-ticks", 0, Integer.MAX_VALUE);
     }
 }
