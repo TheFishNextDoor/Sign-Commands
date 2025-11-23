@@ -3,9 +3,12 @@ package fun.sunrisemc.signcommands.utils;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.bukkit.block.sign.Side;
 import org.jetbrains.annotations.NotNull;
 
 public class StringUtils {
+
+    // Parsing
 
     public static Optional<Integer> parseInteger(@NotNull String str) {
         try {
@@ -37,9 +40,22 @@ public class StringUtils {
         }
     }
 
+    public static Optional<Side> parseSide(@NotNull String sideNameB) {
+        String sideNameBNormalized = StringUtils.normalize(sideNameB);
+        for (Side side : Side.values()) {
+            String sideNameANormalized = StringUtils.normalize(side.name());
+            if (sideNameANormalized.equals(sideNameBNormalized)) {
+                return Optional.of(side);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // Formatting
+
     @NotNull
-    public static String normalize(@NotNull String str) {
-        return str.trim().toLowerCase().replace(" ", "-").replace("_", "-");
+    public static String formatName(@NotNull String name) {
+        return name.trim().toLowerCase().replace(" ", "-").replace("_", "-");
     }
 
     @NotNull
@@ -89,6 +105,15 @@ public class StringUtils {
             }
         }
     }
+
+    // Normalization
+
+    @NotNull
+    public static String normalize(@NotNull String str) {
+        return str.trim().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
+    }
+
+    // Range Strings
 
     @NotNull
     public static ArrayList<String> getRangeStrings(int start, int end) {

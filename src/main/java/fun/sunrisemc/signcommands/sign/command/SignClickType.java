@@ -17,7 +17,7 @@ public enum SignClickType {
 
     @NotNull
     public String getName() {
-        return StringUtils.normalize(name());
+        return StringUtils.formatName(name());
     }
     
     public static Optional<SignClickType> fromAction(@NotNull Action action) {
@@ -34,7 +34,8 @@ public enum SignClickType {
     public static Optional<SignClickType> fromName(@NotNull String name) {
         String clickTypeBName = StringUtils.normalize(name);
         for (SignClickType clickTypeA : values()) {
-            if (clickTypeA.getName().equals(clickTypeBName)) {
+            String clickTypeAName = StringUtils.normalize(clickTypeA.getName());
+            if (clickTypeAName.equals(clickTypeBName)) {
                 return Optional.of(clickTypeA);
             }
         }

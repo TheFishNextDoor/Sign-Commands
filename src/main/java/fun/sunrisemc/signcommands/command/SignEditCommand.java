@@ -49,7 +49,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             if (subcommand.equals("setline") || subcommand.equals("sl")) {
-                Optional<Side> side = parseSide(args[1]);
+                Optional<Side> side = StringUtils.parseSide(args[1]);
                 if (side.isEmpty()) {
                     return null;
                 }
@@ -62,7 +62,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                 return StringUtils.getRangeStrings(1, lineCount(sign.get(), side.get()));
             }
             else if (subcommand.equals("set") || subcommand.equals("s")) {
-                Optional<Side> side = parseSide(args[1]);
+                Optional<Side> side = StringUtils.parseSide(args[1]);
                 if (side.isEmpty()) {
                     return null;
                 }
@@ -94,7 +94,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             if (subcommand.equals("setline") || subcommand.equals("sl")) {
-                Optional<Side> side = parseSide(args[1]);
+                Optional<Side> side = StringUtils.parseSide(args[1]);
                 if (side.isEmpty()) {
                     return List.of("<text>");
                 }
@@ -154,7 +154,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Parse the side
-            Optional<Side> side = parseSide(args[1]);
+            Optional<Side> side = StringUtils.parseSide(args[1]);
             if (side.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", sideNames()));
                 return true;
@@ -183,7 +183,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             // Set the line text
             sign.get().getSide(side.get()).setLine(line.get() - 1, text);
             sign.get().update();
-            player.sendMessage(ChatColor.YELLOW + "Set line " + line.get() + " on the " + StringUtils.normalize(side.get().name()) + " side of the sign to: " + text);
+            player.sendMessage(ChatColor.YELLOW + "Set line " + line.get() + " on the " + StringUtils.formatName(side.get().name()) + " side of the sign to: " + text);
             return true;
         }
         else if (subcommand.equals("set") || subcommand.equals("s")) {
@@ -201,7 +201,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Parse the side
-            Optional<Side> side = parseSide(args[1]);
+            Optional<Side> side = StringUtils.parseSide(args[1]);
             if (side.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", sideNames()));
                 return true;
@@ -217,7 +217,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             String[] lines = input.split(";");
             int maxLines = lineCount(sign.get(), side.get());
             if (lines.length > maxLines) {
-                player.sendMessage(ChatColor.RED + "Too many lines provided. The " + StringUtils.normalize(side.get().name()) + " side of the sign only has " + maxLines + " lines.");
+                player.sendMessage(ChatColor.RED + "Too many lines provided. The " + StringUtils.formatName(side.get().name()) + " side of the sign only has " + maxLines + " lines.");
                 return true;
             }
 
@@ -229,7 +229,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                 sign.get().getSide(side.get()).setLine(i, lines[i]);
             }
             sign.get().update();
-            player.sendMessage(ChatColor.YELLOW + "Set all lines on the " + StringUtils.normalize(side.get().name()) + " side of the sign.");
+            player.sendMessage(ChatColor.YELLOW + "Set all lines on the " + StringUtils.formatName(side.get().name()) + " side of the sign.");
             return true;
         }
 
@@ -266,20 +266,9 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
     private static ArrayList<String> sideNames() {
         ArrayList<String> sides = new ArrayList<>();
         for (Side side : Side.values()) {
-            sides.add(StringUtils.normalize(side.name()));
+            sides.add(StringUtils.formatName(side.name()));
         }
         return sides;
-    }
-
-    private static Optional<Side> parseSide(@NotNull String sideNameB) {
-        String sideNameBNormalized = StringUtils.normalize(sideNameB);
-        for (Side side : Side.values()) {
-            String sideNameANormalized = StringUtils.normalize(side.name());
-            if (sideNameANormalized.equals(sideNameBNormalized)) {
-                return Optional.of(side);
-            }
-        }
-        return Optional.empty();
     }
 
     private static int lineCount(@NotNull Sign sign, @NotNull Side side) {

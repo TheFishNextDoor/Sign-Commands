@@ -17,13 +17,14 @@ public enum SignCommandType {
 
     @NotNull
     public String getName() {
-        return StringUtils.normalize(name());
+        return StringUtils.formatName(name());
     }
     
     public static Optional<SignCommandType> fromName(@NotNull String name) {
         String commandTypeBName = StringUtils.normalize(name);
         for (SignCommandType commandTypeA : values()) {
-            if (commandTypeA.getName().equals(commandTypeBName)) {
+            String commandTypeAName = StringUtils.normalize(commandTypeA.getName());
+            if (commandTypeAName.equals(commandTypeBName)) {
                 return Optional.of(commandTypeA);
             }
         }
