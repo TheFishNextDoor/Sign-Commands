@@ -1,6 +1,6 @@
 name: SignCommands
 main: fun.sunrisemc.signcommands.SignCommandsPlugin
-version: 1.0.1
+version: ${project.version}
 api-version: 1.20
 author: TheFishNextDoor
 description: Allows assigning commands to signs.
