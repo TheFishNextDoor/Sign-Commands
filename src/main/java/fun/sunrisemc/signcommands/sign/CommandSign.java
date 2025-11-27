@@ -77,7 +77,8 @@ public class CommandSign {
     protected CommandSign(@NotNull YamlConfiguration config, @NotNull String name) {
         this.name = name;
 
-        // Load Location
+        
+
         Optional<String> locationString = YAMLUtils.getString(config, name + ".location");
         if (locationString.isPresent()) {
             this.lastValidSignLocationString = locationString;
@@ -107,7 +108,6 @@ public class CommandSign {
             this.signLocation = Optional.of(new Location(world, x.get(), y.get(), z.get()));
         }
 
-        // Load Commands
         if (config.contains(name + ".commands")) {
             for (String commandEntry : config.getStringList(name + ".commands")) {
                 String[] entryParts = commandEntry.split(":", 3);
@@ -135,68 +135,34 @@ public class CommandSign {
             }
         }
 
-        // Load Required Permissions
         for (String permission : config.getStringList(name + ".required-permissions")) {
-            requiredPermissions.add(permission);
+            this.requiredPermissions.add(permission);
         }
 
-        // Load Blocked Permissions
         for (String permission : config.getStringList(name + ".blocked-permissions")) {
-            blockedPermissions.add(permission);
+            this.blockedPermissions.add(permission);
         }
 
-        // Load Global Click Cooldown Millis
-        if (config.contains(name + ".global-click-cooldown-millis")) {
-            this.globalClickCooldownMillis = config.getLong(name + ".global-click-cooldown-millis");
-        }
+        this.globalClickCooldownMillis = YAMLUtils.getLong(config, name + ".global-click-cooldown-millis").orElse(0L);
 
-        // Load Global Last Click Time Millis
-        if (config.contains(name + ".global-last-click-time-millis")) {
-            this.globalLastClickTimeMillis = config.getLong(name + ".global-last-click-time-millis");
-        }
+        this.globalLastClickTimeMillis = YAMLUtils.getLong(config, name + ".global-last-click-time-millis").orElse(0L);
 
-        // Load Global Max Clicks
-        if (config.contains(name + ".global-max-clicks")) {
-            this.globalMaxClicks = config.getInt(name + ".global-max-clicks");
-        }
+        this.globalMaxClicks = YAMLUtils.getInt(config, name + ".global-max-clicks").orElse(0);
 
-        // Load Global Total Clicks
-        if (config.contains(name + ".global-total-clicks")) {
-            this.globalClickLimit = config.getInt(name + ".global-total-clicks");
-        }
+        this.globalClickLimit = YAMLUtils.getInt(config, name + ".global-total-clicks").orElse(0);
 
-        // Load User Click Cooldown Millis
-        if (config.contains(name + ".user-click-cooldown-millis")) {
-            this.userClickCooldownMillis = config.getLong(name + ".user-click-cooldown-millis");
-        }
+        this.userClickCooldownMillis = YAMLUtils.getLong(config, name + ".user-click-cooldown-millis").orElse(0L);
 
-        // Load Last User Click Cooldown Reset Time Millis
-        if (config.contains(name + ".last-user-click-cooldown-reset-time-millis")) {
-            this.lastUserClickCooldownResetTimeMillis = config.getLong(name + ".last-user-click-cooldown-reset-time-millis");
-        }
-        else {
-            this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
-        }
+        long currentTimeMillis = System.currentTimeMillis();
 
-        // Load User Max Clicks
-        if (config.contains(name + ".user-max-clicks")) {
-            this.userMaxClicks = config.getInt(name + ".user-max-clicks");
-        }
+        this.lastUserClickCooldownResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-cooldown-reset-time-millis").orElse(currentTimeMillis);
 
-        // Load Last User Max Clicks Reset Time Millis
-        if (config.contains(name + ".last-user-max-clicks-reset-time-millis")) {
-            this.lastUserClickLimitResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
-        }
-        else {
-            this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
-        }
+        this.userMaxClicks = YAMLUtils.getInt(config, name + ".user-max-clicks").orElse(0);
 
-        // Load Click Cost
-        if (config.contains(name + ".click-cost")) {
-            this.clickCost = config.getDouble(name + ".click-cost");
-        }
+        this.lastUserClickLimitResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-max-clicks-reset-time-millis").orElse(currentTimeMillis);
 
-        // Register
+        this.clickCost = YAMLUtils.getDouble(config, name + ".click-cost").orElse(0.0);
+
         CommandSignManager.register(this);
     }
 
