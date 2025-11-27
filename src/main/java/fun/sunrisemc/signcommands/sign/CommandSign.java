@@ -48,8 +48,8 @@ public class CommandSign {
     private long globalClickCooldownMillis = 0;
     private long globalLastClickTimeMillis = 0;
 
-    private int globalMaxClicks = 0;
     private int globalClickLimit = 0;
+    private int globalClickCount = 0;
 
     // User Click Tracking
 
@@ -147,9 +147,9 @@ public class CommandSign {
 
         this.globalLastClickTimeMillis = YAMLUtils.getLong(config, name + ".global-last-click-time-millis").orElse(0L);
 
-        this.globalMaxClicks = YAMLUtils.getInt(config, name + ".global-max-clicks").orElse(0);
+        this.globalClickLimit = YAMLUtils.getInt(config, name + ".global-max-clicks").orElse(0);
 
-        this.globalClickLimit = YAMLUtils.getInt(config, name + ".global-total-clicks").orElse(0);
+        this.globalClickCount = YAMLUtils.getInt(config, name + ".global-total-clicks").orElse(0);
 
         this.userClickCooldownMillis = YAMLUtils.getLong(config, name + ".user-click-cooldown-millis").orElse(0L);
 
@@ -242,7 +242,7 @@ public class CommandSign {
         }
 
         globalLastClickTimeMillis = System.currentTimeMillis();
-        globalClickLimit++;
+        globalClickCount++;
 
         CommandSignUserManager.get(player).onSignExecute(this);
 
@@ -398,23 +398,23 @@ public class CommandSign {
 
     // Global Max Clicks
 
-    public int getGlobalMaxClicks() {
-        return globalMaxClicks;
+    public int getGlobalClickLimit() {
+        return globalClickLimit;
     }
 
-    public void setGlobalMaxClicks(int maxClicks) {
-        this.globalMaxClicks = maxClicks;
+    public void setGlobalClickLimit(int maxClicks) {
+        this.globalClickLimit = maxClicks;
     }
 
     public void resetGlobalClickLimit() {
-        this.globalClickLimit = 0;
+        this.globalClickCount = 0;
     }
 
     private boolean checkGlobalMaxClicks() {
-        if (globalMaxClicks <= 0) {
+        if (globalClickLimit <= 0) {
             return true;
         }
-        return globalClickLimit < globalMaxClicks;
+        return globalClickCount < globalClickLimit;
     }
 
     // User Cooldown Millis
@@ -528,13 +528,13 @@ public class CommandSign {
         }
 
         // Save Global Max Clicks
-        if (globalMaxClicks > 0) {
-            config.set(name + ".global-max-clicks", globalMaxClicks);
+        if (globalClickLimit > 0) {
+            config.set(name + ".global-max-clicks", globalClickLimit);
         }
 
         // Save Global Total Clicks
-        if (globalClickLimit > 0) {
-            config.set(name + ".global-total-clicks", globalClickLimit);
+        if (globalClickCount > 0) {
+            config.set(name + ".global-total-clicks", globalClickCount);
         }
 
         // Save User Click Cooldown Millis

@@ -356,7 +356,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
 
             // Global Max Clicks
-            int globalMaxClicks = commandSign.getGlobalMaxClicks();
+            int globalMaxClicks = commandSign.getGlobalClickLimit();
             if (globalMaxClicks > 0) {
                 player.sendMessage(ChatColor.GOLD + "Global Max Clicks: " + ChatColor.WHITE + globalMaxClicks);
             }
@@ -854,7 +854,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
 
             // Set the click limit
-            commandSign.get().setGlobalMaxClicks(maxClicks.get());
+            commandSign.get().setGlobalClickLimit(maxClicks.get());
             player.sendMessage(ChatColor.GOLD + "Click limit set to: " + maxClicks.get() + ".");
             return true;
         }
