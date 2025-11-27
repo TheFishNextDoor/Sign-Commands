@@ -33,7 +33,38 @@ public class CommandSignUser {
 
     public CommandSignUser(@NotNull UUID uuid) {
         this.uuid = uuid;
-        load();
+
+        YamlConfiguration playerData = PlayerDataFile.get(uuid);
+
+        for (String signClicksString : playerData.getStringList(".sign-clicks")) {
+            String[] parts = signClicksString.split(":");
+            if (parts.length != 2) {
+                continue;
+            }
+
+            String signId = parts[0];
+            String clicksString = parts[1];
+            
+            Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
+            if (clicks.isPresent()) {
+                signClickCountMap.put(signId, clicks.get());
+            }
+        }
+
+        for (String lastSignClickString : playerData.getStringList(".last-sign-click")) {
+            String[] parts = lastSignClickString.split(":");
+            if (parts.length != 2) {
+                continue;
+            }
+
+            String signId = parts[0];
+            String timestampString = parts[1];
+            
+            Optional<Long> timestamp = StringUtils.parseLong(timestampString);
+            if (timestamp.isPresent()) {
+                lastSignClickMap.put(signId, timestamp.get());
+            }
+        }
     }
 
     // UUID
@@ -87,40 +118,6 @@ public class CommandSignUser {
     }
 
     // Loading and Saving
-
-    protected void load() {
-        YamlConfiguration playerData = PlayerDataFile.get(uuid);
-
-        for (String signClicksString : playerData.getStringList(".sign-clicks")) {
-            String[] parts = signClicksString.split(":");
-            if (parts.length != 2) {
-                continue;
-            }
-
-            String signId = parts[0];
-            String clicksString = parts[1];
-            
-            Optional<Integer> clicks = StringUtils.parseInteger(clicksString);
-            if (clicks.isPresent()) {
-                signClickCountMap.put(signId, clicks.get());
-            }
-        }
-
-        for (String lastSignClickString : playerData.getStringList(".last-sign-click")) {
-            String[] parts = lastSignClickString.split(":");
-            if (parts.length != 2) {
-                continue;
-            }
-
-            String signId = parts[0];
-            String timestampString = parts[1];
-            
-            Optional<Long> timestamp = StringUtils.parseLong(timestampString);
-            if (timestamp.isPresent()) {
-                lastSignClickMap.put(signId, timestamp.get());
-            }
-        }
-    }
 
     protected void save() {
         YamlConfiguration playerData = PlayerDataFile.get(uuid);
