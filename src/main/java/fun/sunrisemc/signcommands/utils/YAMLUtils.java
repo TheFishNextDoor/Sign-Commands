@@ -12,34 +12,74 @@ public class YAMLUtils {
 
     // Getting
 
-    public static int getIntClamped(@NotNull YamlConfiguration config, @NotNull String path, int min, int max) {
+    public static Optional<Boolean> getBoolean(@NotNull YamlConfiguration config, @NotNull String path) {
         if (!config.contains(path)) {
-            return min;
+            return Optional.empty();
+        }
+
+        boolean value = config.getBoolean(path);
+
+        return Optional.of(value);
+    }
+
+    public static Optional<Integer> getInt(@NotNull YamlConfiguration config, @NotNull String path) {
+        if (!config.contains(path)) {
+            return Optional.empty();
         }
 
         int value = config.getInt(path);
 
-        return Math.clamp(value, min, max);
+        return Optional.of(value);
     }
 
-    public static double getDoubleClamped(@NotNull YamlConfiguration config, @NotNull String path, double min, double max) {
+    public static Optional<Integer> getIntClamped(@NotNull YamlConfiguration config, @NotNull String path, int min, int max) {
         if (!config.contains(path)) {
-            return min;
+            return Optional.empty();
+        }
+
+        int value = config.getInt(path);
+
+        return Optional.of(Math.clamp(value, min, max));
+    }
+
+    public static Optional<Double> getDouble(@NotNull YamlConfiguration config, @NotNull String path) {
+        if (!config.contains(path)) {
+            return Optional.empty();
         }
 
         double value = config.getDouble(path);
 
-        return Math.clamp(value, min, max);
+        return Optional.of(value);
     }
 
-    public static long getLongClamped(@NotNull YamlConfiguration config, @NotNull String path, long min, long max) {
+    public static Optional<Double> getDoubleClamped(@NotNull YamlConfiguration config, @NotNull String path, double min, double max) {
         if (!config.contains(path)) {
-            return min;
+            return Optional.empty();
+        }
+
+        double value = config.getDouble(path);
+
+        return Optional.of(Math.clamp(value, min, max));
+    }
+
+    public static Optional<Long> getLong(@NotNull YamlConfiguration config, @NotNull String path) {
+        if (!config.contains(path)) {
+            return Optional.empty();
         }
 
         long value = config.getLong(path);
 
-        return Math.clamp(value, min, max);
+        return Optional.of(value);
+    }
+
+    public static Optional<Long> getLongClamped(@NotNull YamlConfiguration config, @NotNull String path, long min, long max) {
+        if (!config.contains(path)) {
+            return Optional.empty();
+        }
+
+        long value = config.getLong(path);
+
+        return Optional.of(Math.clamp(value, min, max));
     }
 
     public static Optional<String> getString(@NotNull YamlConfiguration config, @NotNull String path) {
@@ -50,17 +90,6 @@ public class YAMLUtils {
         String value = config.getString(path);
 
         return Optional.ofNullable(value);
-    }
-
-    @NotNull
-    public static String getStringOrDefault(@NotNull YamlConfiguration config, @NotNull String path, @NotNull String defaultValue) {
-        if (!config.contains(path)) {
-            return defaultValue;
-        }
-
-        String value = config.getString(path);
-
-        return value != null ? value : defaultValue;
     }
 
     @NotNull
