@@ -14,6 +14,8 @@ public class CommandSignUserManager {
 
     private static @NotNull ConcurrentHashMap<UUID, CommandSignUser> signUsers = new ConcurrentHashMap<>();
 
+    // Getting
+
     @NotNull
     public static CommandSignUser get(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
@@ -25,13 +27,10 @@ public class CommandSignUserManager {
         return signUser;
     }
 
+    // Loading
+
     public static void preload(@NotNull Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(SignCommandsPlugin.getInstance(), () -> get(player));
-    }
-
-    public static boolean unload(@NotNull UUID uuid) {
-        CommandSignUser signUser = signUsers.remove(uuid);
-        return signUser != null;
     }
 
     public static void loadOnline() {
@@ -44,7 +43,14 @@ public class CommandSignUserManager {
         }
     }
 
+    // Saving and Unloading
+
     public static void saveAll() {
         signUsers.values().forEach(CommandSignUser::save);
+    }
+
+    protected static boolean unload(@NotNull UUID uuid) {
+        CommandSignUser signUser = signUsers.remove(uuid);
+        return signUser != null;
     }
 }

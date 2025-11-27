@@ -31,7 +31,7 @@ public class CommandSignUser {
 
     // Constructors
 
-    public CommandSignUser(@NotNull UUID uuid) {
+    protected CommandSignUser(@NotNull UUID uuid) {
         this.uuid = uuid;
 
         YamlConfiguration playerData = PlayerDataFile.get(uuid);
@@ -74,7 +74,7 @@ public class CommandSignUser {
         return uuid;
     }
 
-    private boolean isOnline() {
+    public boolean isOnline() {
         return Bukkit.getPlayer(uuid) != null;
     }
 
