@@ -20,6 +20,7 @@ import fun.sunrisemc.signcommands.sign.command.SignCommandType;
 import fun.sunrisemc.signcommands.user.CommandSignUser;
 import fun.sunrisemc.signcommands.user.CommandSignUserManager;
 import fun.sunrisemc.signcommands.utils.StringUtils;
+import fun.sunrisemc.signcommands.utils.YAMLUtils;
 import net.milkbowl.vault.economy.Economy;
 
 public class CommandSign {
@@ -76,8 +77,126 @@ public class CommandSign {
     protected CommandSign(@NotNull YamlConfiguration config, @NotNull String name) {
         this.name = name;
 
-        loadFrom(config);
+        // Load Location
+        Optional<String> locationString = YAMLUtils.getString(config, name + ".location");
+        if (locationString.isPresent()) {
+            this.lastValidSignLocationString = locationString;
+                
+            String[] parts = locationString.get().split(",");
+            if (parts.length != 4) {
+                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
+                return;
+            }
 
+            String worldName = parts[0].trim();
+
+            World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
+            if (world == null) {
+                SignCommandsPlugin.logWarning("World not found for sign configuration: " + name);
+                return;
+            }
+
+            Optional<Integer> x = StringUtils.parseInteger(parts[1]);
+            Optional<Integer> y = StringUtils.parseInteger(parts[2]);
+            Optional<Integer> z = StringUtils.parseInteger(parts[3]);
+            if (x.isEmpty() || y.isEmpty() || z.isEmpty()) {
+                SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
+                return;
+            }
+
+            this.signLocation = Optional.of(new Location(world, x.get(), y.get(), z.get()));
+        }
+
+        // Load Commands
+        if (config.contains(name + ".commands")) {
+            for (String commandEntry : config.getStringList(name + ".commands")) {
+                String[] entryParts = commandEntry.split(":", 3);
+                if (entryParts.length != 3) {
+                    SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + name + ": " + commandEntry);
+                    continue;
+                }
+
+                String clickTypeString = entryParts[0].trim();
+                Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
+                if (signClickType.isEmpty()) {
+                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + name + ": " + clickTypeString);
+                    continue;
+                }
+
+                String commandTypeString = entryParts[1].trim();
+                Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
+                if (signCommandType.isEmpty()) {
+                    SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + name + ": " + commandTypeString);
+                    continue;
+                }
+
+                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), entryParts[2]);
+                commands.add(signCommand);
+            }
+        }
+
+        // Load Required Permissions
+        for (String permission : config.getStringList(name + ".required-permissions")) {
+            requiredPermissions.add(permission);
+        }
+
+        // Load Blocked Permissions
+        for (String permission : config.getStringList(name + ".blocked-permissions")) {
+            blockedPermissions.add(permission);
+        }
+
+        // Load Global Click Cooldown Millis
+        if (config.contains(name + ".global-click-cooldown-millis")) {
+            this.globalClickCooldownMillis = config.getLong(name + ".global-click-cooldown-millis");
+        }
+
+        // Load Global Last Click Time Millis
+        if (config.contains(name + ".global-last-click-time-millis")) {
+            this.globalLastClickTimeMillis = config.getLong(name + ".global-last-click-time-millis");
+        }
+
+        // Load Global Max Clicks
+        if (config.contains(name + ".global-max-clicks")) {
+            this.globalMaxClicks = config.getInt(name + ".global-max-clicks");
+        }
+
+        // Load Global Total Clicks
+        if (config.contains(name + ".global-total-clicks")) {
+            this.globalClickLimit = config.getInt(name + ".global-total-clicks");
+        }
+
+        // Load User Click Cooldown Millis
+        if (config.contains(name + ".user-click-cooldown-millis")) {
+            this.userClickCooldownMillis = config.getLong(name + ".user-click-cooldown-millis");
+        }
+
+        // Load Last User Click Cooldown Reset Time Millis
+        if (config.contains(name + ".last-user-click-cooldown-reset-time-millis")) {
+            this.lastUserClickCooldownResetTimeMillis = config.getLong(name + ".last-user-click-cooldown-reset-time-millis");
+        }
+        else {
+            this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
+        }
+
+        // Load User Max Clicks
+        if (config.contains(name + ".user-max-clicks")) {
+            this.userMaxClicks = config.getInt(name + ".user-max-clicks");
+        }
+
+        // Load Last User Max Clicks Reset Time Millis
+        if (config.contains(name + ".last-user-max-clicks-reset-time-millis")) {
+            this.lastUserClickLimitResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
+        }
+        else {
+            this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
+        }
+
+        // Load Click Cost
+        if (config.contains(name + ".click-cost")) {
+            this.clickCost = config.getDouble(name + ".click-cost");
+        }
+
+        // Register
         CommandSignManager.register(this);
     }
 
@@ -393,139 +512,7 @@ public class CommandSign {
         this.clickCost = cost;
     }
 
-    // Loading and Saving
-
-    protected void loadFrom(@NotNull YamlConfiguration config) {
-        // Load Location
-        if (config.contains(name + ".location")) {
-            String locationString = config.getString(name + ".location");
-
-            if (locationString != null) {
-                this.lastValidSignLocationString = Optional.of(locationString);
-                
-                String[] parts = locationString.split(",");
-                if (parts.length != 4) {
-                    SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
-                    return;
-                }
-
-                String worldName = parts[0].trim();
-                String xString = parts[1].trim();
-                String yString = parts[2].trim();
-                String zString = parts[3].trim();
-
-                World world = SignCommandsPlugin.getInstance().getServer().getWorld(worldName);
-                if (world == null) {
-                    SignCommandsPlugin.logWarning("World not found for sign configuration: " + name);
-                    return;
-                }
-
-                int x, y, z;
-                try {
-                    x = Integer.parseInt(xString);
-                    y = Integer.parseInt(yString);
-                    z = Integer.parseInt(zString);
-                }
-                catch (NumberFormatException e) {
-                    SignCommandsPlugin.logSevere("Invalid location for sign configuration: " + name);
-                    return;
-                }
-
-                this.signLocation = Optional.of(new Location(world, x, y, z));
-            }
-        }
-
-        // Load Commands
-        if (config.contains(name + ".commands")) {
-            for (String commandEntry : config.getStringList(name + ".commands")) {
-                String[] entryParts = commandEntry.split(":", 3);
-                if (entryParts.length != 3) {
-                    SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + name + ": " + commandEntry);
-                    continue;
-                }
-
-                String clickTypeString = entryParts[0].trim();
-                String commandTypeString = entryParts[1].trim();
-                String commandString = entryParts[2].trim();
-
-                Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
-                if (signClickType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + name + ": " + clickTypeString);
-                    continue;
-                }
-
-                Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
-                if (signCommandType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + name + ": " + commandTypeString);
-                    continue;
-                }
-
-                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), commandString);
-                commands.add(signCommand);
-            }
-        }
-
-        // Load Required Permissions
-        for (String permission : config.getStringList(name + ".required-permissions")) {
-            requiredPermissions.add(permission);
-        }
-
-        // Load Blocked Permissions
-        for (String permission : config.getStringList(name + ".blocked-permissions")) {
-            blockedPermissions.add(permission);
-        }
-
-        // Load Global Click Cooldown Millis
-        if (config.contains(name + ".global-click-cooldown-millis")) {
-            this.globalClickCooldownMillis = config.getLong(name + ".global-click-cooldown-millis");
-        }
-
-        // Load Global Last Click Time Millis
-        if (config.contains(name + ".global-last-click-time-millis")) {
-            this.globalLastClickTimeMillis = config.getLong(name + ".global-last-click-time-millis");
-        }
-
-        // Load Global Max Clicks
-        if (config.contains(name + ".global-max-clicks")) {
-            this.globalMaxClicks = config.getInt(name + ".global-max-clicks");
-        }
-
-        // Load Global Total Clicks
-        if (config.contains(name + ".global-total-clicks")) {
-            this.globalClickLimit = config.getInt(name + ".global-total-clicks");
-        }
-
-        // Load User Click Cooldown Millis
-        if (config.contains(name + ".user-click-cooldown-millis")) {
-            this.userClickCooldownMillis = config.getLong(name + ".user-click-cooldown-millis");
-        }
-
-        // Load Last User Click Cooldown Reset Time Millis
-        if (config.contains(name + ".last-user-click-cooldown-reset-time-millis")) {
-            this.lastUserClickCooldownResetTimeMillis = config.getLong(name + ".last-user-click-cooldown-reset-time-millis");
-        }
-        else {
-            this.lastUserClickCooldownResetTimeMillis = System.currentTimeMillis();
-        }
-
-        // Load User Max Clicks
-        if (config.contains(name + ".user-max-clicks")) {
-            this.userMaxClicks = config.getInt(name + ".user-max-clicks");
-        }
-
-        // Load Last User Max Clicks Reset Time Millis
-        if (config.contains(name + ".last-user-max-clicks-reset-time-millis")) {
-            this.lastUserClickLimitResetTimeMillis = config.getLong(name + ".last-user-max-clicks-reset-time-millis");
-        }
-        else {
-            this.lastUserClickLimitResetTimeMillis = System.currentTimeMillis();
-        }
-
-        // Load Click Cost
-        if (config.contains(name + ".click-cost")) {
-            this.clickCost = config.getDouble(name + ".click-cost");
-        }
-    }
+    // Saving
 
     protected void saveTo(@NotNull YamlConfiguration config) {
         // Save Location
