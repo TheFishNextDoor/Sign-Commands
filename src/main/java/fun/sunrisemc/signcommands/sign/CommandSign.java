@@ -173,17 +173,20 @@ public class CommandSign {
 
         this.clickCost = YAMLUtils.getDouble(config, name + ".click-cost").orElse(0.0);
 
-        // Register
+        // Register Sign
+
         CommandSignManager.register(this);
     }
 
     // Executing
 
     public boolean attemptExecute(@NotNull Player player, @NotNull SignClickType clickType) {
+        // Check if sign has command for click type
         if (!hasCommandForClickType(clickType)) {
             return false;
         }
 
+        // Check general permission
         if (!player.hasPermission("signcommands.use")) {
             player.sendMessage(ChatColor.RED + "You do not have permission to use command signs.");
             return false;
