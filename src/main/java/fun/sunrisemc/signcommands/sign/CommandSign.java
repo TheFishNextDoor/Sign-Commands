@@ -147,9 +147,9 @@ public class CommandSign {
 
         this.globalLastClickTimeMillis = YAMLUtils.getLong(config, name + ".global-last-click-time-millis").orElse(0L);
 
-        this.globalClickLimit = YAMLUtils.getInt(config, name + ".global-max-clicks").orElse(0);
+        this.globalClickLimit = YAMLUtils.getInt(config, name + ".global-click-limit").orElse(0);
 
-        this.globalClickCount = YAMLUtils.getInt(config, name + ".global-total-clicks").orElse(0);
+        this.globalClickCount = YAMLUtils.getInt(config, name + ".global-click-count").orElse(0);
 
         this.userClickCooldownMillis = YAMLUtils.getLong(config, name + ".user-click-cooldown-millis").orElse(0L);
 
@@ -157,9 +157,9 @@ public class CommandSign {
 
         this.lastUserClickCooldownResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-cooldown-reset-time-millis").orElse(currentTimeMillis);
 
-        this.userClickLimit = YAMLUtils.getInt(config, name + ".user-max-clicks").orElse(0);
+        this.userClickLimit = YAMLUtils.getInt(config, name + ".user-click-limit").orElse(0);
 
-        this.lastUserClickLimitResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-max-clicks-reset-time-millis").orElse(currentTimeMillis);
+        this.lastUserClickLimitResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-limit-reset-time-millis").orElse(currentTimeMillis);
 
         this.clickCost = YAMLUtils.getDouble(config, name + ".click-cost").orElse(0.0);
 
@@ -527,14 +527,14 @@ public class CommandSign {
             config.set(name + ".global-last-click-time-millis", globalLastClickTimeMillis);
         }
 
-        // Save Global Max Clicks
+        // Save Global Click Limit
         if (globalClickLimit > 0) {
-            config.set(name + ".global-max-clicks", globalClickLimit);
+            config.set(name + ".global-click-limit", globalClickLimit);
         }
 
         // Save Global Total Clicks
         if (globalClickCount > 0) {
-            config.set(name + ".global-total-clicks", globalClickCount);
+            config.set(name + ".global-click-count", globalClickCount);
         }
 
         // Save User Click Cooldown Millis
@@ -547,14 +547,14 @@ public class CommandSign {
             config.set(name + ".last-user-click-cooldown-reset-time-millis", lastUserClickCooldownResetTimeMillis);
         }
 
-        // Save User Max Clicks
+        // Save User Click Limit
         if (userClickLimit > 0) {
-            config.set(name + ".user-max-clicks", userClickLimit);
+            config.set(name + ".user-click-limit", userClickLimit);
         }
 
-        // Save Last User Max Clicks Reset Time Millis
+        // Save Last User Click Limit Reset Time Millis
         if (lastUserClickLimitResetTimeMillis > 0) {
-            config.set(name + ".last-user-max-clicks-reset-time-millis", lastUserClickLimitResetTimeMillis);
+            config.set(name + ".last-user-click-limit-reset-time-millis", lastUserClickLimitResetTimeMillis);
         }
 
         // Save Click Cost

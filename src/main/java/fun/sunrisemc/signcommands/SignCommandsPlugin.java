@@ -3,6 +3,7 @@ package fun.sunrisemc.signcommands;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,11 +17,13 @@ import fun.sunrisemc.signcommands.event.BlockBreak;
 import fun.sunrisemc.signcommands.event.BlockInteract;
 import fun.sunrisemc.signcommands.event.PlayerJoin;
 import fun.sunrisemc.signcommands.event.SignChange;
+import fun.sunrisemc.signcommands.file.DataFile;
 import fun.sunrisemc.signcommands.hook.Vault;
 import fun.sunrisemc.signcommands.scheduler.AutoSaveTask;
 import fun.sunrisemc.signcommands.scheduler.TickCounterTask;
 import fun.sunrisemc.signcommands.sign.CommandSignManager;
 import fun.sunrisemc.signcommands.user.CommandSignUserManager;
+import fun.sunrisemc.signcommands.utils.YAMLUtils;
 
 public class SignCommandsPlugin extends JavaPlugin {
 
@@ -31,6 +34,8 @@ public class SignCommandsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        applyUpdates();
 
         if (Vault.hook(this)) {
             logInfo("Vault hooked.");
@@ -135,5 +140,32 @@ public class SignCommandsPlugin extends JavaPlugin {
         }
 
         return true;
+    }
+
+    // Updates
+
+    private void applyUpdates() {
+        // 1.0.1 -> 1.1.0: Rename max clicks to click limit
+        YamlConfiguration signsData = DataFile.get("signs");
+        boolean changes = false;
+        for (String signName : signsData.getKeys(false)) {
+            if (YAMLUtils.renameKey(signsData, signName + ".global-max-clicks", signName + ".global-click-limit")) {
+                changes = true;
+            }
+            if (YAMLUtils.renameKey(signsData, signName + ".global-total-clicks", signName + ".global-click-count")) {
+                changes = true;
+            }
+            if (YAMLUtils.renameKey(signsData, signName + ".user-max-clicks", signName + ".user-click-limit")) {
+                changes = true;
+            }
+            if (YAMLUtils.renameKey(signsData, signName + ".last-user-max-clicks-reset-time-millis", signName + ".last-user-click-limit-reset-time-millis")) {
+                changes = true;
+            }
+        }
+
+        if (changes) {
+            DataFile.save("signs", signsData);
+            logInfo("Updated sign data to version 1.1.0 format.");
+        }
     }
 }

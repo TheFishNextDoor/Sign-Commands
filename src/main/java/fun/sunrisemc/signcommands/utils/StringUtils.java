@@ -12,7 +12,7 @@ public class StringUtils {
 
     public static Optional<Integer> parseInteger(@NotNull String str) {
         try {
-            int value = Integer.parseInt(str);
+            int value = Integer.parseInt(str.trim());
             return Optional.of(value);
         } 
         catch (NumberFormatException e) {
@@ -22,7 +22,7 @@ public class StringUtils {
 
     public static Optional<Double> parseDouble(@NotNull String str) {
         try {
-            double value = Double.parseDouble(str);
+            double value = Double.parseDouble(str.trim());
             return Optional.of(value);
         } 
         catch (NumberFormatException e) {
@@ -32,7 +32,7 @@ public class StringUtils {
 
     public static Optional<Long> parseLong(@NotNull String str) {
         try {
-            long value = Long.parseLong(str);
+            long value = Long.parseLong(str.trim());
             return Optional.of(value);
         } 
         catch (NumberFormatException e) {

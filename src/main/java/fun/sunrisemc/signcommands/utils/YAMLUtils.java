@@ -109,7 +109,7 @@ public class YAMLUtils {
     // Modifying
 
     public static boolean renameKey(YamlConfiguration config, String oldKey, String newKey) {
-        if (!config.contains(oldKey) || !config.contains(newKey)) {
+        if (!config.contains(oldKey) || config.contains(newKey)) {
             return false;
         }
 
