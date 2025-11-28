@@ -75,9 +75,11 @@ public class CommandSign {
     }
 
     protected CommandSign(@NotNull YamlConfiguration config, @NotNull String name) {
+        // Name
+        
         this.name = name;
 
-        
+        // Location
 
         Optional<String> locationString = YAMLUtils.getString(config, name + ".location");
         if (locationString.isPresent()) {
@@ -108,32 +110,34 @@ public class CommandSign {
             this.signLocation = Optional.of(new Location(world, x.get(), y.get(), z.get()));
         }
 
-        if (config.contains(name + ".commands")) {
-            for (String commandEntry : config.getStringList(name + ".commands")) {
-                String[] entryParts = commandEntry.split(":", 3);
-                if (entryParts.length != 3) {
-                    SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + name + ": " + commandEntry);
-                    continue;
-                }
+        // Commands
 
-                String clickTypeString = entryParts[0].trim();
-                Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
-                if (signClickType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + name + ": " + clickTypeString);
-                    continue;
-                }
-
-                String commandTypeString = entryParts[1].trim();
-                Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
-                if (signCommandType.isEmpty()) {
-                    SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + name + ": " + commandTypeString);
-                    continue;
-                }
-
-                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), entryParts[2].trim());
-                commands.add(signCommand);
+        for (String commandEntry : config.getStringList(name + ".commands")) {
+            String[] entryParts = commandEntry.split(":", 3);
+            if (entryParts.length != 3) {
+                SignCommandsPlugin.logWarning("Invalid command entry for sign configuration " + name + ": " + commandEntry);
+                continue;
             }
+
+            String clickTypeString = entryParts[0].trim();
+            Optional<SignClickType> signClickType = SignClickType.fromName(clickTypeString);
+            if (signClickType.isEmpty()) {
+                SignCommandsPlugin.logWarning("Unknown click type for sign configuration " + name + ": " + clickTypeString);
+                continue;
+            }
+
+            String commandTypeString = entryParts[1].trim();
+            Optional<SignCommandType> signCommandType = SignCommandType.fromName(commandTypeString);
+            if (signCommandType.isEmpty()) {
+                SignCommandsPlugin.logWarning("Unknown command type for sign configuration " + name + ": " + commandTypeString);
+                continue;
+            }
+
+            SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), entryParts[2].trim());
+            commands.add(signCommand);
         }
+
+        // Permissions
 
         for (String permission : config.getStringList(name + ".required-permissions")) {
             this.requiredPermissions.add(permission);
@@ -143,6 +147,8 @@ public class CommandSign {
             this.blockedPermissions.add(permission);
         }
 
+        // Global Click Tracking
+
         this.globalClickCooldownMillis = YAMLUtils.getLong(config, name + ".global-click-cooldown-millis").orElse(0L);
 
         this.globalLastClickTimeMillis = YAMLUtils.getLong(config, name + ".global-last-click-time-millis").orElse(0L);
@@ -151,9 +157,11 @@ public class CommandSign {
 
         this.globalClickCount = YAMLUtils.getInt(config, name + ".global-click-count").orElse(0);
 
-        this.userClickCooldownMillis = YAMLUtils.getLong(config, name + ".user-click-cooldown-millis").orElse(0L);
+        // User Click Tracking
 
         long currentTimeMillis = System.currentTimeMillis();
+
+        this.userClickCooldownMillis = YAMLUtils.getLong(config, name + ".user-click-cooldown-millis").orElse(0L);
 
         this.lastUserClickCooldownResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-cooldown-reset-time-millis").orElse(currentTimeMillis);
 
@@ -161,8 +169,11 @@ public class CommandSign {
 
         this.lastUserClickLimitResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-limit-reset-time-millis").orElse(currentTimeMillis);
 
+        // Click Cost
+
         this.clickCost = YAMLUtils.getDouble(config, name + ".click-cost").orElse(0.0);
 
+        // Register
         CommandSignManager.register(this);
     }
 
