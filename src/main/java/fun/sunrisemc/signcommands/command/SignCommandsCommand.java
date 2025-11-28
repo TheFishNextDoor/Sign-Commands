@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -181,13 +180,13 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
             // /signcommands resetuserclicklimit <username>
             else if (isPlayer && (subcommand.equals("resetuserclicklimit") || subcommand.equals("rucl")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_LIMIT_PERMISSION)) {
-                ArrayList<String> completions = getAllPlayerNames();
+                ArrayList<String> completions = Names.getOnlinePlayerNames();
                 completions.add("all");
                 return completions;
             }
             // /signcommands resetuserclickcooldown <username>
             else if (isPlayer && (subcommand.equals("resetuserclickcooldown") || subcommand.equals("rucc")) && sender.hasPermission(Permissions.MANAGE_USER_CLICK_COOLDOWN_PERMISSION)) {
-                ArrayList<String> completions = getAllPlayerNames();
+                ArrayList<String> completions = Names.getOnlinePlayerNames();
                 completions.add("all");
                 return completions;
             }
@@ -1108,18 +1107,6 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
     private static Optional<Player> getPlayerByName(@NotNull String name) {
         Player player = org.bukkit.Bukkit.getPlayerExact(name);
         return Optional.ofNullable(player);
-    }
-
-    @NotNull
-    private static ArrayList<String> getAllPlayerNames() {
-        ArrayList<String> playerNames = new ArrayList<String>();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player == null) {
-                continue;
-            }
-            playerNames.add(player.getName());
-        }
-        return playerNames;
     }
 
     @NotNull 

@@ -2,14 +2,27 @@ package fun.sunrisemc.signcommands.utils;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.sign.Side;
-
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.signcommands.sign.command.SignClickType;
 import fun.sunrisemc.signcommands.sign.command.SignCommandType;
 
 public class Names {
+
+    @NotNull
+    public static ArrayList<String> getOnlinePlayerNames() {
+        ArrayList<String> playerNames = new ArrayList<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player == null) {
+                continue;
+            }
+            playerNames.add(player.getName());
+        }
+        return playerNames;
+    }
 
     @NotNull
     public static ArrayList<String> getSignClickTypeNames() {
