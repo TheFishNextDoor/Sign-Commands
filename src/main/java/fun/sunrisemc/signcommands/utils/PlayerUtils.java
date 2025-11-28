@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerUtils {
 
-    public static Optional<Block> rayTraceBlock(@NotNull Player player) {
+    public static Optional<Block> getLookedAtBlock(@NotNull Player player) {
         RayTraceResult result = player.rayTraceBlocks(64.0);
         if (result == null) {
             return Optional.empty();
@@ -20,8 +20,8 @@ public class PlayerUtils {
         return Optional.ofNullable(result.getHitBlock());
     }
 
-    public static Optional<Sign> rayTraceSign(@NotNull Player player) {
-        Optional<Block> block = rayTraceBlock(player);
+    public static Optional<Sign> getLookedAtSign(@NotNull Player player) {
+        Optional<Block> block = getLookedAtBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }

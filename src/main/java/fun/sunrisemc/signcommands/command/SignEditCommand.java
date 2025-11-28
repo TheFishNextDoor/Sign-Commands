@@ -53,7 +53,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.getLookedAtSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
@@ -66,7 +66,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.getLookedAtSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
@@ -98,7 +98,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return List.of("<text>");
                 }
 
-                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.getLookedAtSign((Player) sender);
                 if (sign.isEmpty()) {
                     return List.of("<text>");
                 }
@@ -146,7 +146,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = PlayerUtils.rayTraceSign(player);
+            Optional<Sign> sign = PlayerUtils.getLookedAtSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;
@@ -193,7 +193,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = PlayerUtils.rayTraceSign(player);
+            Optional<Sign> sign = PlayerUtils.getLookedAtSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;

@@ -43,7 +43,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getOrCreateLookingAt(@NotNull Player player) {
-        Optional<Block> block = PlayerUtils.rayTraceBlock(player);
+        Optional<Block> block = PlayerUtils.getLookedAtBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
@@ -66,7 +66,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getLookingAt(@NotNull Player player) {
-        Optional<Block> block = PlayerUtils.rayTraceBlock(player);
+        Optional<Block> block = PlayerUtils.getLookedAtBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
