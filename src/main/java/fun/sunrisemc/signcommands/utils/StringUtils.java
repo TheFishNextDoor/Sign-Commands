@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -68,6 +70,17 @@ public class StringUtils {
                    .replace("_", "-")
                    .replace(":", "-")
                    .trim();
+    }
+
+    @NotNull 
+    public static String formatLocation(@NotNull Location location) {
+        String worldName = "Unknown World";
+        World world = location.getWorld();
+        if (world != null) {
+            worldName = world.getName();
+        } 
+        
+        return "(" + worldName + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
     }
 
     @NotNull

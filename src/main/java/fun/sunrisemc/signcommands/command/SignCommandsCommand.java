@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -291,7 +290,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
                 }
 
                 Location location = signLocation.get();
-                String locationString = locationString(location);
+                String locationString = StringUtils.formatLocation(location);
                 int commandCount = sign.getCommands().size();
                 if (commandCount == 1) {
                     sender.sendMessage(ChatColor.GOLD + sign.getName() + " " + locationString + " (" + commandCount + " command)");
@@ -328,7 +327,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             // Location
             Optional<Location> signLocation = commandSign.getSignLocation();
             if (signLocation.isPresent()) {
-                player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.WHITE + locationString(signLocation.get()));
+                player.sendMessage(ChatColor.GOLD + "Location: " + ChatColor.WHITE + StringUtils.formatLocation(signLocation.get()));
             }
 
             // Required Permissions
@@ -1102,19 +1101,5 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.YELLOW + "Note: Some commands are only available to players.");
         }
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
-    }
-
-    @NotNull 
-    private static String locationString(@NotNull Location location) {
-        World world = location.getWorld();
-        String worldName;
-        if (world != null) {
-            worldName = world.getName();
-        } 
-        else {
-            worldName = "Unknown World";
-        }
-        
-        return "(" + worldName + ", " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")";
     }
 }
