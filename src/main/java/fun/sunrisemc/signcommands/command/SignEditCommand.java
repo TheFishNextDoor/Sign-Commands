@@ -57,7 +57,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
 
-                return StringUtils.getRangeStrings(1, lineCount(sign.get(), side.get()));
+                return StringUtils.getRangeStrings(1, BlockUtils.getLineCount(sign.get(), side.get()));
             }
             else if (subcommand.equals("set") || subcommand.equals("s")) {
                 Optional<Side> side = StringUtils.parseSide(args[1]);
@@ -70,7 +70,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
 
-                int maxLines = lineCount(sign.get(), side.get());
+                int maxLines = BlockUtils.getLineCount(sign.get(), side.get());
                 String currentText = String.join(";", sign.get().getSide(side.get()).getLines()).replace('§', '&');
                 if (!currentText.isEmpty()) {
                     return List.of(currentText);
@@ -103,7 +103,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                 }
 
                 Optional<Integer> line = StringUtils.parseInteger(args[2]);
-                if (line.isEmpty() || line.get() < 1 || line.get() > lineCount(sign.get(), side.get())) {
+                if (line.isEmpty() || line.get() < 1 || line.get() > BlockUtils.getLineCount(sign.get(), side.get())) {
                     return List.of("<text>");
                 }
 
@@ -160,8 +160,8 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
 
             // Parse the line number
             Optional<Integer> line = StringUtils.parseInteger(args[2]);
-            if (line.isEmpty() || line.get() < 1 || line.get() > lineCount(sign.get(), side.get())) {
-                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", StringUtils.getRangeStrings(1, lineCount(sign.get(), side.get()))));
+            if (line.isEmpty() || line.get() < 1 || line.get() > BlockUtils.getLineCount(sign.get(), side.get())) {
+                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", StringUtils.getRangeStrings(1, BlockUtils.getLineCount(sign.get(), side.get()))));
                 return true;
             }
 
@@ -213,7 +213,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             // Get the lines to set
             String input = String.join(" ", List.of(args).subList(2, args.length));
             String[] lines = input.split(";");
-            int maxLines = lineCount(sign.get(), side.get());
+            int maxLines = BlockUtils.getLineCount(sign.get(), side.get());
             if (lines.length > maxLines) {
                 player.sendMessage(ChatColor.RED + "Too many lines provided. The " + StringUtils.formatName(side.get().name()) + " side of the sign only has " + maxLines + " lines.");
                 return true;
@@ -239,9 +239,5 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Sign Edit Help");
         player.sendMessage(ChatColor.YELLOW + "/signedit <setline | sl> <side> <line> <text> " + ChatColor.WHITE + "Set a specific line on the sign you are looking at.");
         player.sendMessage(ChatColor.YELLOW + "/signedit <set | s> <side> <line1;line2;line3;line4> " + ChatColor.WHITE + "Set all lines on the sign you are looking at at once.");
-    }
-
-    private static int lineCount(@NotNull Sign sign, @NotNull Side side) {
-        return sign.getSide(side).getLines().length;
     }
 }

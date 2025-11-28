@@ -5,8 +5,10 @@ import java.util.Optional;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
+
 import org.jetbrains.annotations.NotNull;
 
 public class BlockUtils {
@@ -36,5 +38,9 @@ public class BlockUtils {
     public static boolean isSign(@NotNull Block block) {
         BlockState state = block.getState();
         return state instanceof Sign;
+    }
+
+    public static int getLineCount(@NotNull Sign sign, @NotNull Side side) {
+        return sign.getSide(side).getLines().length;
     }
 }
