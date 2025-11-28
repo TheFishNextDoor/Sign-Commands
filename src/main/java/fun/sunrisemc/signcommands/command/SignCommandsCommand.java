@@ -260,7 +260,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
         boolean isPlayer = sender instanceof Player;
 
         if (args.length == 0) {
-            helpMessage(sender);
+            sendHelpMessage(sender);
             return true;
         }
 
@@ -1038,11 +1038,11 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
         }
 
         // Help Message
-        helpMessage(sender);
+        sendHelpMessage(sender);
         return true;
     }
 
-    private void helpMessage(@NotNull CommandSender sender) {
+    private void sendHelpMessage(@NotNull CommandSender sender) {
         boolean isPlayer = sender instanceof Player;
 
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Sign Commands Help");
