@@ -1,6 +1,5 @@
 package fun.sunrisemc.signcommands.sign.command;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,14 +28,5 @@ public enum SignCommandType {
             }
         }
         return Optional.empty();
-    }
-
-    @NotNull
-    public static ArrayList<String> getNames() {
-        ArrayList<String> names = new ArrayList<String>();
-        for (SignCommandType commandType : values()) {
-            names.add(commandType.getName());
-        }
-        return names;
     }
 }

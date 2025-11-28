@@ -29,6 +29,7 @@ import fun.sunrisemc.signcommands.sign.command.SignCommand;
 import fun.sunrisemc.signcommands.sign.command.SignCommandType;
 import fun.sunrisemc.signcommands.user.CommandSignUser;
 import fun.sunrisemc.signcommands.user.CommandSignUserManager;
+import fun.sunrisemc.signcommands.utils.Names;
 import fun.sunrisemc.signcommands.utils.StringUtils;
 
 public class SignCommandsCommand implements CommandExecutor, TabCompleter {
@@ -114,7 +115,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
             // /signcommands addcommand <clickType>
             else if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                return SignClickType.getNames();
+                return Names.getSignClickTypeNames();
             }
             // /signcommands removecommand <commandIndex>
             else if (isPlayer && (subcommand.equals("removecommand") || subcommand.equals("rc")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
@@ -200,11 +201,11 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
 
             // /signcommands addcommand <clickType> <commandType>
             if (isPlayer && (subcommand.equals("addcommand") || subcommand.equals("ac")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                return SignCommandType.getNames();
+                return Names.getSignCommandTypeNames();
             }
             // /signcommands editcommand <commandIndex> <clickType>
             else if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                return SignClickType.getNames();
+                return Names.getSignClickTypeNames();
             }
         }
         else if (args.length == 4) {
@@ -227,7 +228,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
             // /signcommands editcommand <commandIndex> <clickType> <commandType>
             if (isPlayer && (subcommand.equals("editcommand") || subcommand.equals("ec")) && sender.hasPermission(Permissions.MANAGE_COMMANDS_PERMISSION)) {
-                return SignCommandType.getNames();
+                return Names.getSignCommandTypeNames();
             }
         }
         else if (args.length == 5) {
@@ -497,14 +498,14 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             // Parse the click type
             Optional<SignClickType> signClickType = SignClickType.fromName(args[1]);
             if (signClickType.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
+                player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", Names.getSignClickTypeNames()));
                 return true;
             }
 
             // Parse the command type
             Optional<SignCommandType> signCommandType = SignCommandType.fromName(args[2]);
             if (signCommandType.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", SignCommandType.getNames()));
+                player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", Names.getSignCommandTypeNames()));
                 return true;
             }
 
@@ -602,14 +603,14 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             // Parse the click type
             Optional<SignClickType> signClickType = SignClickType.fromName(args[2]);
             if (signClickType.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", SignClickType.getNames()));
+                player.sendMessage(ChatColor.RED + "Invalid click type. Valid types are: " + String.join(", ", Names.getSignClickTypeNames()));
                 return true;
             }
 
             // Parse the command type
             Optional<SignCommandType> signCommandType = SignCommandType.fromName(args[3]);
             if (signCommandType.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", SignCommandType.getNames()));
+                player.sendMessage(ChatColor.RED + "Invalid command type. Valid types are: " + String.join(", ", Names.getSignCommandTypeNames()));
                 return true;
             }
 

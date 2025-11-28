@@ -1,6 +1,5 @@
 package fun.sunrisemc.signcommands.command;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.signcommands.permission.Permissions;
 import fun.sunrisemc.signcommands.permission.ProtectionCheck;
+import fun.sunrisemc.signcommands.utils.Names;
 import fun.sunrisemc.signcommands.utils.StringUtils;
 
 public class SignEditCommand implements CommandExecutor, TabCompleter {
@@ -39,10 +39,10 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             String subcommand = args[0].toLowerCase();
 
             if (subcommand.equals("setline") || subcommand.equals("sl")) {
-                return sideNames();
+                return Names.getSideNames();
             }
             else if (subcommand.equals("set") || subcommand.equals("s")) {
-                return sideNames();
+                return Names.getSideNames();
             }
         }
         else if (args.length == 3) {
@@ -156,7 +156,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             // Parse the side
             Optional<Side> side = StringUtils.parseSide(args[1]);
             if (side.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", sideNames()));
+                player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", Names.getSideNames()));
                 return true;
             }
 
@@ -203,7 +203,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             // Parse the side
             Optional<Side> side = StringUtils.parseSide(args[1]);
             if (side.isEmpty()) {
-                player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", sideNames()));
+                player.sendMessage(ChatColor.RED + "Invalid side. Valid sides are: " + String.join(", ", Names.getSideNames()));
                 return true;
             }
 
@@ -260,15 +260,6 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
         }
 
         return Optional.of((Sign) state);
-    }
-
-    @NotNull
-    private static ArrayList<String> sideNames() {
-        ArrayList<String> sides = new ArrayList<>();
-        for (Side side : Side.values()) {
-            sides.add(StringUtils.formatName(side.name()));
-        }
-        return sides;
     }
 
     private static int lineCount(@NotNull Sign sign, @NotNull Side side) {

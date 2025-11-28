@@ -1,6 +1,5 @@
 package fun.sunrisemc.signcommands.sign.command;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.bukkit.event.block.Action;
@@ -40,14 +39,5 @@ public enum SignClickType {
             }
         }
         return Optional.empty();
-    }
-
-    @NotNull
-    public static ArrayList<String> getNames() {
-        ArrayList<String> names = new ArrayList<String>();
-        for (SignClickType clickType : values()) {
-            names.add(clickType.getName());
-        }
-        return names;
     }
 }
