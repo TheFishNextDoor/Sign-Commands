@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import fun.sunrisemc.signcommands.SignCommandsPlugin;
 import fun.sunrisemc.signcommands.config.MainConfig;
 import fun.sunrisemc.signcommands.file.DataFile;
-import fun.sunrisemc.signcommands.utils.BlockUtils;
+import fun.sunrisemc.signcommands.utils.PlayerUtils;
+import fun.sunrisemc.signcommands.utils.SignUtils;
 
 public class CommandSignManager {
 
@@ -33,7 +34,7 @@ public class CommandSignManager {
     public static Optional<CommandSign> getByBlock(@NotNull Block block) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
-            if (!BlockUtils.isSign(block)) {
+            if (!SignUtils.isSign(block)) {
                 return Optional.empty();
             }
         }
@@ -42,7 +43,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getOrCreateLookingAt(@NotNull Player player) {
-        Optional<Block> block = BlockUtils.rayTraceBlock(player);
+        Optional<Block> block = PlayerUtils.rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
@@ -54,7 +55,7 @@ public class CommandSignManager {
 
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
-            if (!BlockUtils.isSign(block.get())) {
+            if (!SignUtils.isSign(block.get())) {
                 return Optional.empty();
             }
         }
@@ -65,7 +66,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getLookingAt(@NotNull Player player) {
-        Optional<Block> block = BlockUtils.rayTraceBlock(player);
+        Optional<Block> block = PlayerUtils.rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }

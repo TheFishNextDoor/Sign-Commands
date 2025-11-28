@@ -17,7 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.signcommands.permission.Permissions;
 import fun.sunrisemc.signcommands.permission.ProtectionCheck;
-import fun.sunrisemc.signcommands.utils.BlockUtils;
+import fun.sunrisemc.signcommands.utils.PlayerUtils;
+import fun.sunrisemc.signcommands.utils.SignUtils;
 import fun.sunrisemc.signcommands.utils.Names;
 import fun.sunrisemc.signcommands.utils.StringUtils;
 
@@ -52,12 +53,12 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
 
-                return StringUtils.getRangeStrings(1, BlockUtils.getLineCount(sign.get(), side.get()));
+                return StringUtils.getRangeStrings(1, SignUtils.getLineCount(sign.get(), side.get()));
             }
             else if (subcommand.equals("set") || subcommand.equals("s")) {
                 Optional<Side> side = StringUtils.parseSide(args[1]);
@@ -65,12 +66,12 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
 
-                int maxLines = BlockUtils.getLineCount(sign.get(), side.get());
+                int maxLines = SignUtils.getLineCount(sign.get(), side.get());
                 String currentText = String.join(";", sign.get().getSide(side.get()).getLines()).replace('§', '&');
                 if (!currentText.isEmpty()) {
                     return List.of(currentText);
@@ -97,13 +98,13 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return List.of("<text>");
                 }
 
-                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
+                Optional<Sign> sign = PlayerUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return List.of("<text>");
                 }
 
                 Optional<Integer> line = StringUtils.parseInteger(args[2]);
-                if (line.isEmpty() || line.get() < 1 || line.get() > BlockUtils.getLineCount(sign.get(), side.get())) {
+                if (line.isEmpty() || line.get() < 1 || line.get() > SignUtils.getLineCount(sign.get(), side.get())) {
                     return List.of("<text>");
                 }
 
@@ -145,7 +146,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = BlockUtils.rayTraceSign(player);
+            Optional<Sign> sign = PlayerUtils.rayTraceSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;
@@ -160,8 +161,8 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
 
             // Parse the line number
             Optional<Integer> line = StringUtils.parseInteger(args[2]);
-            if (line.isEmpty() || line.get() < 1 || line.get() > BlockUtils.getLineCount(sign.get(), side.get())) {
-                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", StringUtils.getRangeStrings(1, BlockUtils.getLineCount(sign.get(), side.get()))));
+            if (line.isEmpty() || line.get() < 1 || line.get() > SignUtils.getLineCount(sign.get(), side.get())) {
+                player.sendMessage(ChatColor.RED + "Invalid line number. Valid lines are: " + String.join(", ", StringUtils.getRangeStrings(1, SignUtils.getLineCount(sign.get(), side.get()))));
                 return true;
             }
 
@@ -192,7 +193,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = BlockUtils.rayTraceSign(player);
+            Optional<Sign> sign = PlayerUtils.rayTraceSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;
@@ -213,7 +214,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             // Get the lines to set
             String input = String.join(" ", List.of(args).subList(2, args.length));
             String[] lines = input.split(";");
-            int maxLines = BlockUtils.getLineCount(sign.get(), side.get());
+            int maxLines = SignUtils.getLineCount(sign.get(), side.get());
             if (lines.length > maxLines) {
                 player.sendMessage(ChatColor.RED + "Too many lines provided. The " + StringUtils.formatName(side.get().name()) + " side of the sign only has " + maxLines + " lines.");
                 return true;
