@@ -55,7 +55,12 @@ public class StringUtils {
 
     @NotNull
     public static String formatName(@NotNull String name) {
-        return name.trim().toLowerCase().replace(" ", "-").replace("_", "-");
+        return name.toLowerCase()
+                   .replace("minecraft:", "")
+                   .replace(" ", "-")
+                   .replace("_", "-")
+                   .replace(":", "-")
+                   .trim();
     }
 
     @NotNull
@@ -110,7 +115,13 @@ public class StringUtils {
 
     @NotNull
     public static String normalize(@NotNull String str) {
-        return str.trim().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
+        return str.toLowerCase()
+                  .replace("minecraft:", "")
+                  .replace(" ", "")
+                  .replace("_", "")
+                  .replace("-", "")
+                  .replace(":", "")
+                  .trim();
     }
 
     // Range Strings
