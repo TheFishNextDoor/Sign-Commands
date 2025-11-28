@@ -929,7 +929,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the target player
-            Optional<Player> targetPlayer = getPlayerByName(target);
+            Optional<Player> targetPlayer = StringUtils.parseOnlinePlayer(target);
             if (targetPlayer.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Player not found.");
                 return true;
@@ -996,7 +996,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the target player
-            Optional<Player> targetPlayer = getPlayerByName(target);
+            Optional<Player> targetPlayer = StringUtils.parseOnlinePlayer(target);
             if (targetPlayer.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Player not found.");
                 return true;
@@ -1102,11 +1102,6 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.YELLOW + "Note: Some commands are only available to players.");
         }
         sender.sendMessage(ChatColor.YELLOW + "Note: Commands you do not have permission for will not be shown.");
-    }
-
-    private static Optional<Player> getPlayerByName(@NotNull String name) {
-        Player player = org.bukkit.Bukkit.getPlayerExact(name);
-        return Optional.ofNullable(player);
     }
 
     @NotNull 

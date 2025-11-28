@@ -3,7 +3,9 @@ package fun.sunrisemc.signcommands.utils;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class StringUtils {
@@ -38,6 +40,11 @@ public class StringUtils {
         catch (NumberFormatException e) {
             return Optional.empty();
         }
+    }
+
+    public static Optional<Player> parseOnlinePlayer(@NotNull String name) {
+        Player player = Bukkit.getPlayer(name.trim());
+        return Optional.ofNullable(player);
     }
 
     public static Optional<Side> parseSide(@NotNull String sideNameB) {
