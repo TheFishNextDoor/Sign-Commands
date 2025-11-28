@@ -130,7 +130,7 @@ public class CommandSign {
                     continue;
                 }
 
-                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), entryParts[2]);
+                SignCommand signCommand = new SignCommand(signClickType.get(), signCommandType.get(), entryParts[2].trim());
                 commands.add(signCommand);
             }
         }
