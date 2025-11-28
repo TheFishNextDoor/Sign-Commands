@@ -56,7 +56,7 @@ public class CommandSign {
     private long userClickCooldownMillis = 0;
     private long lastUserClickCooldownResetTimeMillis = 0;
 
-    private int userMaxClicks = 0;
+    private int userClickLimit = 0;
     private long lastUserClickLimitResetTimeMillis = 0;
 
     // Click Cost
@@ -157,7 +157,7 @@ public class CommandSign {
 
         this.lastUserClickCooldownResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-click-cooldown-reset-time-millis").orElse(currentTimeMillis);
 
-        this.userMaxClicks = YAMLUtils.getInt(config, name + ".user-max-clicks").orElse(0);
+        this.userClickLimit = YAMLUtils.getInt(config, name + ".user-max-clicks").orElse(0);
 
         this.lastUserClickLimitResetTimeMillis = YAMLUtils.getLong(config, name + ".last-user-max-clicks-reset-time-millis").orElse(currentTimeMillis);
 
@@ -191,15 +191,15 @@ public class CommandSign {
         }
 
         // Check global max clicks
-        if (!checkGlobalMaxClicks()) {
-            player.sendMessage(ChatColor.RED + "This sign has reached its global maximum number of clicks.");
+        if (!checkGlobalClickLimit()) {
+            player.sendMessage(ChatColor.RED + "This sign has reached its global click limit.");
             return false;
         }
 
         // Check user max clicks
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         int totalUserClicks = commandSignUser.getSignClickCount(this);
-        int maxUserClicks = getUserMaxClicks();
+        int maxUserClicks = getUserClickLimit();
         if (maxUserClicks > 0 && totalUserClicks >= maxUserClicks) {
             player.sendMessage(ChatColor.RED + "You have reached the maximum number of clicks for this sign.");
             return false;
@@ -402,15 +402,15 @@ public class CommandSign {
         return globalClickLimit;
     }
 
-    public void setGlobalClickLimit(int maxClicks) {
-        this.globalClickLimit = maxClicks;
+    public void setGlobalClickLimit(int globalClickLimit) {
+        this.globalClickLimit = globalClickLimit;
     }
 
     public void resetGlobalClickLimit() {
         this.globalClickCount = 0;
     }
 
-    private boolean checkGlobalMaxClicks() {
+    private boolean checkGlobalClickLimit() {
         if (globalClickLimit <= 0) {
             return true;
         }
@@ -452,12 +452,12 @@ public class CommandSign {
 
     // User Max Clicks
 
-    public int getUserMaxClicks() {
-        return userMaxClicks;
+    public int getUserClickLimit() {
+        return userClickLimit;
     }
 
-    public void setUserMaxClicks(int maxClicksPerUser) {
-        this.userMaxClicks = maxClicksPerUser;
+    public void setUserClickLimit(int userClickLimit) {
+        this.userClickLimit = userClickLimit;
     }
 
     public void resetAllUserClickLimits() {
@@ -548,8 +548,8 @@ public class CommandSign {
         }
 
         // Save User Max Clicks
-        if (userMaxClicks > 0) {
-            config.set(name + ".user-max-clicks", userMaxClicks);
+        if (userClickLimit > 0) {
+            config.set(name + ".user-max-clicks", userClickLimit);
         }
 
         // Save Last User Max Clicks Reset Time Millis
