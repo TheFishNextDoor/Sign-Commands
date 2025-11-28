@@ -204,13 +204,13 @@ public class CommandSign {
             return false;
         }
 
-        // Check global max clicks
+        // Check global click limit
         if (!checkGlobalClickLimit()) {
             player.sendMessage(ChatColor.RED + "This sign has reached its global click limit.");
             return false;
         }
 
-        // Check user max clicks
+        // Check user click limit
         CommandSignUser commandSignUser = CommandSignUserManager.get(player);
         int totalUserClicks = commandSignUser.getSignClickCount(this);
         int maxUserClicks = getUserClickLimit();
@@ -410,7 +410,11 @@ public class CommandSign {
         return Math.max(0, remainingMillis);
     }
 
-    // Global Max Clicks
+    // Global Click Limit
+
+    public int getGlobalClickCount() {
+        return globalClickCount;
+    }
 
     public int getGlobalClickLimit() {
         return globalClickLimit;
@@ -464,7 +468,7 @@ public class CommandSign {
         return Math.max(0, userClickCooldownMillis - elapsedMillis);
     }
 
-    // User Max Clicks
+    // User Click Limit
 
     public int getUserClickLimit() {
         return userClickLimit;

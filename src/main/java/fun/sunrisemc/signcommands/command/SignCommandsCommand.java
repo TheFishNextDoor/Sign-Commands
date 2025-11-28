@@ -354,10 +354,14 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "Global Click Cooldown: " + ChatColor.WHITE + StringUtils.formatMillis(globalClickCooldownMillis));
             }
 
-            // Global Max Clicks
+            // Global Click Count
+            int globalClickCount = commandSign.getGlobalClickCount();
+            player.sendMessage(ChatColor.GOLD + "Global Click Count: " + ChatColor.WHITE + globalClickCount);
+
+            // Global Click Limit
             int globalClickLimit = commandSign.getGlobalClickLimit();
             if (globalClickLimit > 0) {
-                player.sendMessage(ChatColor.GOLD + "Global Max Clicks: " + ChatColor.WHITE + globalClickLimit);
+                player.sendMessage(ChatColor.GOLD + "Global Click Limit: " + ChatColor.WHITE + globalClickLimit);
             }
 
             // User Click Cooldown
@@ -366,10 +370,10 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.GOLD + "User Click Cooldown: " + ChatColor.WHITE + StringUtils.formatMillis(userClickCooldownMillis));
             }
 
-            // User Max Clicks
+            // User Click Limit
             int userClickLimit = commandSign.getUserClickLimit();
             if (userClickLimit > 0) {
-                player.sendMessage(ChatColor.GOLD + "User Max Clicks: " + ChatColor.WHITE + userClickLimit);
+                player.sendMessage(ChatColor.GOLD + "User Click Limit: " + ChatColor.WHITE + userClickLimit);
             }
 
             // Click Cost
@@ -957,14 +961,14 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            // Parse the max clicks
+            // Parse the user click limit
             Optional<Integer> userClickLimit = StringUtils.parseInteger(args[1]);
             if (userClickLimit.isEmpty() || userClickLimit.get() < 0) {
                 player.sendMessage(ChatColor.RED + "Invalid click limit value.");
                 return true;
             }
 
-            // Set the max clicks
+            // Set the user click limit
             commandSign.get().setUserClickLimit(userClickLimit.get());
             player.sendMessage(ChatColor.GOLD + "Click limit set to: " + userClickLimit.get() + ".");
             return true;
@@ -1060,7 +1064,7 @@ public class SignCommandsCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <goto | gt> <signName> " + ChatColor.WHITE + "Teleport to a command sign.");
         }
         if (isPlayer && sender.hasPermission(Permissions.RENAME_SIGN_PERMISSION)) {
-            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename | rn> <newSignName> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's cooldown and max clicks.");
+            sender.sendMessage(ChatColor.GOLD + "/signcommands <rename | rn> <newSignName> " + ChatColor.WHITE + "Rename a command sign. This will reset the sign's user click cooldown and user click limits.");
         }
         if (isPlayer && sender.hasPermission(Permissions.DELETE_SIGN_PERMISSION)) {
             sender.sendMessage(ChatColor.GOLD + "/signcommands <delete | dt> <signName>" + ChatColor.WHITE + "Delete all commands from a command sign.");
