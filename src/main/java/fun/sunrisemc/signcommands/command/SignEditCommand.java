@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.command.Command;
@@ -13,13 +11,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.util.RayTraceResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import fun.sunrisemc.signcommands.permission.Permissions;
 import fun.sunrisemc.signcommands.permission.ProtectionCheck;
+import fun.sunrisemc.signcommands.utils.BlockUtils;
 import fun.sunrisemc.signcommands.utils.Names;
 import fun.sunrisemc.signcommands.utils.StringUtils;
 
@@ -54,7 +52,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = rayTraceSign((Player) sender);
+                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
@@ -67,7 +65,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return null;
                 }
                 
-                Optional<Sign> sign = rayTraceSign((Player) sender);
+                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return null;
                 }
@@ -99,7 +97,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
                     return List.of("<text>");
                 }
 
-                Optional<Sign> sign = rayTraceSign((Player) sender);
+                Optional<Sign> sign = BlockUtils.rayTraceSign((Player) sender);
                 if (sign.isEmpty()) {
                     return List.of("<text>");
                 }
@@ -147,7 +145,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = rayTraceSign(player);
+            Optional<Sign> sign = BlockUtils.rayTraceSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;
@@ -194,7 +192,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
             }
 
             // Get the sign the player is looking at
-            Optional<Sign> sign = rayTraceSign(player);
+            Optional<Sign> sign = BlockUtils.rayTraceSign(player);
             if (sign.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "You must be looking at a sign to use this command.");
                 return true;
@@ -241,25 +239,6 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Sign Edit Help");
         player.sendMessage(ChatColor.YELLOW + "/signedit <setline | sl> <side> <line> <text> " + ChatColor.WHITE + "Set a specific line on the sign you are looking at.");
         player.sendMessage(ChatColor.YELLOW + "/signedit <set | s> <side> <line1;line2;line3;line4> " + ChatColor.WHITE + "Set all lines on the sign you are looking at at once.");
-    }
-
-    private static Optional<Sign> rayTraceSign(@NotNull Player player) {
-        RayTraceResult result = player.rayTraceBlocks(64.0);
-        if (result == null) {
-            return Optional.empty();
-        }
-
-        Block block = result.getHitBlock();
-        if (block == null) {
-            return Optional.empty();
-        }
-
-        BlockState state = block.getState();
-        if (!(state instanceof Sign)) {
-            return Optional.empty();
-        }
-
-        return Optional.of((Sign) state);
     }
 
     private static int lineCount(@NotNull Sign sign, @NotNull Side side) {

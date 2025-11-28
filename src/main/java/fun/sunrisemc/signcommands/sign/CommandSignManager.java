@@ -8,17 +8,15 @@ import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.RayTraceResult;
 
 import org.jetbrains.annotations.NotNull;
 
 import fun.sunrisemc.signcommands.SignCommandsPlugin;
 import fun.sunrisemc.signcommands.config.MainConfig;
 import fun.sunrisemc.signcommands.file.DataFile;
+import fun.sunrisemc.signcommands.utils.BlockUtils;
 
 public class CommandSignManager {
 
@@ -35,7 +33,7 @@ public class CommandSignManager {
     public static Optional<CommandSign> getByBlock(@NotNull Block block) {
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
-            if (!isSign(block)) {
+            if (!BlockUtils.isSign(block)) {
                 return Optional.empty();
             }
         }
@@ -44,7 +42,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getOrCreateLookingAt(@NotNull Player player) {
-        Optional<Block> block = rayTraceBlock(player);
+        Optional<Block> block = BlockUtils.rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
@@ -56,7 +54,7 @@ public class CommandSignManager {
 
         MainConfig mainConfig = SignCommandsPlugin.getMainConfig();
         if (mainConfig.ONLY_ALLOW_SIGNS) {
-            if (!isSign(block.get())) {
+            if (!BlockUtils.isSign(block.get())) {
                 return Optional.empty();
             }
         }
@@ -67,7 +65,7 @@ public class CommandSignManager {
     }
 
     public static Optional<CommandSign> getLookingAt(@NotNull Player player) {
-        Optional<Block> block = rayTraceBlock(player);
+        Optional<Block> block = BlockUtils.rayTraceBlock(player);
         if (block.isEmpty()) {
             return Optional.empty();
         }
@@ -137,20 +135,5 @@ public class CommandSignManager {
         }
 
         DataFile.save("signs", config);
-    }
-
-    // Utils
-
-    private static Optional<Block> rayTraceBlock(@NotNull Player player) {
-        RayTraceResult result = player.rayTraceBlocks(64.0);
-        if (result == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(result.getHitBlock());
-    }
-
-    private static boolean isSign(@NotNull Block block) {
-        BlockState state = block.getState();
-        return state instanceof Sign;
     }
 }
