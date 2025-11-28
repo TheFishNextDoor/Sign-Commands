@@ -36,12 +36,12 @@ permissions:
     description: Allows the player to manage permissions on command signs.
   signcommands.admin.globalclickcooldown:
     description: Allows the player to manage the global click cooldown on command signs.
-  signcommands.admin.globalmaxclicks:
-    description: Allows the player to manage the global max clicks on command signs.
+  signcommands.admin.globalclicklimit:
+    description: Allows the player to manage the global click limit on command signs.
   signcommands.admin.userclickcooldown:
     description: Allows the player to manage the user click cooldown on command signs.
-  signcommands.admin.usermaxclicks:
-    description: Allows the player to manage the user max clicks on command signs.
+  signcommands.admin.userclicklimit:
+    description: Allows the player to manage the user click limit on command signs.
   signcommands.admin.clickcost:
     description: Allows the player to manage the click cost on command signs.
   signedit.use:

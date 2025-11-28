@@ -15,9 +15,9 @@ public class Permissions {
     public static final String MANAGE_COMMANDS_PERMISSION = "signcommands.admin.commands"; // Allows the player to manage commands on command signs.
     public static final String MANAGE_PERMISSIONS_PERMISSION = "signcommands.admin.permissions"; // Allows the player to manage permissions on command signs.
     public static final String MANAGE_GLOBAL_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.globalclickcooldown"; // Allows the player to manage the global click cooldown on command signs.
-    public static final String MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION = "signcommands.admin.globalmaxclicks"; // Allows the player to manage the global max clicks on command signs.
+    public static final String MANAGE_GLOBAL_CLICK_LIMIT_PERMSSION = "signcommands.admin.globalclicklimit"; // Allows the player to manage the global click limit on command signs.
     public static final String MANAGE_USER_CLICK_COOLDOWN_PERMISSION = "signcommands.admin.userclickcooldown"; // Allows the player to manage the user click cooldown on command signs.
-    public static final String MANAGE_USER_CLICK_LIMIT_PERMISSION = "signcommands.admin.usermaxclicks"; // Allows the player to manage the user max clicks on command signs.
+    public static final String MANAGE_USER_CLICK_LIMIT_PERMISSION = "signcommands.admin.userclicklimit"; // Allows the player to manage the user click limit on command signs.
     public static final String MANAGE_CLICK_COST_PERMISSION = "signcommands.admin.clickcost"; // Allows the player to manage the click cost on command signs.
 
     // Sign Edit Permissions
