@@ -1,41 +1,62 @@
 # Sign Commands
 Run commands when a player clicks a sign or block.
 
+## Requirements
+- Spigot or Paper server (Minecraft 1.20+)
+- Java 21+
+- [Vault](https://www.spigotmc.org/resources/vault.34315/) (optional, required for click cost feature)
+
 ## Setup
-1. Add Sign Commands jar into your plugins folder.
-2. Restart your server.
+1. Download the SignCommands jar from the releases page or build it from source with `mvn clean package`.
+2. Place the jar in your server's `plugins` folder.
+3. Restart your server.
+
+## Usage Tips
+- Sneak (hold shift) while clicking a command sign to interact with it normally without triggering commands.
+- Sneak while breaking a command sign to remove the block (requires permission).
+- Command signs are protected from being broken or modified by players without permission.
+- Use `{player}` in any command to substitute the clicking player's name.
+- Use `&` color codes in Message and Broadcast command types (e.g. `&aGreen text`).
 
 ## Commands
+
+Command aliases: `/signcommands` can be shortened to `/sc`.
+
 - **/signcommands help:** Show the help message.
-- **/signcommands &lt;reload | rl&gt;:** Reload the plugin.
-- **/signcommands &lt;list | l&gt;:** List all command signs.
-- **/signcommands &lt;info | i&gt; &lt;signName&gt;:** List a command sign’s commands and other information.
-- **/signcommands &lt;goto | gt&gt; &lt;signName&gt;:** Teleport to a command sign.
-- **/signcommands &lt;rename | rn&gt; &lt;newSignName&gt;:** Rename the command sign you are looking at. This resets the sign’s cooldown and max clicks.
-- **/signcommands &lt;delete | dt&gt; &lt;signName&gt;:** Delete all commands from the command sign you are looking at.
-- **/signcommands &lt;addcommand | ac&gt; &lt;[clickType](#sign-click-types)&gt; &lt;[commandType](#sign-command-types)&gt; &lt;command&gt;:** Add a command to the sign you are looking at.
-- **/signcommands &lt;removecommand | rc&gt; &lt;commandIndex&gt;:** Remove a command from the command sign you are looking at.
-- **/signcommands &lt;editcommand | ec&gt; &lt;commandIndex&gt; &lt;[clickType](#sign-click-types)&gt; &lt;[commandType](#sign-command-types)&gt; &lt;command&gt;:** Edit a command on the command sign you are looking at.
-- **/signcommands &lt;addrequiredpermission | arp&gt; &lt;permission&gt;:** Add a required permission to the command sign you are looking at. Players must have **all** required permissions in order to use the command sign.
-- **/signcommands &lt;removerequiredpermission | rrp&gt; &lt;permission&gt;:** Remove a required permission from the command sign you are looking at. Players must have **all** required permissions in order to use the command sign.
-- **/signcommands &lt;listrequiredpermissions | lrp&gt;:** List the required permissions of the command sign you are looking at. Players must have **all** required permissions in order to use the command sign.
-- **/signcommands &lt;addblockedpermission | abp&gt; &lt;permission&gt;:** Add a blocked permission to a command sign. Players must not have **any** blocked permissions in order to use the command sign.
-- **/signcommands &lt;removeblockedpermission | rbp&gt; &lt;permission&gt;:** Remove a blocked permission from the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.
-- **/signcommands &lt;listblockedpermissions | lbp&gt;:** List blocked permissions of the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.
-- **/signcommands &lt;setglobalclickcooldown | sgcc&gt; &lt;cooldownMilliseconds&gt;:** Set the global click cooldown for the command sign you are looking at. Global click cooldown is the minimum amount of time between any player executing the command sign.
-- **/signcommands &lt;resetglobalclickcooldown | rgcc&gt;:** Reset the global click cooldown of the command sign you are looking at. Global click cooldown is the minimum amount of time between any player executing the command sign.
-- **/signcommands &lt;setglobalclicklimit | sgcl&gt; &lt;clickLimit&gt;:** Set the global click limit for the command sign you are looking at. Global click limit is the maximum amount of times the command sign can be executed by all players combined.
-- **/signcommands &lt;resetglobalclicklimit | rgcl&gt;:** Reset the global click limit of the command sign you are looking at. Global click limit is the maximum amount of times the command sign can be executed by all players combined.
-- **/signcommands &lt;setuserclickcooldown | succ&gt; &lt;cooldownMilliseconds&gt;:** Set the per-user click cooldown for the command sign you are looking at. User click cooldown is the minimum amount of time between a specific player executing the command sign.
-- **/signcommands &lt;resetuserclickcooldown | rucc&gt; &lt;player | all&gt;:** Reset the per-user click cooldown for the command sign you are looking at for a specific player or all players. User click cooldown is the minimum amount of time between a specific player executing the command sign.
-- **/signcommands &lt;setuserclicklimit | sucl&gt; &lt;clickLimit&gt;:** Set the per-user click limit for the command sign you are looking at. Per user click limit is the maximum amount of times each player can execute the command sign.
-- **/signcommands &lt;resetuserclicklimit | rucl&gt; &lt;player | all&gt;:** Reset the per-user click limit for the command sign you are looking at for a specific player or all players. Per user click limit is the maximum amount of times each player can execute the command sign.
-- **/signcommands &lt;setclickcost | scc&gt; &lt;clickCost&gt;:** Set the click cost for the command sign you are looking at. The click cost is the price a player must pay in order to execute a command sign.
-- **/signedit &lt;setline | sl&gt; &lt;side&gt; &lt;lineNumber&gt; &lt;text&gt;:** Set a specific line on the sign you are looking at.
-- **/signedit &lt;set | s&gt; &lt;side&gt; &lt;line1;line2;line3;line4&gt;:** Set all lines on the sign you are looking at at once.
+- **/signcommands \<reload | rl>:** Reload the plugin.
+- **/signcommands \<list | l>:** List all command signs.
+- **/signcommands \<info | i> \<signName>:** List a command sign's commands and other information.
+- **/signcommands \<goto | gt> \<signName>:** Teleport to a command sign.
+- **/signcommands \<rename | rn> \<newSignName>:** Rename the command sign you are looking at. This resets the sign's cooldown and max clicks.
+- **/signcommands \<delete | dt> \<signName>:** Delete a command sign by name.
+- **/signcommands \<addcommand | ac> \<[clickType](#sign-click-types)> \<[commandType](#sign-command-types)> \<command>:** Add a command to the sign you are looking at.
+- **/signcommands \<removecommand | rc> \<commandIndex>:** Remove a command from the command sign you are looking at.
+- **/signcommands \<editcommand | ec> \<commandIndex> \<[clickType](#sign-click-types)> \<[commandType](#sign-command-types)> \<command>:** Edit a command on the command sign you are looking at.
+- **/signcommands \<addrequiredpermission | arp> \<permission>:** Add a required permission to the command sign you are looking at. Players must have **all** required permissions in order to use the command sign.
+- **/signcommands \<removerequiredpermission | rrp> \<permission>:** Remove a required permission from the command sign you are looking at.
+- **/signcommands \<listrequiredpermissions | lrp>:** List the required permissions of the command sign you are looking at.
+- **/signcommands \<addblockedpermission | abp> \<permission>:** Add a blocked permission to the command sign you are looking at. Players must not have **any** blocked permissions in order to use the command sign.
+- **/signcommands \<removeblockedpermission | rbp> \<permission>:** Remove a blocked permission from the command sign you are looking at.
+- **/signcommands \<listblockedpermissions | lbp>:** List blocked permissions of the command sign you are looking at.
+- **/signcommands \<setglobalclickcooldown | sgcc> \<cooldownMilliseconds>:** Set the global click cooldown for the command sign you are looking at. Global click cooldown is the minimum amount of time between any player executing the command sign.
+- **/signcommands \<resetglobalclickcooldown | rgcc>:** Reset the global click cooldown of the command sign you are looking at.
+- **/signcommands \<setglobalclicklimit | sgcl> \<clickLimit>:** Set the global click limit for the command sign you are looking at. Global click limit is the maximum amount of times the command sign can be executed by all players combined.
+- **/signcommands \<resetglobalclicklimit | rgcl>:** Reset the global click limit of the command sign you are looking at.
+- **/signcommands \<setuserclickcooldown | succ> \<cooldownMilliseconds>:** Set the per-user click cooldown for the command sign you are looking at.
+- **/signcommands \<resetuserclickcooldown | rucc> \<player | all>:** Reset the per-user click cooldown for the command sign you are looking at for a specific player or all players.
+- **/signcommands \<setuserclicklimit | sucl> \<clickLimit>:** Set the per-user click limit for the command sign you are looking at. Per user click limit is the maximum amount of times each player can execute the command sign.
+- **/signcommands \<resetuserclicklimit | rucl> \<player | all>:** Reset the per-user click limit for the command sign you are looking at for a specific player or all players.
+- **/signcommands \<setclickcost | scc> \<clickCost>:** Set the click cost for the command sign you are looking at. Requires Vault. The click cost is the price a player must pay in order to execute a command sign.
+
+### Sign Edit Commands
+
+Command aliases: `/signedit` can be shortened to `/se` or `/editsign`.
+
+- **/signedit \<setline | sl> \<side> \<lineNumber> \<text>:** Set a specific line on the sign you are looking at.
+- **/signedit \<set | s> \<side> \<line1;line2;line3;line4>:** Set all lines on the sign you are looking at at once.
 
 ## Permissions
-- **signcommands.use (default):** Allows the player to use command signs.
+- **signcommands.use:** Allows the player to use command signs.
 
 **Admin Permissions**
 - **signcommands.admin.reload**: Allows the player to reload the SignCommands configuration.
@@ -47,9 +68,9 @@ Run commands when a player clicks a sign or block.
 - **signcommands.admin.commands**: Allows the player to manage commands on command signs.
 - **signcommands.admin.permissions**: Allows the player to manage permissions on command signs.
 - **signcommands.admin.globalclickcooldown**: Allows the player to manage the global click cooldown on command signs.
-- **signcommands.admin.globalmaxclicks**: Allows the player to manage the global max clicks on command signs.
+- **signcommands.admin.globalclicklimit**: Allows the player to manage the global click limit on command signs.
 - **signcommands.admin.userclickcooldown**: Allows the player to manage the user click cooldown on command signs.
-- **signcommands.admin.usermaxclicks**: Allows the player to manage the user max clicks on command signs.
+- **signcommands.admin.userclicklimit**: Allows the player to manage the user click limit on command signs.
 - **signcommands.admin.clickcost**: Allows the player to manage the click cost on command signs.
 
 **Sign Edit Permissions**
@@ -72,5 +93,5 @@ sign-click-delay-ticks: 5 # The number of ticks a player must wait between runni
 - **Console:** Runs the command as the server console.
 - **Player:** Runs the command as the player who clicked the sign.
 - **Op:** Runs the command as the player who clicked the sign ignoring permission requirements.
-- **Message:** Sends a message to the player who clicked the sign.
-- **Broadcast:** Broadcasts a message to all players on the server.
+- **Message:** Sends a message to the player who clicked the sign. Supports `&` color codes.
+- **Broadcast:** Broadcasts a message to all players on the server. Supports `&` color codes.
